@@ -1,0 +1,87 @@
+<div id="bjui-container">
+	
+		<div id="bjui-navtab" class="tabsPage">
+			<div class="tabsPageHeader">
+			
+				<div class="tabsPageHeaderContent">
+					<ul class="navtab-tab nav nav-tabs">
+						<li data-tabid="main" class="main active">
+							<a href="javascript:;"><span><i class="fa fa-home"></i>#maintab#</span></a>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="tabsLeft">
+					<i class="fa fa-angle-double-left"></i>
+				</div>
+				
+				<div class="tabsRight">
+					<i class="fa fa-angle-double-right"></i>
+				</div>
+				
+				<div class="tabsMore">
+					<i class="fa fa-angle-double-down"></i>
+				</div>
+				
+			</div>
+
+			<ul class="tabsMoreList">
+				<li><a href="javascript:;">#maintab#</a></li>
+			</ul>
+
+			<div class="navtab-panel tabsPageContent layoutBox">
+				<div class="page unitBox">
+
+
+					<div class="bjui-pageHeader" style="background: #FFF;">
+						<div style="padding: 0 5px; border-bottom: 1px #DDD solid;">
+
+							<h4>最新公告</h4>
+							<hr style="margin: 12px 0 0px;">
+							<style type="text/css">
+								.renav{
+								width:200px;
+								height:37px;
+								line-height:21px;
+								overflow:hidden;
+								background:#FFFFFF;
+								}
+								.renav li{
+								height:21px;
+								}
+							</style>
+							<div class="renav">
+								<ul style="margin-top: 0px;">
+									<foreach name="infolist" item="v">
+										<li><a href="__ROOT__/admin.php/infopublish/view/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  data-toggle="dialog" data-width="600" data-height="600" data-id="dialog-mask" data-mask="true" >{$v.title}</a></li>
+									</foreach>
+								</ul>
+							</div> 
+            
+						</div>
+					</div>
+
+
+					<div class="bjui-pageFormContent" data-layout-h="150">
+						<!--//-->
+						<div class="col-md-12">
+							<div class="panel panel-default">
+							
+								<div class="panel-heading">
+									<h3 class="panel-title">DSI经营方针</h3>
+								</div>
+								
+								<div style="min-height: 385px" >
+									<div class="panel-body" >{$Policy}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+
+		</div>
+		
+	</div>

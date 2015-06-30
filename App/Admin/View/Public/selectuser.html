@@ -1,0 +1,83 @@
+<div class="bjui-pageHeader">
+<form id="pagerForm" data-toggle="ajaxsearch" action="__URL__" method="post">
+	
+	<input type="hidden" name="pageSize" value="{$numPerPage}">
+    <input type="hidden" name="pageCurrent" value="{$_REQUEST['pageNum']|default=1}">
+	 
+        <div class="bjui-searchBar">
+            <label>编号：</label><input type="text" value="{$_REQUEST['s_userid']}" name="s_userid" class="form-control" size="5" />
+            <label>社员名：</label><input type="text" value="{$_REQUEST['s_username']}" name="s_username" class="form-control" size="5" />
+            <label>部门：</label>
+           	<select  name="s_orgid" data-toggle="selectpicker">
+               <option  value="0">请选择</option>
+	         	<php>$listz=cateTree($id=0,$level=0,'org','1');</php>
+		          <foreach name="listz" item="v">
+		             <option <if condition="$_REQUEST['s_orgid'] EQ $v.id ">selected value="{$v.id}" <else/>value="{$v.id}"</if> >
+
+					        <assign name="strLevel" value="+" />
+					        <for start="0" end="$v.level" name="i" >
+								<php>$strLevel = $strLevel . "---" ;</php>
+							</for>
+							
+							<switch name="v.level"> 
+							
+					 			<case value="0">+<B>{$v.name}</b></case> 
+								<case value="$v.level">{$strLevel}{$v.name}</case>
+								
+								<default />
+							 </switch>
+
+			         </option>
+		          </foreach>
+             </select>
+             
+            <label>职务：</label>
+			   <select  name="s_depid" data-toggle="selectpicker">
+               <option  value="0">请选择</option>
+	         <php>$listz=M('Dep')->where(array('Status'=>1))->select();</php>
+	          <foreach name="listz" item="v">
+               <option <if condition="$_REQUEST['s_depid'] EQ $v.id ">selected value="{$v.id}" <else/>value="{$v.id}"</if> >
+	          +{$v.name}
+	          </option>
+              </foreach>
+             </select>
+             
+             <button type="submit"  class="btn-default" data-icon="search">查询</button>
+              
+			  <a class="btn btn-orange" href="javascript:;" data-toggle="lookupback" data-args="{{$_REQUEST['key']}:'', {$_REQUEST['value']}:''}" >清空查询</a>
+
+			  
+		</div> 
+</form>
+    
+</div>
+<div class="bjui-pageContent">
+     <table data-toggle="tablefixed" data-width="100%" data-layout-h="0" data-nowrap="true">
+        <thead>
+            <tr>
+            <th width="30" height="30"></th>
+            <th data-order-direction="asc" data-order-field="UserID">社员编号</th>
+            <th>社员姓名</th>
+		    <th>所在部门</th>
+	    	<th>担任职务</th>
+		    <th>状态</th>
+		    <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+
+          <volist id="v" name="list">
+          <tr>
+		   <td></td>
+		   <td>{$v.userid}</td>
+           <td>{$v.username}</td>
+		   <td>{$v.orgname} </td>
+		   <td>{$v.depname}</td>
+		   <td><if condition="$v.status EQ 1 "><img src="__PUBLIC__/images/ok.gif" border="0"/><else/><img src="__PUBLIC__/images/locked.gif" border="0"/></if></td>
+		   <td > <a href="javascript:;" data-toggle="lookupback" data-args="{{$_REQUEST['key']}:'{$v.userid}', {$_REQUEST['value']}:'{$v.username}'}" class="btn btn-blue" title="选择社员" data-icon="check">选择</a></td>
+         </tr> 
+          </volist>
+        </tbody>
+    </table>
+
+</div>

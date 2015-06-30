@@ -1,0 +1,174 @@
+<extend name="Public:form_dialog_layout"/>
+	<block name="dialog_edit">
+ <script type="text/javascript">
+	$('#j_RuleGroupID').on('afterchange.bjui.lookup', function(e, data) {
+	    var myvalue = data.value;
+	    $("#j_RuleGroupName1").append("<option value='1'>Text</option>"); 
+	    //$("#RuleGroupName1").append(option);
+		alert(myvalue);
+		//alert($('#RuleGroupName1').val());
+	});
+</script>
+          <table class="table table-condensed table-hover" width="100%">
+           <tbody>
+			<tr><td>
+                <label for="j_title" class="control-label x85">社员编号:</label>
+                <input type="text" data-rule="required" size="25" name="id" id="j_username" value="{$Rs['id']}" <if condition="$id EQ 0"><else/> readonly</if> >
+             </td></tr>
+            <tr><td>
+                <label for="j_pwd" class="control-label x85">登陆密码:</label>
+                <input type="Password" data-rule="required" size="25"  name="pwd" id="j_pwd" value="{$Rs['password']}" >
+				<span>不修改密码，此项不用改动</span>
+             </td></tr>
+            <tr><td>
+                <label for="j_title" class="control-label x85">社员姓名：</label>
+                <input type="text" data-rule="required" size="25" name="username" id="j_truename" value="{$Rs['username']}" >
+             </td></tr>
+            <tr><td>
+            <label for="j_title" class="control-label x85">性别：</label>
+              <select name="sex"  data-toggle="selectpicker" data-rule="required">
+			    <if condition="$Rs['sex'] EQ 男 "><option value="男" selected>男</option><else/><option value="女" selected>女</option></if>
+                <option value="男">男</option>
+                <option value="女">女</option>
+                 </select>
+             </td></tr>
+
+            <tr><td>
+            
+            <tr><td>
+               <label for="j_name" class="control-label x85">所在部门：</label>
+			   <select  name="orgid" data-toggle="selectpicker">
+               <option  value="0">请选择</option>
+	         <php>$listz=cateTree($orgid=0,$orglevel=0,'org','1');</php>
+		          <foreach name="listz" item="v">
+		              <option <if condition="$v.id EQ $Rs['orgid'] ">selected value="{$Rs['orgid']}" <else/>value="{$v.id}"</if> >
+        
+					        <assign name="strLevel" value="+" />
+					        <for start="0" end="$v.level" name="i" >
+								<php>$strLevel = $strLevel . "---" ;</php>
+							</for>
+							
+							<switch name="v.level"> 
+							
+					 			<case value="0">+<B>{$v.name}</b></case> 
+								<case value="$v.level">{$strlevel}{$v['name']}</case>
+								
+								<default />
+							 </switch>
+
+			         </option>
+		          </foreach>
+             </select>
+             </td></tr>
+             
+             
+             <!-- 单选 -->
+            <tr><td>
+               <label for="j_name" class="control-label x85">担任职务：</label>
+			   <select  name="depid" data-toggle="selectpicker">
+               <option  value="0">请选择</option>
+	         <php>$listz=M('dep')->where(array('status'=>1))->select();</php>
+	          <foreach name="listz" item="v">
+              <option <if condition="$v.id EQ $Rs['depid'] ">selected value="{$Rs['depid']}" <else/>value="{$v.id}"</if> >
+	          +{$v.name}
+	          </option>
+              </foreach>
+             </select>
+             </td></tr>
+             
+             
+            <tr><td>
+                <label for="j_title" class="control-label x85">固定电话：</label>
+                <input type="text" data-rule="required" size="25" name="tel" id="j_Tel" value="{$Rs['tel']}" >
+             </td></tr>
+             
+             <tr><td>
+                <label for="j_title" class="control-label x85">内线：</label>
+                <input type="text" data-rule="required" size="25" name="ins" id="j_Ins" value="{$Rs['ins']}" >
+             </td></tr>
+             
+            <tr><td>
+                <label for="j_title" class="control-label x85">移动电话：</label>
+                <input type="text" data-rule="required" size="25" name="phone" id="j_Phone" value="{$Rs['phone']}" >
+            </td></tr>
+            
+                        <tr><td>
+                <label for="j_Fax" class="control-label x85">传真：</label>
+                <input type="text" data-rule="required" size="25" name="fax" id="j_Fax" value="{$Rs['fax']}" >
+             </td></tr>
+             
+            <tr><td>
+                <label for="j_Email" class="control-label x85">电子邮箱：</label>
+                <input type="text" data-rule="required" size="25" name="email" id="j_Email" value="{$Rs['email']}">
+             </td></tr>
+             
+             
+            <tr><td>
+           
+            
+ 			 <label for="grouplist" class="control-label x85">权限：</label>
+		     <div style="width:475px; float:right;">
+
+	         <table id ="grouplist"  class="table table-condensed" data-toggle="tablefixed" style="width:100%;" data-height='150'>
+				<thead>
+					<tr>
+						
+						<th>编号</th>
+						<th>权限组名称</th>
+						<th width="20%">备注</th>
+						<th width="28"><input type="checkbox" class="checkboxCtrl" data-group="rules[]" data-toggle="icheck"></th>
+					
+						
+					</tr>
+				</thead>
+				<tbody>
+		
+					<foreach name="ruleslist" item="v">
+					<tr>
+						
+						<Td>{$v.RuleGroupID}</td>
+						<Td>{$v.RuleGroupName}</td>
+						<Td>{$v.Note}</td>
+				        <td><input type="checkbox" name="rules[]" data-toggle="icheck" <if condition="$v.selected EQ 'selected' ">checked</if> value="{$v.RuleGroupID}"></td>
+
+					</tr>
+					</foreach>
+				</tbody>
+			</table>
+
+			</div>
+			
+			              
+                <!--
+                <select  name="rules" data-toggle="selectpicker" data-width="80%" multiple>
+                	<foreach name="ruleslist" item="rv">
+	              		<option {$rv.selected} value="{$rv.RuleGroupID}" >
+		          		{$rv.RuleGroupName}
+		          	</option>
+	              	</foreach>
+	            </select>
+	           -->   
+	           
+	           
+             </td></tr>
+
+             <tr><td>
+                <label for="j_title" class="control-label x85">社员状态：</label>
+               <select name="status"  data-container="body"  id="j_status" data-toggle="selectpicker" data-rule="required">
+				    <if condition="$Rs['status'] EQ 1 OR  $Rs['Status'] EQ ''">
+				    	 <option value="1" selected>在职</option>
+				    	 <option value="0">离职</option>
+				    <else/>
+				    	<option value="1" >在职</option>
+				    	<option value="0" selected>离职</option>
+				    </if>
+                </select>
+                 
+             </td></tr>
+
+            </tbody>
+            </table>
+</block>
+
+			
+			

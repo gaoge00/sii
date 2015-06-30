@@ -1,0 +1,151 @@
+		
+<script type="text/javascript">
+
+ 	//$("#seldevlist").find("input[name='devs']").each(function() {
+	
+	 //$(this).on('ifChecked', function(event){
+      	 // alert(event.type + ' callback');
+    //  })
+ 	//}); 
+
+
+      //$(':input').on('ifChecked', function(event){
+    //	  alert(event.type + ' callback');
+    //	});
+      
+      //得到表格所有行元素  
+     function lockdevs(){
+    	  
+	    	 var devArray=new Array(); //选择的设备
+	    	 
+	    	 var trs = $("#seldevlist").find("input[name='devs']").each(function() {
+	    		 var isChecked = $(this).filter(":checked").length;  
+	    		 if(isChecked==1){
+	    			 //alert($(this).val() + "--checked");
+	    			 devArray.push($(this).val());
+	    		 }
+	    		 //else{
+	    			 //alert($(this).val() + "--unclecked");
+	    		// }
+	 	    }); 
+	    	 
+	    	 if(devArray.length==0){
+	    		 //没有选择
+	    	 }
+	    	 else{
+	    		 //ajax
+	    		 $.ajax( {    
+	    			    url:'__URL__/lockdevs',// 跳转到 action    
+	    			    data:{    
+	    			    	MeetingReservID : $('#id').val(),  
+	    			    	MeetingReservStartDate : $('#startdate').val(),    
+	    			    	MeetingReservStartTime : $('#starttime').val(),    
+	    			    	MeetingReservEndTime : $('#endtime').val(), 
+	    			        devs : devArray
+	    			    },    
+	    			    type:'post',    
+	    			    cache:false,    
+	    			    dataType:'json',    
+	    			    success:function(data) {    
+	    			    	
+   			    			$("#seldevlist").find("input[name='devs']").each(function() {
+ 			        		 		$(this).iCheck('disable');
+ 				 	    	});
+	    			    	alert("锁定成功！"); 
+	    			    	//timer(600);
+	    			    },    
+	    			    error : function() {    
+	    			          alert("异常！");    
+	    			    }    
+	    			}); 
+	    	 }
+	    		 
+	    		
+	    	//alert(devArray);
+      }
+      
+     var objTimer ;
+     function timer(intDiff){
+    	 objTimer = window.setInterval(function(){
+         var minute=0,      second=0;//时间默认值        
+         if(intDiff > 0){
+
+             minute = Math.floor(intDiff / 60) - (0 * 24 * 60) - (0 * 60);
+             second = Math.floor(intDiff) - (0 * 24 * 60 * 60) - (0 * 60 * 60) - (minute * 60);
+         }
+         if (minute <= 9) minute = '0' + minute;
+         if (second <= 9) second = '0' + second;
+
+         $('#minute_show').html('<s></s>'+minute+'分');
+         $('#second_show').html('<s></s>'+second+'秒');
+         if(intDiff==0){
+        	 //alert("OK");
+        	 $('#myLoadDiv2').bjuiajax('doLoad',{
+        		 target:'#myLoadDiv2',
+        		 url: '__URL__/loaddevs?MeetingReservID={#MeetingReservID}'
+        	 });
+         }
+         intDiff--;
+         
+         }, 1000);
+     } 
+     $(function(){
+    	 clearInterval(objTimer)
+     }); 
+     
+      
+</script>
+
+       <label for="j_sort" class="control-label x85">与会设备：</label>
+		     <div  id='seldevlist'  style="width:475px; float:right;" >
+               	
+	         <table class="table table-condensed" data-toggle="tablefixed" style="width:50%;" data-height='150'  >
+				<thead>
+					<tr>
+						
+						<th>编号</th>
+						<th>设备名称</th>
+						<th>设备编号</th>
+						<th width="20%">备注</th>
+						<th width="28"><!-- <input type="checkbox" {$v.disabled} class="checkboxCtrl" data-group="devs" data-toggle="icheck"> --></th>
+					
+						
+					</tr>
+				</thead>
+				<tbody>
+					
+					<foreach name="Devlist" item="v">
+					<tr data-id='{$v.MeetingdeviceID}'>
+						
+						<Td>{$v.id}</td>
+						<Td>{$v.name}</td>
+						<Td>{$v.no}</td>
+						<Td>{$v.note}</td>
+				        <td>
+				        <input type="checkbox" id="devs[]" name="devs[]" data-toggle="icheck"  {$v.checked}  {$v.disabled} value="{$v.id}" >
+   						<!--  <input type="text" name="sel_devs" id="sel_devs" value="{$v.MeetingdeviceID}">-->
+				        </td>
+
+					</tr>
+					</foreach>
+				</tbody>
+			</table>
+			
+			
+			
+		</div>
+
+
+		<!-- 
+			<button type="button" class="btn-default" data-toggle="ajaxload" data-target="#myLoadDiv2" data-url="__URL__/loaddevs?MeetingReservID={#MeetingReservID}&MeetingReservStartDate={#MeetingReservStartDate}&MeetingReservStartTime={#MeetingReservStartTime}&MeetingReservEndTime={#MeetingReservEndTime}">刷新</button>
+			<button type="button" class="btn-default" onclick="javascript:lockdevs();" >锁定</button>
+			 <strong id="minute_show">0分</strong><strong id="second_show">0秒</strong>
+              		<select  name="devs" id="devs" data-toggle="selectpicker" data-width="60%" multiple>
+               		<foreach name="devlist" item="dev">
+              		<option value="{$dev.MeetingdeviceID}" >
+	          			{$dev.MeetingdeviceName}
+	          		</option>
+              		</foreach>
+            	</select>
+            -->			
+               	

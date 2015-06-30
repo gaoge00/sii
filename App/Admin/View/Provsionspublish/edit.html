@@ -1,0 +1,225 @@
+<extend name="Public:form_dialog_layout"/>
+
+<block name="dialog_edit">
+ 
+<script type="text/javascript">
+	  function doc_upload_success(file, data) {
+        var json = $.parseJSON(data)
+        $(this).bjuiajax('ajaxDone', json)
+        if (json[BJUI.keys.statusCode] == BJUI.statusCode.ok) {
+            $('#doc_pic').val(json.filename)
+            $('#doc_span_pic').html('已上传图片：<img src="'+ json.filename +'" width="100">')
+        }
+	 }
+
+	   $('#startdt').on('afterchange.bjui.datepicker', function(e, data) {
+		   
+		   newdate=new Date($('#startdt').val());
+		   newdate.setDate(newdate.getDate() + 30);
+
+		   //alert(newdate.formatDate('yyyy-MM-dd')); 
+
+		   
+		   if($('#enddt').val()=='')
+		   {
+			   //alert(getNowFormatDate(newdate));
+			   $('#enddt').val(newdate.formatDate('yyyy-MM-dd'));
+		   }
+		}); 
+	 
+	 
+	 $('#enddt').on('afterchange.bjui.datepicker', function(e, data) {
+		 //checkenddt(e, data);
+		}); 
+
+	 function getNowFormatDate(newdate)
+	 {
+	 var day = new Date(newdate);
+	 var Year = 0;
+	 var Month = 0;
+	 var Day = 0;
+	 var CurrentDate = "";
+	 //初始化时间
+	 //Year= day.getYear();//有火狐下2008年显示108的bug
+	 Year= day.getFullYear();//ie火狐下都可以
+	 Month= day.getMonth();
+	 Day = day.getDate()+30;
+	 //Hour = day.getHours();
+	 // Minute = day.getMinutes();
+	 // Second = day.getSeconds();
+	 day.setDate(day.getDate()+30);
+	 //xDate=new Date(Year+'-'+Month+'-'+Day);
+	 
+	 CurrentDate += Year + "-";
+	 if (Month >= 10 )
+	 {
+	 CurrentDate += Month + "-";
+	 }
+	 else
+	 {
+	 CurrentDate += "0" + Month + "-";
+	 }
+	 if (Day >= 10 )
+	 {
+	 CurrentDate += Day ;
+	 }
+	 else
+	 {
+	 CurrentDate += "0" + Day ;
+	 }
+	 
+	
+	 formatDate(new Date());
+	 return formatDate(new Date());
+	 } 
+	 
+	 function checkenddt(e, data){
+		    var startdt =  $('#startdt').val();
+		    var enddt= $('#enddt').val();
+		     if(enddt<startdt)
+		     {
+		    	 //sdfsfsdfsf
+		    	 $(this).alertmsg('error',"结束日期不能小于开始日期！");
+		    	 $('#enddt').val("");
+		     }
+		}
+	 
+	 $('form[name="infopublish"]').validator({
+		    stopOnError: false,
+		    timely: true,
+		    fields: {
+		        'title': 'required;',
+		        'username': 'required;'
+		    },
+		 	beforeSubmit: function (form){ 
+			 	return CommitVerify(form); 
+			}
+		    ,    //验证成功
+		    valid: function(form) {
+		    	$(form).bjuiajax('ajaxForm',$(form).data());
+
+		    },
+		}); 
+	 
+	 
+</script> 
+
+
+
+	
+		<table class="table table-condensed table-hover" width="100%">
+			<tbody>
+				<tr>
+				
+					<td colspan="2"><label for="j_title" class="control-label x85">规定名称：</label>
+					<!-- data-rule="标题：required;title"  -->
+						<input type="text" 
+						size="30"
+						name="title" id="j_title"
+						value="{$Rs['title']}"
+						
+						></td>
+				</tr>
+
+				<tr>
+				
+				
+					<td colspan="2"><label for="j_title" class="control-label x85">规定分类：</label>
+						<select name="provsid" id="provsid" data-toggle="selectpicker"
+						data-emptytxt="--请选择--">
+							<option value="">--请选择--</option>
+							<foreach name="provsionslist" item="v">
+		              <option <if condition="$v.id EQ $Rs['provsid'] ">selected value="{$Rs['provsid']}" <else/>value="{$v.id}"</if> >
+		              <!-- 改成循环 -->
+        
+					        <assign name="strLevel" value="+" />
+					        <for start="0" end="$v.level" name="i" >
+								<php>$strLevel = $strLevel . "---" ;</php>
+							</for>
+							
+							<switch name="v.level"> 
+							
+					 			<case value="0">+<B>{$v.name}</b></case> 
+								<case value="$v.level">{$strLevel}{$v['name']}</case>
+								
+								<default />
+							 </switch>
+			          
+			         </option>
+		          </foreach>
+					</select> 
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2"><label  class="control-label x85">文件页数：</label>
+						<input type="text" size="5" data-toggle="spinner" data-min="0"
+						data-max="100" data-step="1" data-rule="integer" name="pages"
+						id="j_pages" value="{$Rs['pages']}"></td>
+				</tr>
+				<tr>
+					
+					<td colspan="2"><label for="j_title" class="control-label x85">所属部门：</label>
+						<select  name="orgid" data-toggle="selectpicker" data-rule="required"
+						data-emptytxt="--请选择--"
+						>
+	              <option  value="">--请选择--</option>
+	              
+		          <foreach name="orglist" item="v">
+		              <option <if condition="$v.id EQ $Rs['orgid'] ">selected value="{$Rs['orgid']}" <else/>value="{$v.id}"</if> >
+		              <!-- 改成循环 -->
+        
+					        <assign name="strLevel" value="+" />
+					        <for start="0" end="$v.level" name="i" >
+								<php>$strLevel = $strLevel . "---" ;</php>
+							</for>
+							
+							<switch name="v.level"> 
+							
+					 			<case value="0">+<B>{$v.name}</b></case> 
+								<case value="$v.level">{$strLevel}{$v['name']}</case>
+								
+								<default />
+							 </switch>
+			          
+			         </option>
+		          </foreach>
+	           </select>
+						</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div style="display: inline-block; vertical-align: middle;">
+							<textarea name="content" id="j_form_content"
+								class="j-content" style="width: 100%" data-toggle="kindeditor"
+								data-minheight="200">
+							{$Rs['content']}
+						</textarea>
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td colspan=2>
+					<php> //类别初期加载 
+					if(!isset($Rs["attid"])&&trim($Rs["attid"])=="")
+					{
+					  $Rs["attid"]=time();
+					}
+					</php>
+						<label for='attid_input' class='control-label x85'>上传附件:</label>
+						<div style='display: inline-block; vertical-align: middle;'>
+						<IFRAME   src="__MODULE__/Public/attfile/attid/{$Rs['attid']}"  frameBorder=0 width='100%' height='30' scrolling=no ></IFRAME>
+						<input type='hidden' id='attid' name='attid'  value='{$Rs["attid"]}'  >
+						</div>
+					</td>
+				</tr>
+				<include file="Public/form_edit_status_layout" />
+			    <include file="Public/form_edit_sort_layout" />	
+
+				
+			</tbody>
+		</table>
+</block>
+
+

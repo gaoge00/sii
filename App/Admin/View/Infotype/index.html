@@ -1,0 +1,45 @@
+<extend name="Public:form_index_layout"/>
+
+<block name="index_search">
+
+				<!-- //新增按钮 -->
+			  <include file="Public/form_index_titleoper_layout" h="300" w="600" data="id"/>	
+			  
+			  <span><a class="btn btn-orange" href="javascript:;" onclick="$(this).navtab('reloadForm', true);" data-icon="undo">刷新</a></span>
+</block>
+<block name="index_content"> 
+
+	<table data-toggle="tablefixed" data-width="100%" data-layout-h="0"
+		data-nowrap="true">
+		<thead>
+			<tr>
+				<th width="30" height="30"></th>
+				<th>编号</th>
+				<th>信息类别名称</th>
+				<th>排序</th>
+				<th<php> echo display(CONTROLLER_NAME.'/del');</php> >状态</th>
+				<th<php>echo display(CONTROLLER_NAME.'/edit');</php> >操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<foreach name="list" item="v">
+			<tr>
+				<td height=25></td>
+				<Td>{$v.id}</td>
+				<Td><assign name="strLevel" value="+" /> <for start="0"
+						end="$v.level" name="i"> <php>$strLevel =
+					$strLevel . "---" ;</php> </for> <switch name="v.level"> <case
+						value="0">+<B>{$v.name}</b></case> <case
+						value="$v.level">{$strLevel}{$v['name']}</case> <default />
+					</switch></td>
+				<td>{$v.sort}</td>
+				<td><a href="__URL__/changeStatus/id/{$v['id']}/navTabId/{:CONTROLLER_NAME}" data-toggle="doajax" data-confirm-msg="确定要操作吗？"><if condition="$v.status EQ 1 "><img src="__PUBLIC__/images/ok.gif" border="0"/><else/><img src="__PUBLIC__/images/locked.gif" border="0"/></if></a></td>
+				<td> 
+					<include file="Public/form_index_operation_layout"  h="300" w="600" />
+				</td>
+
+			</tr>
+			</foreach>
+		</tbody>
+	</table>
+</block>

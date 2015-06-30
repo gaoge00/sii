@@ -1,0 +1,35 @@
+<div class="bjui-pageHeader">
+<form id="pagerForm" data-toggle="ajaxsearch" action="__URL__" method="post">
+
+        <div class="bjui-searchBar">
+		 	<span <php>echo display(CONTROLLER_NAME.'/clear');</php> style="float:right;" >
+			  <a href="__URL__/clear/navTabId/{:CONTROLLER_NAME}" class="btn btn-red" data-toggle="doajaxchecked" data-confirm-msg="确定要删除吗？" data-icon="remove" data-idname="delids" data-group="paths[]">删除</a>
+			  </span>
+		</div> 
+</form>
+    
+</div>
+<div class="bjui-pageContent">
+ <form id="export-form" method="post" action="">
+     <table data-toggle="tablefixed" data-width="100%" data-layout-h="0" data-nowrap="true">
+        <thead>
+                    <tr>
+                        <th width="120">名称</th>
+                        <th width="120">路径</th>
+ 						<th width="26"><input type="checkbox" class="checkboxCtrl" data-group="paths[]" data-toggle="icheck"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <volist name="caches" id="v">
+                        <tr>
+                            <td>{$v.name}</td>
+                            <td>{$v.path}</td>
+                           <td><input type="checkbox" name="paths[]" data-toggle="icheck" value="{$v.path}"></td>
+                        </tr>
+                    </volist>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+</block>

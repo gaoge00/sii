@@ -1,0 +1,30 @@
+<extend name="Public:form_dialog_layout"/>
+	<block name="dialog_edit">
+          <table class="table table-condensed table-hover" width="100%">
+           <tbody>
+
+            <tr>
+            	<td>
+                	<label for="j_custom_indate" class="control-label x85">制定日期：</label>
+
+                	<input type="text" name="date" id="j_custom_indate" data-toggle="datepicker" data-rule="required;date" size="15"  value="{$Rs['date']}">
+             	</td>
+             </tr>
+            
+            <tr>
+            	<td>
+                	
+                	 <div style="display: inline-block; vertical-align: middle;">
+
+	                	<textarea name="text" id="j_form_content" class="j-content" style="width: 700px;height:450px" data-toggle="kindeditor" data-minheight="500">
+							{$Rs['text']}
+						</textarea>
+					</div>
+             	</td>
+             </tr>
+ 
+            </tbody>
+            </table>
+</block>
+			
+			

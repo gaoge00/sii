@@ -1,0 +1,44 @@
+<extend name="Public:form_index_layout"/>
+
+<block name="index_search">
+		            <label>关键词：</label><input type="text" value="{$_REQUEST['s_name']}" name="s_name" class="form-control" size="20" />
+		            <button type="submit"  class="btn-default" data-icon="search">查询</button>
+					<include file="Public/form_index_titleoper_layout" h="300" w="600" />	
+
+		
+</block>
+		
+<block name="index_content">
+			<table data-toggle="tablefixed" data-width="100%" data-layout-h="0"
+				data-nowrap="true">
+				<thead>
+					<tr>
+						<th width="30" height="30"></th>
+						<th data-order-direction="asc" data-order-field="id">编号</th>
+						<th data-order-direction="asc" data-order-field="name">职务名称</th>
+						<th data-order-direction="asc" data-order-field="sort">排序</th>
+						<th data-order-direction="asc" data-order-field="status">状态</th>
+						<th>操作</th>
+						<th width="50%"></th>
+					</tr>
+				</thead>
+				<tbody>
+		
+					<foreach name="list" item="v">
+					<tr>
+						<td height=25></td>
+						<Td>{$v.id}</td>
+						<Td>{$v.name} </td>
+						<td>{$v.sort}</td>
+				        <td>
+				        	<a href="__URL__/changeStatus/id/{$v['id']}/navTabId/{:CONTROLLER_NAME}" data-toggle="doajax" data-confirm-msg="确定要操作吗？"><if condition="$v.status EQ 1 "><img src="__PUBLIC__/images/ok.gif" border="0"/><else/><img src="__PUBLIC__/images/locked.gif" border="0"/></if></a>
+				        </td>
+						<td> 
+							<include file="Public/form_index_operation_layout" h="300" w="600" />
+						</td>
+						<td></td>
+					</tr>
+					</foreach>
+				</tbody>
+			</table>
+</block>

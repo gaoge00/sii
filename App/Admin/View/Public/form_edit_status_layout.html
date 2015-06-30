@@ -1,0 +1,18 @@
+
+	            <tr>
+		            <td>
+		               <label for="j_status" class="control-label x85">是否启用：</label>
+		               
+		               <select name="status"  data-container="body"  id="j_status" data-toggle="selectpicker" data-rule="required">
+						    <if condition="$Rs['status'] EQ 1 OR  $Rs['status'] EQ ''">
+						    	 <option value="1" selected>启用</option>
+						    	 <option value="0">禁用</option>
+						    <else/>
+						    	<option value="1" >启用</option>
+						    	<option value="0" selected>禁用</option>
+						    </if>
+		                </select>
+		                
+		            </td>
+	            </tr>
+	

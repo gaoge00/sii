@@ -1,0 +1,22 @@
+    <select  name="pid" data-toggle="selectpicker" data-rule="required">
+	              <option  value="0">顶级</option>
+	              
+		          <foreach name="list" item="v">
+		              <option <if condition="$v.id EQ $Rs['pid'] ">selected value="{$Rs['pid']}" <else/>value="{$v.id}"</if> >
+        
+					        <assign name="strLevel" value="+" />
+					        <for start="0" end="$v.level" name="i" >
+								<php>$strLevel = $strLevel . "---" ;</php>
+							</for>
+							
+							<switch name="v.level"> 
+							
+					 			<case value="0">+<B>{$v.name}</b></case> 
+								<case value="$v.level">{$strLevel}{$v['name']}</case>
+								
+								<default />
+							 </switch>
+			          
+			         </option>
+		          </foreach>
+	           </select>

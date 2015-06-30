@@ -1,0 +1,12 @@
+        <assign name="strLevel" value="+" />
+        <for start="0" end="$v.level" name="i" >
+			<php>$strLevel = $strLevel . "---" ;</php>
+		</for>
+		
+		<switch name="v.level"> 
+		
+ 			<case value="0">+<B>{$v.name}</b></case> 
+			<case value="$v.level">{$strLevel}{$v['name']}</case>
+			
+			<default />
+		 </switch>
