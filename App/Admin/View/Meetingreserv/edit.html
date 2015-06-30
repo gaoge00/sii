@@ -1,0 +1,409 @@
+<script type="text/javascript">
+
+$('#starttime').datetimepicker({
+	    language:  'zh-CN',
+	    weekStart: 1,
+	    todayBtn:  0,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 1,
+		minView: 0,
+		maxView: 1,
+		viewSelect: 1,
+		forceParse: 0,
+		minuteStep: 10,
+		startDate: $('#startdate').val(),
+		//showMeridian: true,
+		weekends: '0,6' 
+	})
+	.on('changeDate', function(ev){
+	    //if (ev.date.valueOf() < date-start-display.valueOf()){
+	    timeAdd();
+	});
+
+/*
+$('#endtime').datetimepicker({
+    language:  'zh-CN',
+    weekStart: 1,
+    todayBtn:  1,
+	autoclose: 1,
+	todayHighlight: 1,
+	startView: 1,
+	minView: 0,
+	maxView: 1,
+	forceParse: 0,
+	minuteStep: 10,
+	weekends: '0,6' 
+})
+.on('changeDate', function(ev){
+	CalcTimeLen();
+});
+*/
+function CalcTimeLen(){
+	
+    var timeLen =  $('#timelength');
+    var startDate= $('#startdate');
+    var startTime= $('#starttime');
+    var endTime= $('#endtime');
+    var strStartDateTime = startDate.val() + " " + startTime.val();
+    var strEndDateTime = startDate.val() + " " + endTime.val();
+
+    var startTime =strStartDateTime.parseDate('yyyy-MM-dd HH:mm'); 
+    var endTime =strEndDateTime.parseDate('yyyy-MM-dd HH:mm'); 
+    if(endTime <= startTime){
+    	alert("结束时间不能大于开始时间");
+    }
+    	
+    timeLen.val("1");
+}
+
+/*
+$('#endtime')
+.datetimepicker()
+.on('changeDate', function(ev){
+	$('#hasallday').val("0");
+	$("#cHasAllDay").iCheck('uncheck');
+});
+         
+      */       
+$('#startdate').on('afterchange.bjui.datepicker', function(e, data) {
+
+    var mydate =$.fullCalendar.formatDate(data.value,"yyyy-MM-dd") + ' ' + $('#starttime').val(); 
+    
+	//alert(mydate);
+    //timeAdd();
+	$('#starttime').datetimepicker('setDate',mydate);
+
+});
+
+
+$('#cHasAllDay').on('ifChecked', function(event){
+	
+    var timeLen =  $('#timelength');
+    var startDate= $('#startdate');
+    var startTime= $('#starttime');
+    var endTime= $('#endtime');
+    var hasAllDay= $('#hasallday');
+    
+    startTime.val("00:00");
+    endTime.val("23:59");
+    timeLen.val("24");
+    hasAllDay.val("1");
+    
+    
+});
+
+$('#cHasAllDay').on('ifUnchecked', function(event){
+	
+    var timeLen =  $('#timelength').val();
+    var startDate= $('#startdate');
+    var startTime= $('#starttime');
+    var endTime= $('#endtime');
+    var hasAllDay= $('#hasallday');
+    
+    hasAllDay.val("0");
+});
+	
+	
+$('#timelength').on('afterchange.bjui.spinner', function(e, data) {
+
+	timeAdd();
+
+});
+
+function timeAdd(){
+	
+    var timeLen =  $('#timelength').val();
+    var startDate= $('#startdate');
+    var startTime= $('#starttime');
+    var endTime= $('#endtime');
+    var strDateTime = startDate.val() + " " + startTime.val();
+
+    var nowTime =strDateTime.parseDate('yyyy-MM-dd HH:mm'); 
+    
+    nowTime.setMinutes(nowTime.getMinutes() + (timeLen * 60));
+    endTime.val(nowTime.formatDate('HH:mm'));
+}
+
+
+$('#meetingid').on('change',
+        function () {
+			//动态变更会议室属性
+			$("#MR_MeetingTV").iCheck('uncheck');
+			$("#MR_MeetingProjection").iCheck('uncheck');
+			$("#MR_MeetingVideo").iCheck('uncheck');
+			$("#MR_MeetingTel").iCheck('uncheck');
+			
+        	$.ajax( {    
+        	    url:'__URL__/AjaxGetMeetingRoomProperty',// 跳转到 action    
+        	    data:{    
+        	    	meetingid : $('#meetingid').val()  
+        	    },    
+        	    type:'post',    
+        	    cache:false,    
+        	    dataType:'json',    
+        	    success:function(data) {    
+        	    	
+        	    	//var dataObj=eval("("+data+")");//转换为json对象
+
+        	    	$.each(data[0], function(key, val){
+
+        	          	var ctlObj = $("#MR_" + key);
+        	          	//ctlObj.attr("checked",true);
+        	          	//$('input').iCheck('check'); — 将输入框的状态设置为checked
+						//$('input').iCheck('uncheck'); — 移除 checked 状态
+        	          	if(val == '0'){
+        	          		ctlObj.iCheck('uncheck');
+        	          	}
+        	          	else if (val == '1'){
+        	          		ctlObj.iCheck('check');
+        	          	}
+        	          	else{
+        	          		ctlObj.iCheck('uncheck');
+        	          	}
+        	    	}); 
+        	    	
+        	    	
+        	    	
+        	     },    
+        	     error : function() {    
+        	          // view("异常！");    
+        	          alert("异常！");    
+        	     }
+        	});  
+        	  
+});
+        
+           	
+ //表单验证
+ function CommitVerify(form)
+ {
+	 
+	 var flag = true;
+	 $.ajax({
+         	url: "__URL__/AjaxExistMeeingRoom",
+         	data: $(form).serialize(),
+         	type: "POST",
+ 	    	cache:false,    
+ 	    	dataType:'json',
+ 	        async:false,  // 设置同步方式
+         	success: function(data){
+         		
+         		//$(this).alertmsg('error',data.error);
+				if(data.ok ==""){
+					flag =  true;
+             	}
+				else{
+          	  	//失败
+          	  		//alert(data.message);
+					$(this).alertmsg('error',data.error);
+					flag =  false;
+          	  	}
+         },
+		 error: function(data){
+			 //alert("error");
+			 flag = false;
+	         //me.holdSubmit(false);
+	         $(this).alertmsg('error',"请选择会议室");
+	     } 
+     });
+	 return flag;
+ }
+
+ 
+ $('form[name="MeetingReservEdit"]').validator({
+	    stopOnError: false,
+	    timely: true,
+	    fields: {
+	        'title': 'required;',
+	        'username': 'required;'
+	    },
+	 	beforeSubmit: function (form){ 
+		 	return CommitVerify(form); 
+		}
+	    ,    //验证成功
+	    valid: function(form) {
+	    	$(form).bjuiajax('ajaxForm',$(form).data());
+
+	    },
+	});
+ 
+ /*
+ $("#MeetingReservEdit").validator({ 
+	 	focusCleanup:true,
+ 		stopOnError:false,
+	    fields: {
+	        'meetingid': {
+	        	rule:"required;",
+	        	msg:{required:"请选择会议室"}
+	        }
+	    },
+	 	beforeSubmit: function (form){ 
+		 	return CommitVerify(form); 
+		}
+}); 
+*/
+</script>
+
+<div class="bjui-pageContent">
+
+    <form name="MeetingReservEdit" action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm"  >
+ 		<!-- hidden -->
+		<input type="hidden" name="id" id="id" value="{$id}">
+	
+        <div class="pageFormContent" data-layout-h="0">
+          <table class="table table-condensed table-hover" width="100%">
+           <tbody>
+
+           <tr><td>
+                <label for="j_title" class="control-label x85">会议室名称：</label>
+                <select  name="meetingid" id="meetingid"  data-toggle="selectpicker" >
+	               	<option  value="">请选择会议室</option>
+		         	<php>$listz=M('meeting')->where(array('status'=>1))->select();</php>
+		          	<foreach name="listz" item="v">
+	              	<option <if condition="$v.id EQ $Rs['meetingid'] ">selected value="{$Rs['meetingid']}" <else/>value="{$v.id}"</if> >
+		          	{$v.name}
+		          	</option>
+	              	</foreach>
+	            </select>
+             	
+           </td></tr>
+             
+            <tr><td>
+                <label for="j_title" class="control-label x85">会议室属性：</label>
+              	<input type="checkbox" data-toggle="icheck" name="MR_hastv"  id="MR_hastv"  data-label="内置电视"  disabled <if condition="$beforlist.hastv EQ 1 ">checked</if> />
+				<input type="checkbox" data-toggle="icheck" name="MR_hasprojection" id="MR_hasprojection"  data-label="内置投影" disabled <if condition="$beforlist.hasprojection EQ 1 ">checked</if> />
+				<input type="checkbox" data-toggle="icheck" name="MR_hasvideo"   id="MR_hasvideo"    data-label="视频会议" disabled <if condition="$beforlist.hasvideo EQ 1 ">checked</if> />
+				<input type="checkbox" data-toggle="icheck" name="MR_hastel" id="MR_hastel"  data-label="电话会议"  disabled <if condition="$beforlist.hastel EQ 1 ">checked</if> />						
+             </td></tr>
+            
+            <tr>
+             	 <td>
+                	<label for="j_sort" class="control-label x85">主题：</label>
+               		<input type="text"  name="title" id="title" value="{$Rs.title}">
+             	 </td>
+            </tr>
+
+            <tr>
+             	 <td>
+                	<label for="j_sort" class="control-label x85">预订人：</label>
+               		<input type="text" name="username" id="j_username" value="<php> if(empty($beforlist['username']))  {echo session('username');} else { echo $beforlist['username'];} </php>" size="10"  readonly>
+		            <input type="hidden" name="userid" id="j_userid" value="<php> if(empty($beforlist['userid']))  {echo session('uid');} else { echo $beforlist['userid'];} </php>" >
+             	 </td>
+            </tr>
+  
+            <tr><td>
+               <label for="j_name" class="control-label x85">所在部门：</label>
+			   <select  name="orgidtree" data-toggle="selectpicker" disabled>
+               <option  value="0">请选择</option>
+	           <php>$listz=cateTree(0,0,'org','1');</php>
+		          <foreach name="listz" item="v">
+		              <option <if condition="$v.id EQ $beforlist['orgid'] "> selected value="{$beforlist['orgid']}" <else /> <if condition="$v.id EQ $Think.session.orgid ">selected value="{$Think.session.orgid}" <else/>value="{$v.id}"</if></if> >
+
+					        <assign name="strLevel" value="+" />
+					        <for start="0" end="$v.level" name="i" >
+								<php>$strLevel = $strLevel . "---" ;</php>
+							</for>
+							
+							<switch name="v.level"> 
+							
+					 			<case value="0">+<B>{$v.name}</b></case> 
+								<case value="$v.level">{$strLevel}{$v.name}</case>
+								
+								<default />
+							 </switch>
+
+			         </option>
+		          </foreach>
+             </select>
+             
+            <input type="text" name=orgid id="j_orgid" value="<php> if(empty($beforlist['orgid']))  {echo session('orgid');} else { echo $beforlist['orgid'];} </php>" >
+             </td></tr>
+            
+            
+            <tr>
+             	 <td>
+                	<label for="j_sort" class="control-label x85">日期：</label>
+               		<input type="text" data-min-date="<php>echo date('Y-m-d',time());</php>" name="startdate" id="startdate" value="<php> if(empty($Rs['startdate']))  {   if(empty($_REQUEST['sel_start'])) {echo date('Y-m-d', time());} else {echo date('Y-m-d', strtotime($_REQUEST['sel_start']));}  } else { echo $Rs['startdate'];} </php>" data-toggle="datepicker" data-rule="required;date" size="15">
+             	 </td>
+            </tr>
+            
+            <tr>
+             	 <td>
+                	<label for="j_sort" class="control-label x85">开始时间：</label>
+                	
+                    <input type="text"  name="starttime" id="starttime" value="<php> if(empty($Rs['starttime']))  {echo date('H:i', strtotime($_REQUEST['sel_start']));} else { echo date('H:i', strtotime($Rs['starttime']));} </php>" name="starttime" id="starttime" data-date="$_REQUEST['sel_start'])"  data-date-format="hh:ii" readonly>
+
+             	 </td>
+            </tr>
+            
+            <tr>
+             	 <td>
+                	<label for="j_sort" class="control-label x85">时长：</label>
+               		<input type="text" name='timelength' id='timelength' value=" <php> if(empty($Rs['timelength']))  {echo '0.5';} else { echo $Rs['timelength'];} </php>" data-toggle="spinner" data-min="0.5" data-max="24" data-step="0.5" data-decimalPlace='1' readonly>
+             	 </td>
+            </tr> 
+            
+            <tr>
+             	 <td>
+                	<label for="j_sort" class="control-label x85">结束时间：</label>
+               	    <input type="text" value="<php> if(empty($Rs['endtime']))  {echo date('H:i',strtotime('+30 minute',strtotime($_REQUEST['sel_start'])));} else { echo date('H:i', strtotime($Rs['endtime']));} </php>"  name="endtime" id="endtime" readonly>
+             	 </td>
+            </tr> 
+            
+            <tr>
+             	 <td>
+                	<label for="j_sort" class="control-label x85">是否全天：</label>
+               		<input type="checkbox" data-toggle="icheck"  name="cHasAllDay" id="cHasAllDay" <if condition="$Rs.hasallday EQ 1 ">checked</if>  >	
+               		<input type="text"  name="hasallday" id="hasallday" value="<php> if(empty($Rs['hasallday']))  {echo '0';} else { echo $Rs['hasallday'];} </php>" >		
+             	 </td>
+            </tr> 
+            
+            <tr>
+             	 <td >
+                	
+                	 <empty name="id">
+                         <div id="myLoadDiv2" data-toggle="autoajaxload"  data-url="__URL__/loaddevs">
+                	 	</div>   	 
+                	 <else />
+                	 	<div id="myLoadDiv2" data-toggle="autoajaxload"  data-url="__URL__/loaddevs?id={#id}&startdate={#startdate}&starttime={#starttime}&endtime={#endtime}">
+                	 	</div>
+                	 </empty>
+					
+             	 </td>
+            </tr> 
+            
+            <tr>
+             	 <td>
+                	<label for="j_sort" class="control-label x85">会议内容：</label>
+               	 	<textarea name="note" id="note"  cols="45" rows="2">{$Rs["note"]}</textarea>
+               	 	
+             	 </td>
+            </tr>
+            
+            
+            </tbody>
+            </table>
+        </div>
+        
+        <div class="bjui-footBar">
+            <ul>
+                 <!-- <li><a type="button" class="btn btn-default" data-toggle="doajax" >取消</a></li>-->
+                <li><button type="button" class="btn-close" data-icon="close">取消</button></li> 
+				<if condition="ACTION_NAME NEQ 'view' ">
+            		<li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+            	</if>
+            </ul>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+$(document).ready(function(){
+		
+	//alert('dddd');
+     //$(".msg-box,.n-right").hide(); 
+		 
+	 
+});
+</script>	

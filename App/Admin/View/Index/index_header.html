@@ -1,0 +1,33 @@
+
+				<a href="#" class="dropdown-toggle"
+					data-toggle="dropdown">我的账户 <span class="caret"></span></a>
+					
+					<ul class="dropdown-menu" role="menu">
+					
+					<if condition="$Think.session.username eq ''">
+					 <li><a href="{:U('public/login')}" class="red">&nbsp;<span
+										class="glyphicon glyphicon-off"></span> 登陆
+									</a></li>	
+								
+					<else /> 
+							<li><a href="{:U('public/changepwd')}" data-toggle="dialog"
+							data-id="changepwd_page" data-mask="true" data-width="400"
+							data-height="260">&nbsp;<span
+								class="glyphicon glyphicon-lock"></span> 修改密码&nbsp;
+							</a>
+							</li>
+							<li>
+							<a href="{:U('public/changeinfo')}" data-toggle="dialog"
+							data-id="changepwd_page" data-mask="true" data-width="600"
+							data-height="350">&nbsp;<span
+								class="glyphicon glyphicon-user"></span> 我的资料
+							</a>
+							</li>
+							<li class="divider"></li>
+									
+								<li><a href="{:U('public/logout')}" class="red">&nbsp;<span
+										class="glyphicon glyphicon-off"></span> 注销登陆
+							</a></li>
+						</if>
+						
+					</ul>

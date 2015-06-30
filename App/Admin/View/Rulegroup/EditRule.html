@@ -1,0 +1,64 @@
+<SCRIPT language=JavaScript>
+function CheckAll(form)
+  {
+  for (var i=0;i<form.elements.length;i++)
+    {
+    var e = form.elements[i];
+    if (e.name != 'chkall' )
+       e.checked = form.chkall.checked;
+    }
+  }
+//-->
+    </SCRIPT>
+<div class="bjui-pageContent">
+ <form action="__URL__/EditRule/navTabId/{:CONTROLLER_NAME}" class="pageForm" data-toggle="validate">
+ <input type="hidden" name="id" value="{$id}">
+    <div class="pageFormContent" data-layout-h="0">
+     <table class="table table-condensed table-hover" width="100%">
+        <thead>
+            <tr>
+            <th width="30" height="30"></th>
+				<th><input onclick=CheckAll(this.form) type=checkbox value=on name=chkall /> 全选</th>
+				<th>菜单</th>
+            </tr>
+        </thead>
+        <tbody>
+       <foreach name="list" item="v">
+    	<tr>
+        <td height=25></td><Td>
+	   <input type="checkbox" name="rules[]" <if condition="in_array($v[id],$rs)">checked="checked"</if> value="{$v.id}">  {$v.title}
+        
+	    </td>
+		<td>
+		<Table width="100%">
+		<php>$list1 = M('auth_rule')->where('level=1 and pid='.$v['id'])->order('sort')->select();</php>
+		<foreach name="list1" item="v">
+    	<Tr><Td height=30 width=200>
+        <input type="checkbox" name="rules[]" <if condition="in_array($v[id],$rs)">checked="checked"</if> value="{$v.id}">  {$v.title}
+	    </td>
+		<td>
+		
+		<php>$list2 = M('auth_rule')->where('level=2 and pid='.$v['id'])->order('sort')->select();</php>
+		<foreach name="list2" item="v">
+        <span style="width:150px;">
+	    <input type="checkbox" name="rules[]" <if condition="in_array($v[id],$rs)">checked="checked"</if> value="{$v.id}">  {$v.title}
+        </foreach> 
+	
+		</td>
+		</tr>
+        </foreach> 
+		</table>
+		</td>
+        </tr>
+        </foreach>
+        </tbody>
+    </table>
+	</div>
+        <div class="bjui-footBar">
+            <ul>
+                <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+                <li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+            </ul>
+        </div>
+    </form>
+</div>

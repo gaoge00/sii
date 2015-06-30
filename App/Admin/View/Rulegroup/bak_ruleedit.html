@@ -1,0 +1,199 @@
+
+
+<script type="text/javascript">
+	//自定义DOM
+	function M_AddDiyDom(treeId, treeNode) {
+
+	    var aObj = $('#' + treeNode.tId + '_a')
+	    //alert($(treeNode.id));
+		if ($(treeNode.id).length > 0) 
+			return
+			
+
+		if(treeNode.children == null){
+			//aObj.append("<table class=\"table table-condensed table-hover\" width=\"100%\">");
+			//aObj.append("<tr>");
+			//aObj.append("<td>");
+			
+			//aObj.append('<button type="button" class="diyBtn1" id="diyBtn_' + treeNode.orgid +'" title="'+ treeNode.orgname +'" onfocus="this.blur();"><i class="fa fa-plane"></i></button>')
+			//aObj.append("<span>");
+			
+			//$authorityList
+			/* <php>
+			$count=count($authorityList);
+			for($i=0;$i<$count;$i++)
+			{
+			</php>
+			aObj.append(" <input id='" + treeNode.MenuID + "_{$authorityList[$i].AuthorityID}'  name='rules[]' value='" + treeNode.MenuID + "_{$authorityList[$i].AuthorityID}' type='checkbox'>[{$authorityList[$i].AuthorityName}]");
+			//aObj.append(" <input id='" + treeNode.MenuID + "_2'  name='rules[]' value='" + treeNode.MenuID + "_2' type='checkbox'>[编辑]");
+			/* aObj.append(" <input id='" + treeNode.MenuID + "_1'  name='rules[]' value='" + treeNode.MenuID + "_1' type='checkbox'>[添加]");
+			aObj.append(" <input id='" + treeNode.MenuID + "_2'  name='rules[]' value='" + treeNode.MenuID + "_2' type='checkbox'>[编辑]");
+			aObj.append(" <input id='" + treeNode.MenuID + "_3'  name='rules[]' value='" + treeNode.MenuID + "_3' type='checkbox'>[删除]");
+			aObj.append(" <input id='" + treeNode.MenuID + "_4'  name='rules[]' value='" + treeNode.MenuID + "_4' type='checkbox'>[导入]"); 
+			<php>
+			}
+			</php> 
+			萨达说
+			*/
+			
+			
+			<foreach name="authorityList" item="v">
+			aObj.append(" <input id='" + treeNode.MenuID + "_{$v.AuthorityID}'  name='rules[]' value='" + treeNode.MenuID + "_{$v.AuthorityID}' type='checkbox'>[{$v.AuthorityName}]");
+			</foreach> 
+			
+			      
+			
+			
+			//aObj.append("</span>");
+			//aObj.append(" <input type=\"checkbox\" name=\"custom.vegetarian\" id=\"j_custom_vegetarian\" data-toggle=\"icheck\" value=\"true\" data-label=\"是否素食\">");
+			//aObj.append("</td>");
+			//aObj.append("</tr>");
+			//aObj.append("</table>");
+		}
+	
+	
+	}
+	
+	
+	var zTree;
+	var setting = {
+		async : {
+			enable : true,//启用异步加载
+			url : "__URL__/GetRuleMenu", //异步请求地址
+			type : "get",
+			otherParam : {
+				"RuleGroupID" : $('#RuleGroupID').val()
+			},
+			dataFilter : null
+		//autoParam:["id", "str1"], //需要传递的参数,为你在ztree中定义的参数名称
+		//
+		},
+		view : {
+			selectedMulti : false,
+			addDiyDom: M_AddDiyDom
+		},
+		check : {
+			autoCheckTrigger : false,
+			//chkboxType: { "Y" : "", "N" : "" },  //不级联父节点选择  
+			chkStyle : "checkbox",
+			enable : true,
+			nocheckInherit : false
+		},
+		data : {
+			key : {
+				checked : "checked",
+				children : "children",
+				name : "MenuName",
+				title : "MenuName"
+			},
+			simpleData : {
+				enable : true,
+				idKey : "MenuID",
+				pIdKey : "MenuPid",
+				rootPId : 0
+			},
+			keep : {
+				parent : true,
+				leaf : true
+			},
+		},
+		callback : {
+			onAsyncSuccess : zTreeOnAsyncSuccess,
+			onAsyncError : zTreeOnAsyncError,
+			onCheck : getSelectedNodes
+		}
+	};
+
+	function zTreeOnAsyncError(event, treeId, treeNode) {
+		alert("异步加载失败!");
+	}
+
+	function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+		//alert(msg);
+		var treeObj = $.fn.zTree.getZTreeObj("jui-tree_ruleedit");
+		treeObj.expandAll(true);
+		getSelectedNodes();
+		getRules();
+	}
+
+	
+
+	//所选节点
+	function getSelectedNodes() {
+		var selectedNode = $.fn.zTree.getZTreeObj("jui-tree_ruleedit").getCheckedNodes();
+		// $('#CheckedRule').val(JSON.stringify(selectedNode));
+		var checkedValue = $('#CheckedRule').val();
+		checkedValue="";
+		
+		var tempCheckedValue="";
+		for ( var i = 0; i < selectedNode.length; i++) {
+			//alert(selectedNode[i].MenuID);
+			tempCheckedValue += "," + selectedNode[i].MenuID;
+			//$('#CheckedRule').val(checkedValue + "," + selectedNode[i].MenuID);
+		}
+		
+		if(tempCheckedValue!=''){
+			tempCheckedValue=tempCheckedValue.substr(1);
+		}
+		$('#CheckedRule').val(tempCheckedValue);
+	}
+	
+	
+	function getRules(){
+
+		$.ajax({
+            type: "GET",
+            url: "__URL__/GetRules",
+            data: {RuleGroupID:$('#RuleGroupID').val()},
+            dataType: "json",
+            success: function(data){
+            	
+            	//alert( $("[id = 20_1]:checkbox").attr("checked",true));
+            	
+            	$.each(data, function(i, item){     
+						
+            		 rules = item.Rules.split(",");
+
+            		 $.each(rules, function(j, ruleItem){     
+            			//alert(item.MenuID + "_" + ruleItem);
+            			 checkID=item.MenuID + "_" + ruleItem;
+            			 $("[id = " + checkID + "]:checkbox").attr("checked",true)
+            		 });
+        
+            	}); 
+            	 
+            }
+           
+        });
+	}
+	$.fn.zTree.init($("#jui-tree_ruleedit"), setting);
+</script>
+
+
+<div class="bjui-pageContent">
+
+
+	<form action="__URL__/ruleedit/navTabId/{:CONTROLLER_NAME}"
+		class="pageForm" data-toggle="validate">
+
+		<!-- hidden -->
+		<input type="hidden" name="RuleGroupID" id="RuleGroupID" value="{$id}">
+		<input type="hidden" id="CheckedRule" name="CheckedRule" value="">
+
+		<div class="pageFormContent" data-layout-h="0">
+
+
+			<ul id="jui-tree_ruleedit" class="ztree"></ul>
+
+		</div>
+
+		<div class="bjui-footBar">
+			<ul>
+				<li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+				<li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+			</ul>
+		</div>
+	</form>
+</div>
+
+

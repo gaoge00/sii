@@ -1,0 +1,10 @@
+
+		
+		<a <php>echo display(CONTROLLER_NAME.'/view');</php>  href="__URL__/view/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  class="btn btn-green btn-sm" data-toggle="dialog" data-width="[w]" data-height="[h]" data-id="dialog-mask" data-mask="true" >查看</a>
+	
+	
+		<if condition="($v.userid EQ session('uid')) or ($v.userid  EQ '') or (authsuperadmin(session('uid')))  ">
+			<a <php>echo display(CONTROLLER_NAME.'/edit');</php>  href="__URL__/edit/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  class="btn btn-green btn-sm" data-toggle="dialog" data-width="[w]" data-height="[h]" data-id="dialog-mask" data-mask="true" >编辑</a>
+			<a <php>echo display(CONTROLLER_NAME.'/del');</php>  href="__URL__/del/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"   class="btn btn-green btn-sm" data-toggle="doajax"  data-width="[w]" data-height="[h]" data-id="dialog-mask" data-mask="true" data-confirm-msg="确定要删除吗？">删除</a>
+		</if>
+

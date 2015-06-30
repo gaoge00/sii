@@ -1,0 +1,56 @@
+		<div class="bjui-pageHeader" >
+			<form id="pagerForm" data-toggle="ajaxsearch" action="__URL__"
+				method="post">
+		
+
+				<input type="hidden" name="orderDirection" value="asc">
+				
+				<div class="bjui-searchBar">
+		            <label>关键词：</label><input type="text" value="{$_REQUEST['s_RuleGroupName']}" name="s_RuleGroupName" class="form-control" size="20" />
+		            <button type="submit"  class="btn-default" data-icon="search">查询</button>
+
+						
+           		 <div class="pull-right">
+                	<button type="button" class="btn-blue" data-toggle="lookupback" data-lookupid="ids" data-warn="请至少选择一项权限组" data-icon="check-square-o">选择选中</button>
+            	</div>
+				</div>
+			</form>
+		
+		</div>
+		
+		<div class="bjui-pageContent">
+			<table data-toggle="tablefixed" data-width="100%" data-layout-h="0"
+				data-nowrap="true">
+				<thead>
+					<tr>
+						<th width="30" height="30"></th>
+						<th>编号</th>
+						<th>权限组名称</th>
+						<th width="20%">备注</th>
+						<th width="28"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
+						<th width="30%">操作</th>
+						<th width="0%"></th>
+					</tr>
+				</thead>
+				<tbody>
+		
+					<foreach name="list" item="v">
+					<tr>
+						<td height=25></td>
+						<Td>{$v.RuleGroupID}</td>
+						<Td>{$v.RuleGroupName} <if condition="$v.Status EQ 1 ">
+							<else />
+							<img src="__PUBLIC__/images/locked.gif" border="0" /></if>
+						</td>
+						<Td>{$v.Note}</td>
+				        <td><input type="checkbox" name="ids" data-toggle="icheck" value="{RuleGroupID:'{$v.RuleGroupID}', RuleGroupName:'{$v.RuleGroupName}'}"></td>
+		                <td>
+		                    <a href="javascript:;" data-toggle="lookupback" data-args="{RuleGroupID:'{$v.RuleGroupID}', RuleGroupName:'{$v.RuleGroupName}'}" class="btn btn-blue" title="选择本项" data-icon="check">选择</a>
+		                </td>
+						<td></td>
+					</tr>
+					</foreach>
+				</tbody>
+			</table>
+		</div>	
+		

@@ -1,0 +1,77 @@
+
+
+<extend name="Public:form_dialog_layout"/>
+<block name="dialog_edit">
+
+<script type="text/javascript">
+
+$('input').on('ifChecked', function(event){
+	$("#has" + this.name).val("1");
+	//this.value = "1";
+	//alert(this.value);
+});
+
+$('input').on('ifUnchecked', function(event){
+	$("#has" + this.name).val("0");
+	//this.value = "0";
+	//alert(this.value);
+});
+	
+</script>
+		<table class="table table-condensed table-hover" width="100%">
+			<tbody>
+
+				<tr>
+					<td><label for="j_title" class="control-label x85">会议室名称：</label>
+						<input type="text" data-rule="required" size="30" name="name"
+						id="j_title" value="{$Rs['name']}"></td>
+				</tr>
+
+				<tr>
+					<td><label for="j_title" class="control-label x85">会议室名称：</label>
+						<input type="checkbox" data-toggle="icheck" value="{$Rs.hastv}"  name="tv"  data-label="内置电视" <if condition="$Rs.hastv EQ 1 ">checked</if> >
+						<input type="hidden"  value="{$Rs.hastv}"  name="hastv" id="hastv"  >
+						
+						<input type="checkbox" data-toggle="icheck" value="{$Rs.hasprojection}" name="projection"  data-label="内置投影" <if condition="$Rs.hasprojection EQ 1 ">checked</if> >
+						<input type="hidden"  value="{$Rs.hasprojection}"  name="hasprojection" id="hasprojection"  >
+						
+						<input type="checkbox" data-toggle="icheck" value="{$Rs.hasvideo}"  name="video"  data-label="视频会议" <if condition="$Rs.hasvideo EQ 1 ">checked</if> >
+						<input type="hidden"  value="{$Rs.hasvideo}"  name="hasvideo" id="hasvideo"  >
+						
+						<input type="checkbox" data-toggle="icheck" value="{$Rs.hastel}"  name="tel"  data-label="电话会议" <if condition="$Rs.hastel EQ 1 ">checked</if> >
+						<input type="hidden"  value="{$Rs.hastel}"  name="hastel" id="hastel"  >
+					</td>
+				</tr>
+				
+				<tr>
+					<td><label for="j_title" class="control-label x85">容纳人数：</label>
+					<input type="text" size="5" data-toggle="spinner" data-min="0"
+						data-max="100" data-step="1" data-rule="integer" name="peoples"
+						id="j_sort" value="{$Rs['peoples']}">
+						
+						</td>
+				</tr>
+				
+				
+				<tr>
+					<td>
+					<label for="j_title" class="control-label x85">备注：</label>
+					<input type="text" size="30" name="note"	id="j_title" value="{$Rs['note']}">
+					</td>
+				</tr>
+				<tr>
+				
+				<td>
+					<label for="j_color" class="control-label x85">颜色：</label>
+					<input type="text" size="30" name="color" id="j_color" data-rule="required"  data-toggle="colorpicker" data-bgcolor="true" value="{$Rs['color']}" style="background-color:{$Rs['color']}" readonly>
+					</td>
+				</tr>
+				
+				
+				<include file="Public/form_edit_status_layout" />
+				<include file="Public/form_edit_sort_layout" />
+			</tbody>
+		</table>
+</block>
+
+

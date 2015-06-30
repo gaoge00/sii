@@ -1,0 +1,54 @@
+<extend name="Public:form_index_pages_layout"/>
+
+<block name="index_search">
+            <label>关键词：</label><input type="text" value="{$_REQUEST['s_content']}" name="s_content" class="form-control" size="20" />
+            
+            <label>开始日期：</label>
+            <input type="text" name="time1" id="j_custom_indate" data-toggle="datepicker" size="15"  value="{$_REQUEST['time1']}">
+            
+            <label>结束日期：</label>
+            <input type="text" name="time2" id="j_custom_indate" data-toggle="datepicker" size="15"  value="{$_REQUEST['time2']}">
+            
+            
+             <button type="submit"  class="btn-default" data-icon="search">查询</button>
+              <a class="btn btn-orange" href="javascript:;" onclick="$(this).navtab('reloadForm', true);" data-icon="undo">清空查询</a>
+			  <span <php>echo display(CONTROLLER_NAME.'/del');</php> style="float:right;" >
+			  <a href="__URL__/del/navTabId/{:CONTROLLER_NAME}" class="btn btn-red" data-toggle="doajaxchecked" data-confirm-msg="确定要删除吗？" data-icon="remove" data-idname="delids" data-group="ids">删除</a>
+			  </span>
+</block>
+
+
+<block name="index_content">
+     <table data-toggle="tablefixed" data-width="100%" data-layout-h="0" data-nowrap="true">
+        <thead>
+            <tr>
+
+            <th>编号</th>
+			<th>操作人</th>
+			<th width=150>系统环境</th>
+			<th>操作内容</th>
+			<th width=150>相关网址</th>
+			<th data-order-direction="desc" data-order-field="addtime">操作时间</th>
+			<th>操作IP</th> 
+			<th width="26"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
+            </tr>
+        </thead>
+        <tbody>
+           <volist id="vo" name="list">
+           
+            <tr data-id="{$vo['id']}"> 
+            		
+            		<td>{$vo['id']}</td>
+			        <td>{$vo['username']}</td>
+				    <td>{$vo['os']}</td>
+					<td>{$vo['content']}</td>
+					<td>{$vo['url']}</td>
+					<td>{$vo['addtime']}</td>
+					<td>{$vo['ip']}</td>
+					<td><input type="checkbox" name="ids" data-toggle="icheck" value="{$vo['id']}"></td>
+            </tr>
+            
+          </volist>
+        </tbody>
+    </table>
+</block>

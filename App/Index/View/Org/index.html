@@ -1,0 +1,264 @@
+<script type="text/javascript">
+
+//自定义DOM
+function M_AddDiyDom(treeId, treeNode) {
+    var aObj = $('#' + treeNode.tId + '_a')
+
+	if ($('#diyBtn_'+ treeNode.id).length > 0) 
+		return
+		
+	aObj.append('<button type="button" class="diyBtn1" id="diyBtn_' + treeNode.orgid +'" title="'+ treeNode.orgname +'" onfocus="this.blur();"><i class="fa fa-plane"></i></button>')
+	$('#diyBtn_'+ treeNode.orgid).bind('click', function() {
+			//$(this).alertmsg('info', (treeNode.orgname +' 的飞机！'))
+			openMydialog(this);
+		}
+	);
+}
+
+function openMydialog(obj) {
+	
+		    $(obj).dialog(
+		    		{
+		    			id:'mydialog', 
+		    			url:'__URL__/edit/DepID/1/navTabId/{:CONTROLLER_NAME}', 
+		    			title:'我的业务弹窗',
+		    			beforeClose:"doc_dialog_onClose"
+		    			//onClose:"doc_dialog_onClose"
+		    			}
+		    		);
+	
+}
+
+	var zTree;
+	var setting = {
+	   async: {
+		    enable: true,//启用异步加载
+		    url:"__URL__/GetAllOrg", //异步请求地址
+		    //autoParam:["id","name"],
+            dataFilter: null
+		    //autoParam:["id", "str1"], //需要传递的参数,为你在ztree中定义的参数名称
+		    //otherParam:{"chk":"chk"}
+		},
+		view : {
+			selectedMulti : false,
+			addDiyDom: M_AddDiyDom
+			//addHoverDom:add
+		},
+		edit : {
+			enable : true,
+			editNameSelectAll : true,
+			renameTitle : '编辑',
+			removeTitle : '删除'
+
+		},
+		data : {
+			key: {
+				children: "children",
+				name: "orgname",
+				title: "",
+				url: "url"
+			},
+			simpleData : {
+				enable : true,
+				idKey:"orgid",
+				pIdKey:"orgpid",
+				rootPId: 0
+			},
+			keep : {
+				parent : true,
+				leaf : true
+			},
+			
+		},
+		callback : {
+			beforeRemove : beforeRemove,//点击删除时触发，用来提示用户是否确定删除
+			beforeEditName : beforeEditName,//点击编辑时触发，用来判断该节点是否能编辑
+			beforeRename : beforeRename,//编辑结束时触发，用来验证输入的数据是否符合要求
+			onRemove : onRemove,//删除节点后触发，用户后台操作
+			onRename : onRename,//编辑后触发，用于操作后台
+			beforeDrag : beforeDrag,//用户禁止拖动节点
+			onClick : clickNode
+		//点击节点触发的事件
+		}
+	};
+
+	function zTreeOnAsyncError(event, treeId, treeNode){
+		alert("异步加载失败!");
+	} 
+	
+	$.fn.zTree.init($("#tree"), setting);
+
+	function beforeRemove(e, treeId, treeNode) {
+		
+		
+		
+		$(treeId).alertmsg('confirm',"是否删除【"+ treeId.orgname +"】?", {
+			okCall: function(data){
+				var url = "__URL__/del/orgid/" + treeId.orgid + "/navTabId/{:CONTROLLER_NAME}";
+			    $.post(url,'',function(result){
+
+			    	var sx=eval("("+result+")");
+				    if(sx.statusCode == 200){
+				    	alert(sx.message);
+				    	//this.alertmsg('alert',sx.message);				    	
+				    	$(this).navtab('reloadForm', true);
+				   	}
+				    alert(sx.message);
+			    	
+		       });
+			},
+			cancelCall: function(){
+			}
+		},"json");
+		return false;
+			
+	}
+	
+	function onRemove(e, treeId, treeNode) {
+		/*
+		alert("完成");
+		if (treeNode.isParent) {
+			var childNodes = zTree.removeChildNodes(treeNode);
+			var paramsArray = new Array();
+			for ( var i = 0; i < childNodes.length; i++) {
+				paramsArray.push(childNodes[i].orgid);
+			}
+			alert("删除父节点的id为：" + treeNode.orgid + "\r\n他的孩子节点有："
+					+ paramsArray.join(","));
+			return;
+		}
+		alert("你点击要删除的节点的名称为：" + treeNode.orgname + "\r\n" + "节点id为："
+				+ treeNode.orgid);
+		*/
+	}
+	
+	function beforeEditName(treeId, treeNode) {
+		return true;
+		/*
+		if (treeNode.isParent) {
+			alert("不准编辑非叶子节点！");
+			return false;
+		}
+		return true;
+		*/
+	}
+	function beforeRename(treeId, treeNode, newName, isCancel) {
+		
+
+		$(document).keydown(function(event){
+			if(event.keyCode==13){
+				
+				$(treeNode).alertmsg('confirm',"是否保存?", {
+					okCall: function(data){
+						
+						var url = "__URL__/edit/navTabId/{:CONTROLLER_NAME}";
+					    $.post(url,{ OrgID: treeNode.orgid , OrgName:treeNode.orgname},function(result){
+					    	var sx=eval("("+result+")");
+						    if(sx.statusCode == 200){
+						    	$(treeNode).alertmsg('alert',sx.message);				    	
+						    	//$(this).navtab('reloadForm', true);
+						   	}
+					    });
+					    
+					},
+					cancelCall: function(){
+						
+						return false;
+					}
+				});
+			}				
+		}); 
+
+		return true;
+	  
+	}
+	
+	function onRename(e, treeId, treeNode, isCancel) {
+	
+		//var url = "__URL__/edit/navTabId/{:CONTROLLER_NAME}";
+	    //$.post(url,{ OrgID: treeNode.orgid , OrgName:treeNode.orgname},function(result){
+	   // 	var sx=eval("("+result+")");
+		//    if(sx.statusCode == 200){
+		//    	$(treeNode).alertmsg('alert',sx.message);				    	
+		  //  	//$(this).navtab('reloadForm', true);
+		//   	}
+	   // });
+		
+		//alert("修改节点的id为：" + treeNode.orgid + "\n修改后的名称为：" + treeNode.orgname);
+	}
+	function clickNode(e, treeId, treeNode) {
+		
+		//if (treeNode.orgid == 11) {
+		//	location.href = treeNode.url;
+		//}
+	}
+	function beforeDrag(treeId, treeNodes) {
+		return false;
+	}
+	
+	   function doc_dialog_onClose() {
+		   
+		   	        $(this).alertmsg('info', 'onClose回调：你刚刚关闭了一个dialog。')
+		   
+	 }
+</script>
+
+
+<div id="doc-dialog-target" data-noinit="true" class="hide">
+
+	<p>
+		<input type="checkbox" id="doc-dialog-checkbox" data-toggle="icheck"
+			data-label="测试Checkbox">
+	</p>
+
+	<p>
+		<label>文本框：</label><input type="text" placeholder="文本框1" size="25">
+	</p>
+
+	<p>
+		<label>下拉框：</label><select data-toggle="selectpicker"><option
+				value="1">选项一</option>
+			<option value="2">选项二</option></select>
+	</p>
+
+</div>
+
+<div class="bjui-pageHeader">
+	<form id="pagerForm" data-toggle="ajaxsearch" action="__URL__"
+		method="post">
+
+		<input type="hidden" name="pageSize" value="{$numPerPage}"> <input
+			type="hidden" name="pageCurrent"
+			value="{$_REQUEST['pageNum']|default=1}"> <input
+			type="hidden" name="orderDirection" value="asc">
+
+		<div class="bjui-searchBar">
+			<label>关键词：</label><input type="text"
+				value="{$_REQUEST['s_OrgName']}" name="s_OrgName"
+				class="form-control" size="20" />
+			<button type="submit" class="btn-default" data-icon="search">查询</button>
+			<span<php>echo display(CONTROLLER_NAME.'/add');</php>
+				style="float:right;margin-right:20px;"><a
+				href="__URL__/edit/OrgID/0/navTabId/{:CONTROLLER_NAME}"
+				class="btn btn-green" data-toggle="dialog" data-width="600"
+				data-height="300" data-id="dialog-mask" data-mask="true"
+				data-icon="plus">新增部门</a></span>
+
+			<!-- <span>
+							<a class="btn btn-orange"
+							href="javascript:;" onclick="$(this).navtab('reloadForm', true);"
+							data-icon="undo">刷新</a>
+						</span> -->
+		</div>
+	</form>
+
+</div>
+
+<div class="bjui-pageContent">
+
+	<ul id="tree" class="ztree" data-edit-enable="true"
+		data-expand-all="true"></ul>
+
+
+
+</div>

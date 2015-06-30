@@ -1,0 +1,48 @@
+<extend name="Public:form_dialog_layout"/>
+	<block name="dialog_edit">
+ <script type="text/javascript">
+	$('#j_RuleGroupID').on('afterchange.bjui.lookup', function(e, data) {
+	    var myvalue = data.value;
+	    $("#j_RuleGroupName1").append("<option value='1'>Text</option>"); 
+	    //$("#RuleGroupName1").append(option);
+		alert(myvalue);
+		//alert($('#RuleGroupName1').val());
+	});
+</script>
+          <table class="table table-condensed table-hover" width="100%">
+           <tbody>
+			<tr><td> 
+                <label for="j_title" class="control-label x85">社员编号:</label>
+                <input type="text" data-rule="required" size="25" name="id" id="j_username" value="{$Rs['id']}" <if condition="$id EQ 0"><else/> readonly</if> >
+             </td></tr>
+
+             
+             
+            <tr><td>
+                <label for="j_title" class="control-label x85">固定电话：</label>
+                <input type="text" data-rule="required" size="25" name="tel" id="j_Tel" value="{$Rs['tel']}" >
+             </td></tr>
+             
+             <tr><td>
+                <label for="j_title" class="control-label x85">内线：</label>
+                <input type="text" data-rule="required" size="25" name="ins" id="j_Ins" value="{$Rs['ins']}" >
+             </td></tr>
+             
+            <tr><td>
+                <label for="j_title" class="control-label x85">移动电话：</label>
+                <input type="text" data-rule="required" size="25" name="phone" id="j_Phone" value="{$Rs['phone']}" >
+            </td></tr>
+            
+                        <tr><td>
+                <label for="j_Fax" class="control-label x85">传真：</label>
+                <input type="text" data-rule="required" size="25" name="fax" id="j_Fax" value="{$Rs['fax']}" >
+             </td></tr>
+             
+           
+
+            </tbody>
+            </table>
+</block>
+
+			
+			

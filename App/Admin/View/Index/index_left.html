@@ -1,0 +1,120 @@
+
+<script type="text/javascript">
+
+$(function() {
+
+    var zTree;
+    var setting = {
+       async: {
+    	    enable: true,//启用异步加载
+    	    url:"__URL__/GetMenu", //异步请求地址
+            dataFilter: null
+    	},
+    	view : {
+    		selectedMulti : false
+    	},
+    	data : {
+    		key: {
+    			children: "children",
+    			name: "name",
+    			title: "name",
+    			url: "url"
+    		},
+    		simpleData : {
+    			enable : true,
+    			idKey:"id",
+    			pIdKey:"pid",
+    			rootPId: 0
+    		},
+    		keep : {
+    			parent : true,
+    			leaf : true
+    		},
+    		
+    	},
+    	callback : {
+    		onClick : NewMainMenuClick	//点击节点触发的事件
+    	}
+
+    };
+
+    function zTreeOnAsyncError(event, treeId, treeNode){
+    	alert("异步加载失败!");
+    }
+
+    $.fn.zTree.init($("#jui-tree0"), setting);
+
+    
+})
+
+
+//console.log('IE:'+ (!$.support.leadingWhitespace))
+//菜单-事件
+function NewMainMenuClick(event, treeId, treeNode) {
+	
+
+    //if (!treeNode.url)
+	//	     return;
+    
+    if (treeNode.isParent) {
+    	
+        var zTree = $.fn.zTree.getZTreeObj(treeId)
+       //	alert(treeNode.url);
+        zTree.expandNode(treeNode)
+        return;
+    }
+	//alert('dd');
+	//添加属性
+	var tabid = $(treeNode).attr("tabid");
+    if (!tabid) {
+     	tabid = treeNode.url;
+     	$(treeNode).attr("tabid", tabid);
+    }
+   
+    
+    if (treeNode.isParent) {
+        var zTree = $.fn.zTree.getZTreeObj(treeId)
+        
+        zTree.expandNode(treeNode)
+        return
+    }
+    
+    if (treeNode.target && treeNode.target == 'dialog')
+        $(event.target).dialog({id:treeNode.tabid, url:'__ROOT__/admin.php/'+ treeNode.url, title:treeNode.name})
+    else
+        $(event.target).navtab({id:treeNode.tabid, url:'__ROOT__/admin.php/'+ treeNode.url, title:treeNode.name, fresh:treeNode.fresh, external:treeNode.external})
+    event.preventDefault()
+    
+
+    
+}
+
+//console.log('IE:'+ (!$.support.leadingWhitespace))
+//菜单-事件
+function MainMenuClick(event, treeId, treeNode) {
+	
+    
+    if (treeNode.isParent) {
+        var zTree = $.fn.zTree.getZTreeObj(treeId)
+        
+        zTree.expandNode(treeNode)
+        return
+    }
+    
+    if (treeNode.target && treeNode.target == 'dialog')
+        $(event.target).dialog({id:treeNode.tabid, url:treeNode.url, title:treeNode.name})
+    else
+        $(event.target).navtab({id:treeNode.tabid, url:treeNode.url, title:treeNode.name, fresh:treeNode.fresh, external:treeNode.external})
+    event.preventDefault()
+    
+}
+
+
+
+//生成目录
+
+</script>
+
+
+	<ul id="jui-tree0" class="ztree" data-edit-enable="false"	data-expand-all="true"></ul>
+							

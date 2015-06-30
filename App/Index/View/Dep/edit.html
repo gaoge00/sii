@@ -1,0 +1,57 @@
+
+<div class="bjui-pageContent">
+
+	<if condition="$id EQ '0' ">
+	<form action="__URL__/add/navTabId/{:CONTROLLER_NAME}" class="pageForm"
+		data-toggle="validate">
+		<else />
+		<form action="__URL__/edit/navTabId/{:CONTROLLER_NAME}"
+			class="pageForm" data-toggle="validate">
+	</if>
+
+	<input type="hidden" name="DepID" value="{$id}">
+
+	<div class="pageFormContent" data-layout-h="0">
+		<table class="table table-condensed table-hover" width="100%">
+			<tbody>
+
+				<tr>
+					<td><label for="j_title" class="control-label x85">职位名称：</label>
+						<input type="text" data-rule="required" size="30" name="DepName"
+						id="j_title" value="{$Rs['depname']}"></td>
+				</tr>
+
+				<if condition="$id EQ '' "> <else />
+				<tr>
+					<td><label for="j_status" class="control-label x85">是否启用：</label>
+						<select name="Status" data-container="body" id="j_status"
+						data-toggle="selectpicker" data-rule="required">
+							<if condition="$Rs['Status'] EQ 1 OR  $Rs['Status'] EQ ''">
+							<option value="1" selected>启用</option>
+							<option value="0">禁用</option>
+							<else />
+							<option value="1">启用</option>
+							<option value="0" selected>禁用</option>
+							</if>
+					</select></td>
+				</tr>
+				</if>
+				<tr>
+					<td><label for="j_sort" class="control-label x85">排序：</label>
+						<input type="text" size="5" data-toggle="spinner" data-min="0"
+						data-max="100" data-step="1" data-rule="integer" name="Sort"
+						id="j_sort" value="{$Rs['sort']}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="bjui-footBar">
+		<ul>
+			<li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+			<li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+		</ul>
+	</div>
+	</form>
+</div>
+
+

@@ -1,0 +1,45 @@
+﻿				<!-- begin -->
+				
+				<div class="panel panel-default">
+					<div class="panel-heading panelContent">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#bjui-accordionmenu"
+								href="#bjui-collapse2" class="" style="color: #FF1100;"><i
+								class="fa fa-caret-square-o-right"></i>&nbsp;系统管理</a>
+						</h4>
+					</div>
+					<div id="bjui-collapse2"
+						class="panel-collapse panelContent collapse">
+						<div class="panel-body">
+							<ul  class="ztree ztree_main" data-toggle="ztree"
+								data-on-click="NewMainMenuClick" data-expand-all="false">
+								
+								<foreach name="menulist" item="v">
+								
+								<li data-id="{$v.id}" data-pid="{$v.pid}" 
+								<if condition="$v.cc EQ $Rs['false'] ">
+									>{$v.name}111</li>
+									</else> 
+									data-url="{$v.url}" data-tabid="{$v.url}" >{$v.name}222</li>
+								</if> 
+									
+									
+								</foreach>
+								
+								
+								<!--  children
+								<li data-id="99" data-pid="0">组织结构</li>
+								<li data-id="100" data-pid="99"	data-url="__ROOT__/admin.php/dep/index/orderDirection/asc" data-tabid="dep/index">职务管理</li>
+								<li data-id="101" data-pid="99"	data-url="__ROOT__/admin.php/org/index/orderDirection/asc" data-tabid="org/index">部门管理</li>
+								<li data-id="1" data-pid="0">系统设置</li>
+								<li data-id="2" data-pid="1" data-url="__ROOT__/admin.php/menu/index/orderDirection/asc" data-tabid="menu/index">Menu管理</li>
+								 -->
+							</ul>
+						</div>
+					</div>
+					<div class="panelFooter">
+						<div class="panelFooterContent"></div>
+					</div>
+				</div>
+				<!-- end -->
+				
