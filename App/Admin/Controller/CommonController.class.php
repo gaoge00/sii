@@ -9,13 +9,12 @@ Class CommonController extends Controller{
 		
 	   
 	
-		$this->_opname = "";	//操作名用于记录日志
+		$this->opname = "";	//操作名用于记录日志
 		
         $this->_dbname = CONTROLLER_NAME; //添加插入用Model
         
         $this->_selname = CONTROLLER_NAME; //查询用Model
-	    
-      
+
 		if(!session('uid')){
 			//redirect(U('Public/login'));
 		    // var_dump($_SERVER['REQUEST_URI']);
@@ -49,10 +48,10 @@ Class CommonController extends Controller{
        
 
 		$name=MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME;
-		
+		//$name=strtolower($name);
 		//如果方法名是Ajax开头的就部进行验证 用于获取JSON数据
 		if(substr(ACTION_NAME, 0,4) !='Ajax' ){
-		    if(!authcheck($name,session('uid'))){
+		    if(!authcheck(strtolower($name),session('uid'))){
 		        //$this->error(''.session('username').'很抱歉,此项操作您没有权限！');
 		        $this->mtReturn(300,''.session('username').'很抱歉,此项操作您没有权限！',$_REQUEST['navTabId']);
 		    }
@@ -156,7 +155,7 @@ Class CommonController extends Controller{
 		//取得满足条件的记录数
 		//var_dump($map);
 		$count = $model->where($map)->count();
-       // echo $model->getLastSql();
+        //echo $model->getLastSql();
 	
 		
 		//$count=10;
@@ -257,7 +256,6 @@ Class CommonController extends Controller{
 			$this->_filter($map);
 		}
 		
-		
 
 		if (!empty($model)) {
 		    $this->_list($model, $map);
@@ -278,18 +276,14 @@ Class CommonController extends Controller{
 		$dbname = $dbname ? $dbname : $this->dbname;
 		$model = D($dbname);
 		$map = array();
-		
-
 
 		foreach ($model->getDbFields() as $key => $val) {
-
 			if (isset($_REQUEST['keys']) && $_REQUEST['keys'] != '') {
 				if(in_array($val,C('SEARCHKEY'))){
 					$map [$val] = array('like','%'.trim($_REQUEST['keys']).'%');
 				}else{
 					//$map [$val] = $_REQUEST['keys'];
 				}
-					
 			}
 		}
 		//var_dump($map);
@@ -429,7 +423,7 @@ Class CommonController extends Controller{
 			$this->_filter($map);
 		}
 		$list = $model->where($map)->distinct($this->fd)->field($this->fd)->select();
-		echo  $model->getlastsql();
+		//echo  $model->getlastsql();
 	    foreach ($list as $key =>$vo){	
 			$info=$info.",".$vo[$this->fd];
 			$co = $model->where(array($this->fd=>$vo[$this->fd]))->where($map)->count('id');

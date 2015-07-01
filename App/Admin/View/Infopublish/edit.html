@@ -406,7 +406,7 @@
 					<td><label for="j_title" class="control-label x85">所属部门：</label>
 						<input type="text" name="orgname" id="orgname"
 						data-toggle="selectztree" size="18"
-						data-rule="可见部门: required;orgname"
+						data-rule="所属部门: required;orgname"
 						data-tree="#j_select_tree_orgs" readonly> <input
 						type="hidden" id="orgid" name="orgid" value="">
 						<ul id="j_select_tree_orgs" class="ztree hide">
@@ -457,6 +457,7 @@
 					</td>
 				</tr>
 
+				<if condition="ACTION_NAME NEQ 'view' ">
 				<tr>
 					<td colspan=2>
 					<php> //类别初期加载 
@@ -465,14 +466,14 @@
 					  $Rs["attid"]=time();
 					}
 					</php>
-						<label for='attid_input' class='control-label x85'>上传附件:</label>
+						<label for='attid_input' class='control-label x60'>上传附件:</label>
 						<div style='display: inline-block; vertical-align: middle;'>
 						<IFRAME   src="__MODULE__/Public/attfile/attid/{$Rs['attid']}"  frameBorder=0 width='100%' height='30' scrolling=no ></IFRAME>
 						<input type='hidden' id='attid' name='attid'  value='{$Rs["attid"]}'  >
 						</div>
 					</td>
 				</tr>
-					
+				</if>	
 
 				<!-- <if condition="$id EQ '' "> <else />
 				<tr>

@@ -13,6 +13,7 @@ class InfotypeController extends CommonController
         parent::_initialize();
         $this->opname = "信息类别";
         $this->dbname = 'infotype';
+        //$this->selname = 'uv_infotype';
     }
 
     public function GetAllInfotype()
@@ -48,20 +49,20 @@ class InfotypeController extends CommonController
     
     public function _befor_edit(){
          
-        $list=cateTree($pid=0,$level=0,$this->dbname);
+        $list=cateTree($pid=0,$level=0,'uv_infotype');
         $this->assign('type',I('get.type'));
         $this->assign('list',$list);
     }
     
     public function _befor_add(){
     
-        $list=cateTree($id=0,$level=0,$this->dbname);
+        $list=cateTree($id=0,$level=0,'uv_infotype');
         $this->assign('list',$list);
     }
     
     public function _befor_view(){
          
-        $list=cateTree($pid=0,$level=0,$this->dbname);
+        $list=cateTree($pid=0,$level=0,'uv_infotype');
         $this->assign('type',I('get.type'));
         $this->assign('list',$list);
     }

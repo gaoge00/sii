@@ -198,7 +198,7 @@
 						</div>
 					</td>
 				</tr>
-
+				<if condition="ACTION_NAME NEQ 'view' ">
 				<tr>
 					<td colspan=2>
 					<php> //类别初期加载 
@@ -214,6 +214,7 @@
 						</div>
 					</td>
 				</tr>
+				</if>
 				<include file="Public/form_edit_status_layout" />
 			    <include file="Public/form_edit_sort_layout" />	
 

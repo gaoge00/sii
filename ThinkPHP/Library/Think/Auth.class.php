@@ -215,7 +215,7 @@ class Auth
             ->where($map)
             ->field('condition,name')
             ->select();
-        
+        //var_dump(M()->getLastSql());
         // 循环规则，判断结果。
         $authList = array(); //
         foreach ($rules as $rule) {

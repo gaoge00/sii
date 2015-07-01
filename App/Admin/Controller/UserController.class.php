@@ -9,6 +9,7 @@ class UserController extends CommonController {
         parent::_initialize();
         $this->dbname = "user";
         $this->opname="用户";
+        $this->selname = 'uv_user';
     }
 	
 	
@@ -67,9 +68,9 @@ class UserController extends CommonController {
   
   
   public function _befor_insert($data){
-	 $password=md5(md5(I('pwd')));
+	 $password=md5(md5(I('password')));
 	 $data['password']=$password;
-	 unset($data['pwd']);
+	 //unset($data['password']);
 	 return $data;
   }
   
@@ -91,8 +92,8 @@ class UserController extends CommonController {
   
   public function _befor_update($data){
       
-	 if (strlen(I('pwd'))!==32){
-	 $password=md5(md5(I('pwd')));
+	 if (strlen(I('password'))!==32){
+	 $password=md5(md5(I('password')));
 	 $data['password']=$password;
 	 }
 	 unset($data['pwd']);
@@ -162,21 +163,21 @@ class UserController extends CommonController {
   
   	//$this->ajaxReturn(json_encode($data),'JSON');
   }
-  public function _befor_index(){
+//   public function _befor_index(){
   	
-  	$demo=M("User");
-  	$list=$demo->table("__USER__ a")
-  	->join("left join __ORG__ b ON (a.orgid=b.id)")
-  	->join("left join __DEP__ c ON (a.depid=c.id)")
-  	->join("left join __AUTH_GROUP_ACCESS__ d ON (a.id = d.uid)")
-  	->join("left join __AUTH_GROUP__ e ON (d.group_id = e.id)")
-  	->field("a.id,a.username, a.password, a.sex,  a.tel,a.ins, a.phone, a.fax, a.email,  a.status, a.logintime, a.loginip, a.logins, c.name as DepName, b.name as OrgName,GROUP_CONCAT(e.title SEPARATOR',') as RuleGroupName")
-  	->group("a.id")
-  	->order("a.id asc")
-  	->select();
-  	//echo $demo->getLastSql();
-  	$this->assign('list',$list);
-  }
+//   	$demo=M("User");
+//   	$list=$demo->table("__USER__ a")
+//   	->join("left join __ORG__ b ON (a.orgid=b.id)")
+//   	->join("left join __DEP__ c ON (a.depid=c.id)")
+//   	->join("left join __AUTH_GROUP_ACCESS__ d ON (a.id = d.uid)")
+//   	->join("left join __AUTH_GROUP__ e ON (d.group_id = e.id)")
+//   	->field("a.id,a.username, a.password, a.sex,  a.tel,a.ins, a.phone, a.fax, a.email,  a.status, a.logintime, a.loginip, a.logins, c.name as DepName, b.name as OrgName,GROUP_CONCAT(e.title SEPARATOR',') as RuleGroupName")
+//   	->group("a.id")
+//   	->order("a.id asc")
+//   	->select();
+//   	//echo $demo->getLastSql();
+//   	$this->assign('list',$list);
+//   }
   
   public function _befor_del($id){
 	  $uid=$id; 
@@ -198,5 +199,9 @@ class UserController extends CommonController {
        $this->assign('list',$list);
        $this->display();
    }
+   
+   
+   
+   
 	
 }

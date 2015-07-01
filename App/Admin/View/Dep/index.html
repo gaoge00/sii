@@ -1,7 +1,7 @@
 <extend name="Public:form_index_layout"/>
 
 <block name="index_search">
-		            <label>关键词：</label><input type="text" value="{$_REQUEST['s_name']}" name="s_name" class="form-control" size="20" />
+		            <label>关键词：</label><input type="text" value="{$_REQUEST['keys']}" name="keys" class="form-control" size="20" />
 		            <button type="submit"  class="btn-default" data-icon="search">查询</button>
 					<include file="Public/form_index_titleoper_layout" h="300" w="600" />	
 
