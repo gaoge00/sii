@@ -38,17 +38,29 @@ class UserController extends CommonController {
   
   
   
+ 
+  
+  
+  
+  public function _befor_insert($data){
+	 $password=md5(md5(I('pwd')));
+	 $data['password']=$password;
+	 unset($data['pwd']);
+	 return $data;
+  }
+  
+  
+  
   public function _befor_edit(){
  	//得到权限组
   	$UserID=$_REQUEST["id"];
   	$demo=M("user");
-
-    $list= $demo->table(C('DB_PREFIX')."auth_group a")
-            ->join("left join ".C('DB_PREFIX')."auth_group_access b ON (a.id=b.group_id and b.uid='".$UserID."')")
-            ->field("a.id as RuleGroupID,a.title as RuleGroupName, case when ifnull(b.uid,'') != '' then 'selected' else '' end as selected")
-            ->order("a.Sort asc")
-            ->select();
-  	                   
+ 	$list= $demo->table(C('DB_PREFIX')."auth_group a")
+                ->join("left join ".C('DB_PREFIX')."auth_group_access b ON (a.id=b.group_id and b.uid='".$UserID."')")
+                ->field("a.id as RuleGroupID,a.title as RuleGroupName, case when ifnull(b.uid,'') != '' then 'selected' else '' end as selected")
+                ->order("a.Sort asc")
+                ->select();
+	//echo $demo->getLastSql();	                        
   	$this->assign('ruleslist',$list);
   }
   
