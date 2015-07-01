@@ -28,16 +28,10 @@
 
        <foreach name="list" item="v">
     	<tr>
-<<<<<<< HEAD
         <td height=25></td><Td>{$v.id}</td>
         <Td>
 		<switch name="v.level">  <case value="0">+<B>{$v.title}</b></case> <case value="1">+--{$v.title}</case><case value="2">+------{$v.title}</case><default /></switch>
-	    
-=======
-        <td height=25></td><Td>{$v.id}</td><Td>
-		<switch name="v.level">  <case value="0">+<B>{$v.title}</b></case> <case value="1">+--{$v.title}</case><case value="2">+------{$v.title}</case><default /></switch>
-	    {$v.sort} <if condition="$v.status EQ 1 "><else/><img src="__PUBLIC__/images/locked.gif" border="0"/></if>
->>>>>>> branch 'master' of https://github.com/gaoge00/sii.git
+
 	    </td>
 		<td <php>echo display(CONTROLLER_NAME.'/edit');</php> > <a href="__URL__/edit/id/{$v['id']}/type/0/navTabId/{:CONTROLLER_NAME}"   class="btn btn-green btn-sm" data-toggle="dialog" data-width="600" data-height="300" data-id="dialog-mask" data-mask="true" >编辑</a>
 		    <a href="__URL__/EditRule/id/{$v['id']}/type/0/navTabId/{:CONTROLLER_NAME}"   class="btn btn-green btn-sm" data-toggle="dialog" data-width="950" data-height="500" data-id="dialog-mask" data-mask="true" >权限</a>
