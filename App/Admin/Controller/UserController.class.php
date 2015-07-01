@@ -27,6 +27,43 @@ class UserController extends CommonController {
      $this->assign('ruleslist',$list);
   }
   
+  public function add() {
+      if(IS_POST){
+          $model = D($this->dbname);
+          $data=I('post.');
+          if (false === $data = $model->create()) {
+              $this->mtReturn(300,'失败，请检查值是否已经存在--' . $model->getError(),$_REQUEST['navTabId'],true);
+          }
+  
+          if (method_exists($this, '_befor_insert')) {
+              $data = $this->_befor_insert($data);
+          }
+  
+          $saveStatus=$model->add($data);
+          if($saveStatus){
+              if (method_exists($this, '_after_add')) {
+                  $id = $data["id"];
+                  $this->_after_add($id);
+              }
+              $id = $data["id"];
+  
+              $this->mtReturn(200,"新增【".$this->opname."】成功".$id,$_REQUEST['navTabId'],true);
+          }
+           
+      }
+      if (method_exists($this, '_befor_add')) {
+          $this->_befor_add();
+      }
+  
+      $this->assign('id', 0);
+      $this->display("edit");
+  }
+  
+  
+  public function _after_add($id){
+      $this->add_auth_group_access($id);
+  }
+  
   
   
   public function _befor_insert($data){
@@ -61,52 +98,54 @@ class UserController extends CommonController {
 	 unset($data['pwd']);
 	 return $data;
   }
-
+  public function  add_auth_group_access($id){
+      $mUser_auth_group_access=M("auth_group_access");
+      try {
+           
+          $rules=$_REQUEST["rules"];
+          if(isset($rules)&&$rules!=null)
+          {
+              $mUser_auth_group_access->startTrans();
   
- public function  _after_edit($id){
-     $mUser_auth_group_access=M("auth_group_access");
-     try {
-         
-            $rules=$_REQUEST["rules"];
-            //var_dump($rules);
-            
-            if(isset($rules)&&$rules!=null)
-            {
-            $mUser_auth_group_access->startTrans();
-            
-            $mUser_auth_group_access->where("uid  = '" . $id . "'")->delete();
-            
-            $userruledata = array(
-                "uid" => "",
-                "group_id" => ""
-            );
-            foreach ($rules as $ruleID)
-            {
-                $userruledata["uid"]=$id;
-                $userruledata["group_id"]=$ruleID;
-
-                //$M_ruledetail->where("RuleID=(select RuleID from ".C('DB_PREFIX')."Rule where RuleGroupID  = '" . $RuleGroupID . "' and MenuID = '".$MenuIDbyRule."')");
-                $mUser_auth_group_access->field('uid,group_id')->data($userruledata)->add();
-            }
-
-            $mUser_auth_group_access->commit();
-            $this->mtReturn(200,"编辑成功".$id,$_REQUEST['navTabId'],true);  //写入日志
-            }
-            else
-            {
-                $mUser_auth_group_access->startTrans();
-                
-                $mUser_auth_group_access->where("uid  = '" . $id . "'")->delete();
-                
-                $mUser_auth_group_access->commit();
-                $this->mtReturn(200,"编辑成功".$id,$_REQUEST['navTabId'],true);  //写入日志
-            }
-       
+              $mUser_auth_group_access->where("uid  = '" . $id . "'")->delete();
+  
+              $userruledata = array(
+                  "uid" => "",
+                  "group_id" => ""
+              );
+              foreach ($rules as $ruleID)
+              {
+                  $userruledata["uid"]=$id;
+                  $userruledata["group_id"]=$ruleID;
+  
+                  //$M_ruledetail->where("RuleID=(select RuleID from ".C('DB_PREFIX')."Rule where RuleGroupID  = '" . $RuleGroupID . "' and MenuID = '".$MenuIDbyRule."')");
+                  $mUser_auth_group_access->field('uid,group_id')->data($userruledata)->add();
+              }
+  
+              $mUser_auth_group_access->commit();
+              $this->mtReturn(200,"编辑成功".$id,$_REQUEST['navTabId'],true);  //写入日志
+          }
+          else
+          {
+              $mUser_auth_group_access->startTrans();
+  
+              $mUser_auth_group_access->where("uid  = '" . $id . "'")->delete();
+  
+              $mUser_auth_group_access->commit();
+              $this->mtReturn(200,"编辑成功".$id,$_REQUEST['navTabId'],true);  //写入日志
+          }
+           
       }
       catch(Exception $e){
           $mUserRule->rollback();
           $this->mtReturn(300,"编辑失败".$e.$id,$_REQUEST['navTabId'],true);  //写入日志
       }
+  
+  }
+  
+  
+ public function  _after_edit($id){
+    $this->add_auth_group_access($id);
       
  }
   public function GetAllOrg(){
