@@ -16,6 +16,7 @@
                 <input type="text" data-rule="required" size="25" name="id" id="j_username" value="{$Rs['id']}" <if condition="$id EQ 0"><else/> readonly</if> >
              </td></tr>
             <tr><td>
+<<<<<<< HEAD
                 <label for="j_title" class="control-label x85">登陆密码:</label>
                 <input type="Password" data-rule="required" size="25"  name="password" id="j_pwd" value="{$Rs['password']}" >
 				<span>不修改密码，此项不用改动</span>
@@ -100,6 +101,92 @@
             <tr><td>
                 <label for="j_Email" class="control-label x85">电子邮箱：</label>
                 <input type="text"  size="25" name="email" id="j_Email" value="{$Rs['email']}">
+=======
+                <label for="j_pwd" class="control-label x85">登陆密码:</label>
+                <input type="Password" data-rule="required" size="25"  name="pwd" id="j_pwd" value="{$Rs['password']}" >
+				<span>不修改密码，此项不用改动</span>
+             </td></tr>
+            <tr><td>
+                <label for="j_title" class="control-label x85">社员姓名：</label>
+                <input type="text" data-rule="required" size="25" name="username" id="j_truename" value="{$Rs['username']}" >
+             </td></tr>
+            <tr><td>
+            <label for="j_title" class="control-label x85">性别：</label>
+              <select name="sex"  data-toggle="selectpicker" data-rule="required">
+			    <if condition="$Rs['sex'] EQ 男 "><option value="男" selected>男</option><else/><option value="女" selected>女</option></if>
+                <option value="男">男</option>
+                <option value="女">女</option>
+                 </select>
+             </td></tr>
+
+            <tr><td>
+            
+            <tr><td>
+               <label for="j_name" class="control-label x85">所在部门：</label>
+			   <select  name="orgid" data-toggle="selectpicker">
+               <option  value="0">请选择</option>
+	         <php>$listz=cateTree($orgid=0,$orglevel=0,'org','1');</php>
+		          <foreach name="listz" item="v">
+		              <option <if condition="$v.id EQ $Rs['orgid'] ">selected value="{$Rs['orgid']}" <else/>value="{$v.id}"</if> >
+        
+					        <assign name="strLevel" value="+" />
+					        <for start="0" end="$v.level" name="i" >
+								<php>$strLevel = $strLevel . "---" ;</php>
+							</for>
+							
+							<switch name="v.level"> 
+							
+					 			<case value="0">+<B>{$v.name}</b></case> 
+								<case value="$v.level">{$strlevel}{$v['name']}</case>
+								
+								<default />
+							 </switch>
+
+			         </option>
+		          </foreach>
+             </select>
+             </td></tr>
+             
+             
+             <!-- 单选 -->
+            <tr><td>
+               <label for="j_name" class="control-label x85">担任职务：</label>
+			   <select  name="depid" data-toggle="selectpicker">
+               <option  value="0">请选择</option>
+	         <php>$listz=M('dep')->where(array('status'=>1))->select();</php>
+	          <foreach name="listz" item="v">
+              <option <if condition="$v.id EQ $Rs['depid'] ">selected value="{$Rs['depid']}" <else/>value="{$v.id}"</if> >
+	          +{$v.name}
+	          </option>
+              </foreach>
+             </select>
+             </td></tr>
+             
+             
+            <tr><td>
+                <label for="j_title" class="control-label x85">固定电话：</label>
+                <input type="text" data-rule="required" size="25" name="tel" id="j_Tel" value="{$Rs['tel']}" >
+             </td></tr>
+             
+             <tr><td>
+                <label for="j_title" class="control-label x85">内线：</label>
+                <input type="text" data-rule="required" size="25" name="ins" id="j_Ins" value="{$Rs['ins']}" >
+             </td></tr>
+             
+            <tr><td>
+                <label for="j_title" class="control-label x85">移动电话：</label>
+                <input type="text" data-rule="required" size="25" name="phone" id="j_Phone" value="{$Rs['phone']}" >
+            </td></tr>
+            
+                        <tr><td>
+                <label for="j_Fax" class="control-label x85">传真：</label>
+                <input type="text" data-rule="required" size="25" name="fax" id="j_Fax" value="{$Rs['fax']}" >
+             </td></tr>
+             
+            <tr><td>
+                <label for="j_Email" class="control-label x85">电子邮箱：</label>
+                <input type="text" data-rule="required" size="25" name="email" id="j_Email" value="{$Rs['email']}">
+>>>>>>> branch 'master' of https://github.com/gaoge00/sii.git
              </td></tr>
              
              

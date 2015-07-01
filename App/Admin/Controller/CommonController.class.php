@@ -23,6 +23,8 @@ Class CommonController extends Controller{
 		    $tabid = CONTROLLER_NAME.'/'.ACTION_NAME;
 		    cookie("login_action_tabid",strtolower($tabid));
 		    
+
+		    
 		    $result = array();
 		    $result['statusCode']=301;
 		    $result['message']="请先登录";
@@ -327,8 +329,6 @@ Class CommonController extends Controller{
                 $data = $this->_befor_insert($data);
             }		  
           if($model->add($data)){
-              
-              //var_dump($model->getLastSql());
 			if (method_exists($this, '_after_add')) {
 			  $id = $model->getLastInsID();
 			  $this->_after_add($id);
@@ -365,8 +365,6 @@ Class CommonController extends Controller{
 			
 			
 			if($model->save($data)||$model->save($data)==0){
-			    
-			    //var_dump($model->getLastSql());
 				if (method_exists($this, '_after_edit')) {
 					$id = $data['id'];
 					$this->_after_edit($id);
@@ -389,8 +387,7 @@ Class CommonController extends Controller{
 		$vo = $model->getById($id);
 		$this->assign('id', $id);
 		$this->assign('Rs', $vo);
-		
-		//var_dump($vo);
+
 		$this->display();
 	}
 	
