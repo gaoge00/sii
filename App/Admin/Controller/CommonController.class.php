@@ -327,8 +327,10 @@ Class CommonController extends Controller{
             
           if (method_exists($this, '_befor_insert')) {
                 $data = $this->_befor_insert($data);
-            }		  
-          if($model->add($data)){
+            }		
+
+            $saveStatus=$model->add($data);
+          if($saveStatus){
 			if (method_exists($this, '_after_add')) {
 			  $id = $model->getLastInsID();
 			  $this->_after_add($id);
