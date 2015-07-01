@@ -317,7 +317,7 @@ $('#meetingid').on('change',
 		          </foreach>
              </select>
              
-            <input type="text" name=orgid id="j_orgid" value="<php> if(empty($beforlist['orgid']))  {echo session('orgid');} else { echo $beforlist['orgid'];} </php>" >
+            <input type="hidden" name=orgid id="j_orgid" value="<php> if(empty($beforlist['orgid']))  {echo session('orgid');} else { echo $beforlist['orgid'];} </php>" >
              </td></tr>
             
             
@@ -363,10 +363,10 @@ $('#meetingid').on('change',
              	 <td >
                 	
                 	 <empty name="id">
-                         <div id="myLoadDiv2" data-toggle="autoajaxload"  data-url="__URL__/loaddevs">
+                         <div id="myLoadDiv2" data-toggle="autoajaxload"  data-url="__URL__/Ajaxloaddevs">
                 	 	</div>   	 
                 	 <else />
-                	 	<div id="myLoadDiv2" data-toggle="autoajaxload"  data-url="__URL__/loaddevs?id={#id}&startdate={#startdate}&starttime={#starttime}&endtime={#endtime}">
+                	 	<div id="myLoadDiv2" data-toggle="autoajaxload"  data-url="__URL__/Ajaxloaddevs?id={#id}&startdate={#startdate}&starttime={#starttime}&endtime={#endtime}">
                 	 	</div>
                 	 </empty>
 					

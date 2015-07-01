@@ -13,9 +13,8 @@
             <tr><td>
             <label for="j_title" class="control-label x85">性别：</label>
               <select name="sex"  data-toggle="selectpicker" data-rule="required">
-			    <if condition="$Rs['sex'] EQ 男 "><option value="男" selected>男</option><else/><option value="女" selected>女</option></if>
-                <option value="男">男</option>
-                <option value="女">女</option>
+			    <option value="男" <if condition="$Rs['sex'] EQ 男 ">selected<else/></if> >男</option>
+                <option value="女" <if condition="$Rs['sex'] EQ 女 ">selected<else/></if> >女</option>
                  </select>
              </td></tr>
             <tr><td>

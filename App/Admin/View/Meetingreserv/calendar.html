@@ -33,6 +33,7 @@ $(function() {
 	    	data:{'start':fstart},
 	    	title:'新增',
 	    	fresh:true,
+	    	
 	    	onClose:celClose
 	    });
 	}
@@ -57,7 +58,7 @@ $(function() {
 			}
 		},
 		dayClick: function(date, allDay, jsEvent, view) {
-			
+			//alert("22222");skjdfksdjhkfajhsk fj  ggh
 			var ftempH=$.fullCalendar.formatDate(date,"HH");
 			var ftempM=$.fullCalendar.formatDate(date,"mm");
 			var tempClassName=ftempH*2;
@@ -87,12 +88,15 @@ $(function() {
 			    	data:{'sel_start':fstart,'id':'0'},
 			    	title:'新增',
 			    	//fresh:true,
+			    	height: 800,
+                    width: 600,
 			    	onClose:celClose
 			});
 
     	},
     	eventClick: function(event, jsEvent, view) {
 			//var selDate =$.fullCalendar.formatDate(date,'yyyy-MM-dd');
+			//alert("111111");
 			var fstart=$.fullCalendar.formatDate(event.start,"HH:mm");
 			var fend=$.fullCalendar.formatDate(event.end,"HH:mm");
 			var selectdate = $.fullCalendar.formatDate(event.start,"yyyy-MM-dd");
@@ -102,6 +106,8 @@ $(function() {
 		    	id:'mydialog', 
 		    	url:'__URL__/edit/navTabId/{:CONTROLLER_NAME}/calendar' , 
 		    	data:{id:resID,startdate:selectdate,start:fstart,end:fend},
+		    	height: 800,
+                width: 600,
 		    	title:'编辑'
 		    });
 			/*
@@ -121,7 +127,7 @@ $(function() {
 				
 				<div class="bjui-searchBar">
 		            
-		            <label>会议室：</label>
+		            <!-- <label>会议室：</label>
 			            <select  name="s_MettingName" id="s_MettingName" data-toggle="selectpicker">
 		               	<option  value="0">请选择</option>
 			         	<php>$listz=M('meeting')->where(array('status'=>1))->select();</php>
@@ -132,12 +138,12 @@ $(function() {
 		              	</foreach>
 	           		</select>
 
-		            <button type="submit"  class="btn-default" data-icon="search">查询</button>
+		            <button type="submit"  class="btn-default" data-icon="search">查询</button> -->
 					<span<php>echo display(CONTROLLER_NAME.'/add');</php>
 						style="float:right;margin-right:20px;"><a
 						href="__URL__/add/navTabId/{:CONTROLLER_NAME}"
 						class="btn btn-green" data-toggle="dialog" data-width="600"
-						data-height="600" data-id="dialog-mask" data-mask="true"
+						data-height="800" data-id="dialog-mask" data-mask="true"
 						data-icon="plus" id="btn_add">新增</a></span> 
 						
 						<span>

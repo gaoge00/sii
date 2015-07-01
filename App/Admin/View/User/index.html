@@ -1,6 +1,8 @@
 <extend name="Public:form_index_pages_layout"/>
 <block name="index_search">
-            <label>关键词：</label><input type="text" value="{$_REQUEST['keys']}" name="keys" class="form-control" size="15" />
+
+            <label>关键词：</label>
+            <input type="text" value="{$_REQUEST['keys']}" name="keys" class="form-control" size="15" />
              <button type="submit"  class="btn-default" data-icon="search">查询</button>
               <a class="btn btn-orange" href="javascript:;" onclick="$(this).navtab('reloadForm', true);" data-icon="undo">清空查询</a>
 
@@ -13,8 +15,8 @@
 			     data-icon="plus">新增
 			  </a>
 			  </span>
-
-		      <span class="right"><a href="__URL__/del" class="btn btn-blue" data-toggle="doajax" data-icon="arrow-up">导入</a></span>
+              <!-- __URL__/del -->
+		      <span class="right"><a href="" class="btn btn-blue" data-toggle="doajax" data-icon="arrow-up">导入</a></span>
 			  
 
 </block>
@@ -24,7 +26,7 @@
         <thead>
             <tr>
             <th width="30" height="30"></th>
-            <th data-order-direction="asc" data-order-field="UserID">社员编号</th>
+            <th data-order-direction="asc" data-order-field="id">社员编号</th>
             <th>社员姓名</th>
 		    <th>所在部门</th>
 	    	<th>担任职务</th>
@@ -32,9 +34,9 @@
             <th>移动电话</th>
             <th>电子邮箱</th>
 			<th>权限</th>
-            <th data-order-direction="desc" data-order-field="Logintime">登陆时间</th>
+            <th data-order-direction="desc" data-order-field="logintime">登陆时间</th>
 		    <th>登陆IP</th>
-		    <th data-order-direction="desc" data-order-field="Logins">登陆次数</th>
+		    <th data-order-direction="desc" data-order-field="logins">登陆次数</th>
 		    <th>状态</th>
 		    <th>编辑</th>
             </tr>

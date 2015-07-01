@@ -1,7 +1,7 @@
 <extend name="Public:form_index_pages_layout"/>
 
 <block name="index_search">
-            <label>关键词：</label><input type="text" value="{$_REQUEST['s_content']}" name="s_content" class="form-control" size="20" />
+            <label>关键词：</label><input type="text" value="{$_REQUEST['keys']}" name="keys" class="form-control" size="20" />
             
             <label>开始日期：</label>
             <input type="text" name="time1" id="j_custom_indate" data-toggle="datepicker" size="15"  value="{$_REQUEST['time1']}">

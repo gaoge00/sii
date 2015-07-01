@@ -8,18 +8,18 @@
 
 <body style="margin:0;font-size:10px">
 <form action="{:U('Public/upload')}" enctype="multipart/form-data" id="login_form" method="post"> 
-
 <table>
 <tr>
 <td>
-<input name="filename" type="file" size=10 value=""/>
+<input name="filename" type="file" value=""/>
 <input name="attid" type="hidden"  value="{$attid}"/>
 <input name="" type="submit"  value="上传"/>
+</td>
+<td>
 <PHP>$num=M('files')->where('attid='.$attid)->count();if ($num>0){echo '已上传<font color=red> '.$num.' </font>文件';}</PHP>
 </td>
 </tr>
 </table>
-
 <!-- <input name="" type="button"  value="查看文件"/> -->
 </form>
 </body>

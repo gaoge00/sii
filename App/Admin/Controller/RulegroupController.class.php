@@ -6,6 +6,8 @@ Class RulegroupController extends CommonController{
   
   	 public function _initialize() {
         parent::_initialize();
+        
+        $this->opname = "权限组管理";
         $this->dbname = 'auth_group';
     }
 	

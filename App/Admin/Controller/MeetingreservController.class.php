@@ -19,6 +19,15 @@ class MeetingreservController extends CommonController {
 	            $map['_logic'] = 'and';
 	            $map['startdate'] =array(array('egt',I('time1')." 00:00:00"),array('elt',I('time2')." 23:59:59")) ;
 	        }
+	        else if(isset($_REQUEST['time1']) && $_REQUEST['time1'] != ''){
+	            $map['_logic'] = 'and';
+	            $map['startdate'] =array(array('egt',I('time1')." 00:00:00")) ;
+	        }
+	        else if(isset($_REQUEST['time2']) && $_REQUEST['time2'] != ''){
+	            $map['_logic'] = 'and';
+	            $map['startdate'] =array(array('elt',I('time2')." 23:59:59")) ;
+	        }
+	        
 	        
 	        if(isset($_REQUEST['s_userid']) && $_REQUEST['s_userid'] != ''){
 	            $map['_logic'] = 'and';
@@ -180,7 +189,7 @@ class MeetingreservController extends CommonController {
     
     
     //得到可用的会议室设备
-    public function loaddevs(){
+    public function Ajaxloaddevs(){
 
     	$id=$_REQUEST["id"];
     	$M_MeetDev=M("");
@@ -199,7 +208,7 @@ class MeetingreservController extends CommonController {
     	
     	//var_dump($M_MeetDev->getLastSql());
     	$this->assign('Devlist',$devlist);
-    	$this->display();
+    	$this->display("loaddevs");
     
     }
     

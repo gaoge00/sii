@@ -6,7 +6,7 @@
 <block name="index_search">
 
 		            <label>发起人：</label>
-		            <input type="text" name="s_username" id="s_username" value="{$_REQUEST['s_username']}" size="10" data-toggle="lookup"  data-title="选择社员" data-url="__ROOT__/admin.php/public/selectuser?key=s_userid&value=s_username" data-width="700" data-height="800">
+		            <input readonly="true" type="text" name="s_username" id="s_username" value="{$_REQUEST['s_username']}" size="10" data-toggle="lookup"  data-title="选择社员" data-url="__ROOT__/admin.php/public/selectuser?key=s_userid&value=s_username" data-width="700" data-height="800">
 		            <input type="hidden" name="s_userid" id="s_userid" value="{$_REQUEST['s_userid']}" >
 		            
 		            <label>会议室：</label>
@@ -53,14 +53,14 @@
 				<thead>
 					<tr>
 						<th width="30" height="30"></th>
-						<th>编号<!-- data-order-direction="asc" data-order-field="id" --></th>
-						<th>会议室</th>
+						<th data-order-direction="asc" data-order-field="id" >编号 </th>
+						<th data-order-direction="asc" data-order-field="name">会议室</th>
 						<th>主题</th>
-						<th>发起人</th>
-						<th>日期</th>
+						<th data-order-direction="asc" data-order-field="username">发起人</th>
+						<th  data-order-direction="asc" data-order-field="startdate">日期</th>
 						<th>开始时间</th>
 						<th>结束时间</th>
-						<th>状态</th>
+						<th data-order-direction="asc" data-order-field="status">状态</th>
 						<th>操作</th>
 						<th width="26"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
 					</tr>
