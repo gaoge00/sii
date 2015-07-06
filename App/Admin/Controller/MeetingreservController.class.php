@@ -276,12 +276,21 @@ class MeetingreservController extends CommonController {
     }
     
     public function Del() {
+        
+        $id=$_REQUEST["id"];
+        if(isset($id)&&$id!="")
+        {
+            $list = M('meetingreserv')->where("id = " . $id ."")->delete();
+            $this->mtReturn(200,"清理【".$this->opname."】记录成功",'','',U('index'));
+        }
+        else 
+        {
         $ids=$_REQUEST["delids"];
-         
+        if(isset($ids)&&count($ids)>0){
         $list = M('meetingreserv')->where("id in (" . $ids .")")->delete();
-    
-    
         $this->mtReturn(200,"清理【".$this->opname."】记录成功",'','',U('index'));
+        }
+        }
     } 
   
 }
