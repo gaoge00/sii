@@ -18,7 +18,7 @@ namespace Think;
  * 2，可以同时对多条规则进行认证，并设置多条规则的关系（or或者and）
  * $auth=new Auth(); $auth->check('规则1,规则2','用户id','and')
  * 第三个参数为and时表示，用户需要同时具有规则1和规则2的权限。 当第三个参数为or时，表示用户值需要具备其中一个条件即可。默认为or
- * 3，一个用户可以属于多个用户组(think_auth_group_access表 定义了用户所属用户组)。我们需要设置每个用户组拥有哪些规则(think_auth_group 定义了用户组权限)
+ * 3，一个用户可以属于多个用户组(think_authgroupaccess表 定义了用户所属用户组)。我们需要设置每个用户组拥有哪些规则(think_authgroup 定义了用户组权限)
  *
  * 4，支持规则表达式。
  * 在think_auth_rule 表中定义一条规则时，如果type为1， condition字段就可以定义规则表达式。 如定义{score}>5 and {score}<100 表示用户的分数在5-100之间时这条规则才会通过。
@@ -73,10 +73,10 @@ class Auth
     protected $_config = array(
         'AUTH_ON' => true, // 认证开关
         'AUTH_TYPE' => 1, // 认证方式，1为实时认证；2为登录认证。
-        'AUTH_GROUP' => 'auth_group', // 用户组数据表名
-        'AUTH_GROUP_ACCESS' => 'auth_group_access', // 用户-用户组关系表
+        'AUTH_GROUP' => 'authgroup', // 用户组数据表名
+        'AUTH_GROUP_ACCESS' => 'authgroupaccess', // 用户-用户组关系表
         'AUTH_RULE' => 'auth_rule', // 权限规则表
-        'AUTH_USER' => 'member'
+        'AUTH_USER' => 'user'
     ) // 用户信息表
 ;
 

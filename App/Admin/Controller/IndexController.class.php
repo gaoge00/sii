@@ -24,7 +24,7 @@ class IndexController extends Controller {
     	$list=M("policy")
     	->field("text")
     	->limit(1)
-    	->order("id desc")
+    	->order("date desc")
     	->select();
         
     	//得到最新信息
@@ -43,6 +43,7 @@ class IndexController extends Controller {
     	    $menulist=M("menu")
     	    ->table("__MENU__ a")
     	    ->join("(select pid ,count(1) coun from __MENU__ group by pid) b on(a.id=b.pid)")
+    	    
     	    ->field("a.*,if(b.coun>0,'true','false') cc")
     	    ->select();
     	}
@@ -54,12 +55,9 @@ class IndexController extends Controller {
     	    ->select();
     	}
 
-    	
     	//$menubta = new  BuildTreeArray($menulist,'id','pid',0);
     	//$menudata = $menubta->getTreeArray();
-    	
     	//$menupids=array_column($menulist,'pid');
-        
     	//var_dump($menupids);
     	//die();
     	//$this->assign('menupidlist',$menupids);
@@ -78,22 +76,24 @@ class IndexController extends Controller {
         if (! in_array(session('uid'), C('ADMINISTRATOR'))) {
             //getChildLst(31) 系统应用的ID  不能修改
             if(session('uid') == ''){
-                $list=M($this->dbname)->where("FIND_IN_SET(id,getChildLst(31))")->order("sort asc")->select();
+                $list=M($this->dbname)
+                ->where("FIND_IN_SET(id,getChildLst(31)) and status=1")
+                ->order("sort asc")->select();
             }
             else{
-                $list=M($this->dbname)->where("")->order("sort asc")->select();
+                $list=M($this->dbname)->where(" status=1")->order("sort asc")->select();
             }
             
     
         }
         else{
             //如果管理员权限可以访问所有的
-            $list=M($this->dbname)->where("")->order("sort asc")->select();
+            $list=M($this->dbname)->where(" status=1")->order("sort asc")->select();
         }
     
         //echo $menu->getLastSql();
     
-    
+        //var_dump(M($this->dbname)->getLastSql());
         $bta = new  BuildTreeArray($list,'id','pid',0);
     
         $data = $bta->getTreeArray();

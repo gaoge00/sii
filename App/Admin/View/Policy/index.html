@@ -5,8 +5,12 @@
 			href="javascript:;" onclick="$(this).navtab('reloadForm', true);"
 			data-icon="undo">刷新</a>
 		</span> 
+		
+		 <span <php>echo display(CONTROLLER_NAME.'/add');</php> style="float:right;margin-right:20px;"><a href="__URL__/add/navTabId/{:CONTROLLER_NAME}" class="btn btn-green" data-toggle="dialog" data-width="600" data-height="300" data-id="dialog-mask" data-mask="true" data-icon="plus">新增</a></span>
 
 </block>
+
+
 		
 <block name="index_content">
 			<table data-toggle="tablefixed" data-width="100%" data-layout-h="0"

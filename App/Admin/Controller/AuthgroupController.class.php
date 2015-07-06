@@ -2,17 +2,17 @@
 namespace Admin\Controller;
 use Think\Controller;
 
-Class RulegroupController extends CommonController{
+Class AuthgroupController extends CommonController{
   
   	 public function _initialize() {
         parent::_initialize();
         
         $this->opname = "权限组管理";
-        $this->dbname = 'auth_group';
+        $this->dbname = 'authgroup';
     }
 	
    public function index(){ 
-    $list=orgcateTree($pid=0,$level=0,$type=0);
+    $list=orgcateTree($pid=0,$level=0,$type=0,$status=1);
     $this->assign('list',$list);
     $this->display(); 
    }
@@ -58,13 +58,13 @@ Class RulegroupController extends CommonController{
   if (IS_POST){
    $data['id']=I('id');
    $data['rules']=implode(',',I('rules'));
-   M('auth_group')->data($data)->save();
+   M('authgroup')->data($data)->save();
    $this->mtReturn(200,'权限设置成功',$_REQUEST['navTabId']);  
   }
   $id=I('get.id');
-  $rs=M('auth_group')->where('id='.I('get.id'))->getField('rules');
+  $rs=M('authgroup')->where('id='.I('get.id'))->getField('rules');
   $rs=explode(',',$rs);
-  $info = M('auth_rule'); 
+  $info = M('authrule'); 
   $list = $info->where('level=0')->order('sort')->select();
   $this->assign('id',$id);
   $this->assign('rs',$rs);

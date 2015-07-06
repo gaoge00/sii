@@ -10,9 +10,9 @@ return array(
       'AUTH_CONFIG'=>array(
       'AUTH_ON' => true,
       'AUTH_TYPE' => 1, // 认证方式，1为时时认证；2为登录认证。
-      'AUTH_GROUP' => 'sii_auth_group',
-      'AUTH_GROUP_ACCESS' => 'sii_auth_group_access',
-      'AUTH_RULE' => 'sii_auth_rule',
+      'AUTH_GROUP' => 'sii_authgroup',
+      'AUTH_GROUP_ACCESS' => 'sii_authgroupaccess',
+      'AUTHRULE' => 'sii_authrule',
       'AUTH_USER' => 'sii_user'
       ),
      

@@ -78,6 +78,16 @@ function cateTree($pid = 0, $level = 0, $db = 0,$Status='')
 	   	);
     }
     
+//     if($level!=0)
+//     {
+//         // level<=$level
+//         $arrayWhere=array(
+//             'level' => array('elt',$level)
+    
+//         );
+//     }
+    
+    //var_dump($arrayWhere);
     $tmp = $cate->where($arrayWhere)
         ->order("sort")
         ->select();
@@ -96,10 +106,12 @@ function cateTree($pid = 0, $level = 0, $db = 0,$Status='')
     return $array;
 }
 
+
+
 function orgcateTree($pid = 0, $level = 0, $type = 0)
 {
     
-      $cate=M('auth_group');
+      $cate=M('authgroup');
       $array=array();
       $tmp=$cate->where(array('pid'=>$pid,'type'=>$type))->order("sort")->select();
       if(is_array($tmp)){

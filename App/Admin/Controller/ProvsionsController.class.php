@@ -32,6 +32,7 @@ class ProvsionsController extends CommonController {
 	public function _befor_index(){
 	
 	    $list=cateTree($id=0,$level=0,$this->dbname);
+	    //var_dump($list);
 	    $this->assign('list',$list);
 	}
 	
@@ -79,6 +80,24 @@ class ProvsionsController extends CommonController {
 	    return $data;
 	}
 	//end v 变成 v 
+	//无极排序递归删除子级的数据
+	public function _after_del($refid,$model){
 	
+	    $arrID=D($this->dbname)->where('pid='.$refid.'')->field("id")->select();
+	    $intcoun=count($arrID);
+	    if($intcoun>0)
+	    {
+	        foreach ($arrID as $key=>$value)
+	        {
+	            $model->where('id = ' . $value['id']  )->delete();
+	            //var_dump($model->getlastSql());
+	            $this->_after_del($value['id'],$model);
+	        }
+	    }
+	    else
+	    {
+	        return;
+	    }
+	}
   
 }

@@ -22,8 +22,16 @@ class InfopublishController extends CommonController
     
     public function del(){
         
-        $strDelID =  $_REQUEST ['delids'];
-        if(isset($strDelID)&&$strDelID!=''){
+        $strid =  $_REQUEST ['id'];
+        if(isset($strid)&&$strid!=''){
+            $strDelID = $strid;
+        }
+        else 
+       {
+            $strDelID =  $_REQUEST ['delids'];
+        }
+        
+        if(isset($strDelID)&&count($strDelID)>0){
             $model=M($this->dbname);
             $model->startTrans();
             

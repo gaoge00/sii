@@ -3,12 +3,12 @@ namespace Admin\Model;
 
 use Think\Model;
 
-class RulegroupModel extends Model
+class AuthgroupModel extends Model
 {
 
     protected $_validate = array(
         
-        array('name', '','权限组已经存在！', 0, 'unique', 3),//1:新增，2:编辑，3:全部
+        array('title', '','权限组已经存在！', 0, 'unique', 3),//1:新增，2:编辑，3:全部
         //array('name','checkNmae','职务名已经存在!换一个吧亲',0,'unique',3), // 在新增的时候验证name字段是否唯
     );
     

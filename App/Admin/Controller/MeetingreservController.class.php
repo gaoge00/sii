@@ -84,9 +84,19 @@ class MeetingreservController extends CommonController {
 	
   public function _befor_edit(){
 
+        $this->assign('caltype',$_REQUEST["caltype"]);
+        //var_dump($_REQUEST["caltype"]);
+                 
   		$MeetingreservID=$_REQUEST["id"];
   		$this->GetReservByID($MeetingreservID);
   	
+  }
+  
+  public function _befor_add(){
+  
+      $this->assign('caltype',$_REQUEST["caltype"]);
+      //var_dump($_REQUEST["caltype"]);
+    		 
   }
 
   public function _befor_view(){
@@ -119,8 +129,6 @@ class MeetingreservController extends CommonController {
   	$this->assign('id',$id);
   	$this->assign('beforlist',$list[0]);
   }
-  
-  
   
   
   //添加更新会议设备
@@ -160,11 +168,10 @@ class MeetingreservController extends CommonController {
 	   	
 	   			//var_dump($M_Lock->getLastSql());
 	   		}
-	   		 
-	   	
-	   	
-	   		 
 	   		$M_Lock->commit();
+	   		
+	   		
+	   		
 	   	}
 	}
    
@@ -184,9 +191,6 @@ class MeetingreservController extends CommonController {
     	echo json_encode($list);
     
     }
-    
-    
-    
     
     //得到可用的会议室设备
     public function Ajaxloaddevs(){
@@ -276,12 +280,21 @@ class MeetingreservController extends CommonController {
     }
     
     public function Del() {
+        
+        $id=$_REQUEST["id"];
+        if(isset($id)&&$id!="")
+        {
+            $list = M('meetingreserv')->where("id = " . $id ."")->delete();
+            $this->mtReturn(200,"清理【".$this->opname."】记录成功",'','',U('index'));
+        }
+        else 
+        {
         $ids=$_REQUEST["delids"];
-         
+        if(isset($ids)&&count($ids)>0){
         $list = M('meetingreserv')->where("id in (" . $ids .")")->delete();
-    
-    
         $this->mtReturn(200,"清理【".$this->opname."】记录成功",'','',U('index'));
+        }
+        }
     } 
   
 }

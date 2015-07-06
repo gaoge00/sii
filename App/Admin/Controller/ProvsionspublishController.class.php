@@ -16,8 +16,19 @@ class ProvsionspublishController extends CommonController
     }
     public function del(){
         
-        $strDelID =  $_REQUEST ['delids'];
-        if(isset($strDelID)&&$strDelID!=''){
+       
+        $strid =  $_REQUEST ['id'];
+        if(isset($strid)&&$strid!='')
+        {
+            $strDelID =  $strid;
+        }
+        else 
+        {
+            
+            $strDelID =  $_REQUEST ['delids'];
+        }
+           
+        if(isset($strDelID)&&count($strDelID)>0){
             $model=M($this->dbname);
             $model->startTrans();
             $model
@@ -33,6 +44,7 @@ class ProvsionspublishController extends CommonController
             $model->commit();
             $this->mtReturn(200,"删除【".$this->opname."】成功".$id,$_REQUEST['navTabId'],false);
         }
+        
     }
     
     function _filter(&$map) {
@@ -80,11 +92,12 @@ class ProvsionspublishController extends CommonController
 
     public function _befor_index(){
 
-        
+        $list=cateTree($id=0,$level=0,"Provsions",$status=1);
         //规定类型
-        $orglist=M("Provsions")->where("status=1")->field("id,name,level")->order("sort asc")->select();
+        //$orglist=M("Provsions")->where("status=1")->field("id,name,level")->order("sort asc")->select();
         //var_dump($list);
-        $this->assign('provsionslist',$orglist);
+        $this->assign('provsionslist',$list);
+        
         
         
         //provsionslist
@@ -115,12 +128,14 @@ class ProvsionspublishController extends CommonController
     {
 
         //规定类型
-        $orglist=M("Provsions")->where("status=1")->field("id,name,level")->order("sort asc")->select();
+        //$orglist=M("Provsions")->where("status=1")->field("id,name,level")->order("sort asc")->select();
         //var_dump($list);
-        $this->assign('provsionslist',$orglist);
+        $list=cateTree($id=0,$level=0,"Provsions",$status=1);
+        $this->assign('provsionslist',$list);
         
         //部门
-        $orglist=M("Org")->where("status=1")->field("id,name,level")->order("sort asc")->select();
+        $orglist=cateTree($id=0,$level=0,"Org");
+        //M("Org")->where("status=1")->field("id,name,level")->order("sort asc")->select();
         //var_dump($list);
         $this->assign('orglist',$orglist);
 

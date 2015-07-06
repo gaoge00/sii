@@ -19,12 +19,13 @@ class UserController extends CommonController {
      $this->assign('list',$list);
      
      $demo=M("user");
-     $list= $demo->table(C('DB_PREFIX')."auth_group a")
+     $list= $demo->table(C('DB_PREFIX')."authgroup a")
+     ->where("a.status='1'")
      ->field("a.id as RuleGroupID,a.title as RuleGroupName,''  as selected")
      ->order("a.Sort asc")
      ->select();
      
-     //echo $demo->getLastSql();
+     //var_dump($demo->getLastSql());
      $this->assign('ruleslist',$list);
   }
   
@@ -82,7 +83,8 @@ class UserController extends CommonController {
   	$UserID=$_REQUEST["id"];
   	$demo=M("user");
  	$list= $demo->table(C('DB_PREFIX')."auth_group a")
-                ->join("left join ".C('DB_PREFIX')."auth_group_access b ON (a.id=b.group_id and b.uid='".$UserID."')")
+                ->join("left join ".C('DB_PREFIX')."authgroupaccess b ON (a.id=b.group_id and b.uid='".$UserID."')")
+                ->where("a.status='1'")
                 ->field("a.id as RuleGroupID,a.title as RuleGroupName, case when ifnull(b.uid,'') != '' then 'selected' else '' end as selected")
                 ->order("a.Sort asc")
                 ->select();
@@ -100,7 +102,7 @@ class UserController extends CommonController {
 	 return $data;
   }
   public function  add_auth_group_access($id){
-      $mUser_auth_group_access=M("auth_group_access");
+      $mUser_auth_group_access=M("authgroupaccess");
       try {
            
           $rules=$_REQUEST["rules"];
@@ -169,8 +171,8 @@ class UserController extends CommonController {
 //   	$list=$demo->table("__USER__ a")
 //   	->join("left join __ORG__ b ON (a.orgid=b.id)")
 //   	->join("left join __DEP__ c ON (a.depid=c.id)")
-//   	->join("left join __AUTH_GROUP_ACCESS__ d ON (a.id = d.uid)")
-//   	->join("left join __AUTH_GROUP__ e ON (d.group_id = e.id)")
+//   	->join("left join __AUTHGROUPACCESS__ d ON (a.id = d.uid)")
+//   	->join("left join __AUTHGROUP__ e ON (d.group_id = e.id)")
 //   	->field("a.id,a.username, a.password, a.sex,  a.tel,a.ins, a.phone, a.fax, a.email,  a.status, a.logintime, a.loginip, a.logins, c.name as DepName, b.name as OrgName,GROUP_CONCAT(e.title SEPARATOR',') as RuleGroupName")
 //   	->group("a.id")
 //   	->order("a.id asc")
@@ -181,7 +183,7 @@ class UserController extends CommonController {
   
   public function _befor_del($id){
 	  $uid=$id; 
-	  M('auth_group_access')->where('uid='.$uid.'')->delete(); 
+	  M('authgroupaccess')->where('uid='.$uid.'')->delete(); 
    }
    
    

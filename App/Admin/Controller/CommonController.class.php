@@ -79,7 +79,17 @@ Class CommonController extends Controller{
 	    $result = array();
         $result['statusCode'] = $status; 
         $result['message'] = $info;
-		$result['tabid'] = strtolower($navTabId).'/index';
+        //var_dump($_REQUEST ['caltype']);
+        $caltype=$_REQUEST ['caltype'];
+        if(!isset($caltype)||$caltype=="")
+        {
+            $caltype="index";
+        }
+        //$result['tabid'] = strtolower($navTabId).'/index';
+        $result['tabid'] = strtolower($navTabId).'/'.$caltype;
+       
+        
+        //var_dump(strtolower($navTabId).'/'.$caltype);
         $result['forward'] = '';
 		$result['forwardConfirm']='';
         $result['closeCurrent'] =$closeCurrent;
@@ -315,6 +325,9 @@ Class CommonController extends Controller{
 		if(IS_POST){
 		  $model = D($this->dbname);
 		  $data=I('post.');
+		  //var_dump($model->create());
+		  
+		  
 		  if (false === $data = $model->create()) {
 			   $this->mtReturn(300,'失败，请检查值是否已经存在--' . $model->getError(),$_REQUEST['navTabId'],true);  
             }
@@ -402,15 +415,20 @@ Class CommonController extends Controller{
 	
 	public function del(){
 		$model = D($this->dbname);
+		$model->startTrans();
 		$id =  $_REQUEST ['id'];
 		if($id){
 			$model->where('id = ' . $id  )->delete();
-			$this->mtReturn(200,"删除【".$this->opname."】成功".$id,$_REQUEST['navTabId'],false);
 		}
 		else{
 		    $model->where("status=0")->delete();
-		    $this->mtReturn(200,"删除【".$this->opname."】成功".$id,$_REQUEST['navTabId'],false);
 		}
+		//var_dump($data);
+		if (method_exists($this, '_after_del')) {
+		    $data = $this->_after_del($id,$model);
+		}
+		$model->commit();
+		$this->mtReturn(200,"删除【".$this->opname."】成功".$id,$_REQUEST['navTabId'],false);
 	}
 	
 	public function _fenxi($fd,$ft,$type) {

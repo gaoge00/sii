@@ -78,6 +78,26 @@ class KeysController extends CommonController {
 	    }
 	    return $data;
 	}
+	
+	//无极排序递归删除子级的数据
+	public function _after_del($refid,$model){
+
+	    $arrID=D($this->dbname)->where('pid='.$refid.'')->field("id")->select();
+	    $intcoun=count($arrID);
+	    if($intcoun>0)
+	    {
+	        foreach ($arrID as $key=>$value)
+	        {
+	         $model->where('id = ' . $value['id']  )->delete();
+	         //var_dump($model->getlastSql());
+ 	         $this->_after_del($value['id'],$model);
+	        }
+	    }
+	    else 
+	   {
+	        return;
+	   } 
+	}
 	//end
 	
   

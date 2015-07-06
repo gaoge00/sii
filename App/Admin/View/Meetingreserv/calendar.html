@@ -24,13 +24,13 @@ $(function() {
 	
 	function openDialog(view,fstart)	{
 		this.fstart=fstart;
-		//alert(this.fstart);
+		alert(this.fstart);
 		return new $(view).dialog({
 	    	id:'mydialog1', 
 	    	//type:'post',
 	    	//url:'__URL__/edit/id/0/navTabId/{:CONTROLLER_NAME}/calendar/add?MeetingreservID=0&startdate=' + $selectdate + '&start=' + $.session.get('start'), 
 	    	url:'__URL__/add/navTabId/{:CONTROLLER_NAME}/calendar', 		
-	    	data:{'start':fstart},
+	    	data:{'start':fstart,'caltype':'calendar'},
 	    	title:'新增',
 	    	fresh:true,
 	    	
@@ -80,12 +80,13 @@ $(function() {
 			if(view.name=='month'){
 				tempClassName=this;
 			}
+			//点击具体的日期时间新增
 			$(tempClassName).dialog({
 			    	id:'mydialog1', 
 			    	//type:'post',
 			    	//url:'__URL__/edit/id/0/navTabId/{:CONTROLLER_NAME}/calendar/add?MeetingreservID=0&startdate=' + $selectdate + '&start=' + $.session.get('start'), 
 			    	url:'__URL__/add/navTabId/{:CONTROLLER_NAME}/calendar', 		
-			    	data:{'sel_start':fstart,'id':'0'},
+			    	data:{'sel_start':fstart,'id':'0','caltype':'calendar'},
 			    	title:'新增',
 			    	//fresh:true,
 			    	height: 800,
@@ -105,7 +106,7 @@ $(function() {
 			$(this).dialog({
 		    	id:'mydialog', 
 		    	url:'__URL__/edit/navTabId/{:CONTROLLER_NAME}/calendar' , 
-		    	data:{id:resID,startdate:selectdate,start:fstart,end:fend},
+		    	data:{id:resID,startdate:selectdate,start:fstart,end:fend,'caltype':'calendar'},
 		    	height: 800,
                 width: 600,
 		    	title:'编辑'
@@ -141,7 +142,7 @@ $(function() {
 		            <button type="submit"  class="btn-default" data-icon="search">查询</button> -->
 					<span<php>echo display(CONTROLLER_NAME.'/add');</php>
 						style="float:right;margin-right:20px;"><a
-						href="__URL__/add/navTabId/{:CONTROLLER_NAME}"
+						href="__URL__/add/navTabId/{:CONTROLLER_NAME}?caltype='calendar'"
 						class="btn btn-green" data-toggle="dialog" data-width="600"
 						data-height="800" data-id="dialog-mask" data-mask="true"
 						data-icon="plus" id="btn_add">新增</a></span> 

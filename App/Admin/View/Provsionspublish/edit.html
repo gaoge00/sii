@@ -114,6 +114,7 @@
 					<td colspan="2"><label for="j_title" class="control-label x85">规定名称：</label>
 					<!-- data-rule="标题：required;title"  -->
 						<input type="text" 
+						data-rule="规定名称：required;title"
 						size="30"
 						name="title" id="j_title"
 						value="{$Rs['title']}"
@@ -126,6 +127,7 @@
 				
 					<td colspan="2"><label for="j_title" class="control-label x85">规定分类：</label>
 						<select name="provsid" id="provsid" data-toggle="selectpicker"
+						data-rule="规定分类：required;title"
 						data-emptytxt="--请选择--">
 							<option value="">--请选择--</option>
 							<foreach name="provsionslist" item="v">

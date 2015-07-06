@@ -250,13 +250,17 @@ $('#meetingid').on('change',
     <form name="MeetingReservEdit" action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm"  >
  		<!-- hidden -->
 		<input type="hidden" name="id" id="id" value="{$id}">
-	
+		<!-- hidden 判断从哪个画面跳转来的，然后刷新哪个画面 -->
+		 <input type="hidden" name="caltype" id="caltype" value="{$caltype}"> 
+		
         <div class="pageFormContent" data-layout-h="0">
           <table class="table table-condensed table-hover" width="100%">
            <tbody>
 
            <tr><td>
-                <label for="j_title" class="control-label x85">会议室名称：</label>
+                <label for="j_title" class="control-label x85">会议室名称：
+                
+                </label>
                 <select  name="meetingid" id="meetingid"  data-toggle="selectpicker" >
 	               	<option  value="">请选择会议室</option>
 		         	<php>$listz=M('meeting')->where(array('status'=>1))->select();</php>
@@ -355,7 +359,7 @@ $('#meetingid').on('change',
              	 <td>
                 	<label for="j_sort" class="control-label x85">是否全天：</label>
                		<input type="checkbox" data-toggle="icheck"  name="cHasAllDay" id="cHasAllDay" <if condition="$Rs.hasallday EQ 1 ">checked</if>  >	
-               		<input type="text"  name="hasallday" id="hasallday" value="<php> if(empty($Rs['hasallday']))  {echo '0';} else { echo $Rs['hasallday'];} </php>" >		
+               		<input type="hidden"  name="hasallday" id="hasallday" value="<php> if(empty($Rs['hasallday']))  {echo '0';} else { echo $Rs['hasallday'];} </php>" >		
              	 </td>
             </tr> 
             
