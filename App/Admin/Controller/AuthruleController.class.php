@@ -7,7 +7,8 @@ Class AuthruleController extends CommonController{
 	 public function _initialize() {
         parent::_initialize();
         $this->dbname = 'authrule';
-        $this->opname = "权限管理";
+        $this->opname = "权限管理";    
+        //123123
     }
 	
    public function index(){ 
