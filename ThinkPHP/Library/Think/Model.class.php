@@ -2224,4 +2224,28 @@ class Model
             $this->$name = $value;
         return $this;
     }
+    
+    
+    function checkLevel(){
+        $pid=$_REQUEST['pid'];
+        $id=$_REQUEST['id'];
+        // 新选中的上级 级别
+        $pidlist = M("Keys")->where("id=".$pid."")
+        ->field("level")
+        ->select();
+        // 自身 级别
+        $idlist = M("Keys")->where("id=".$id."")
+        ->field("level")
+        ->select();
+        //         var_dump($pidlist[0]["level"]);
+        //         var_dump($idlist[0]["level"]);
+        if($pidlist[0]["level"]>$idlist[0]["level"])
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }

@@ -362,9 +362,10 @@ Class CommonController extends Controller{
 	
 			$data=I('post.');
 
+			
 			if (false === $data = $model->create()) {
 			    //var_dump($model->getError());
-				$this->mtReturn(300,'失败，请检查值是否已经存在--' . $model->getError(),$_REQUEST['navTabId'],true);
+				$this->mtReturn(300,'失败，' . $model->getError(),$_REQUEST['navTabId'],true);
 			}
 			
 			//var_dump($data);

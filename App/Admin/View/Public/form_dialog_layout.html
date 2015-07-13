@@ -1,26 +1,40 @@
 <div class="bjui-pageContent">
+	<script type="text/javascript">
+		$("#btnSub").on('click', function(e) {
+			//alert("12312312312");
+			var strSelect=$("select[name='pid'] option:selected").val();
+			var exp={$Rs['id']}+"";
 
+			if(strSelect==exp)
+			{
+			  alert("不能选择本身作为上级！");
+			  return false;
+			}
+			else
+			{
+			  return true;
+			}
+	})
+	</script>
+	
 
     <form action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm" data-toggle="validate">
  		
 		<input type="hidden" name="id" value="{$id}">
         <div class="pageFormContent" data-layout-h="0">
- 			
  			<block name="dialog_edit"></block>
- 			
         </div>
         
         <div class="bjui-footBar">
             <ul>
-
                 <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
             	<if condition="ACTION_NAME NEQ 'view' ">
-            		<li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+            		<li><button id="btnSub" type="submit" class="btn-default" data-icon="save">保存</button></li>
             	</if>
-                
             </ul>
         </div>
     </form>
+    
 </div>
 
 			

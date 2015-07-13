@@ -76,6 +76,33 @@ class KeysController extends CommonController {
 	        $level=$level[0]['level']+1;
 	        $data['level']=$level;
 	    }
+	    
+	    
+	    
+	    $pid=$_REQUEST['pid'];
+	    $id=$_REQUEST['id'];
+	    // 新选中的上级 级别
+	    $pidlist = M("Keys")->where("id=".$pid."")
+	    ->field("level")
+	    ->select();
+	    // 自身 级别
+	    $idlist = M("Keys")->where("id=".$id."")
+	    ->field("level")
+	    ->select();
+	    
+	    
+	    if($pidlist[0]["level"]>$idlist[0]["level"])
+	    {
+	        var_dump($pidlist[0]["level"].">".$idlist[0]["level"]);
+	    }
+	    else
+	    {
+	        var_dump($pidlist[0]["level"]."+++++".$idlist[0]["level"]);
+	    }
+	    
+	    
+	    
+	    
 	    return $data;
 	}
 	
