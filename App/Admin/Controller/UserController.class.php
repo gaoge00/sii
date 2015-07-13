@@ -82,7 +82,7 @@ class UserController extends CommonController {
  	//得到权限组
   	$UserID=$_REQUEST["id"];
   	$demo=M("user");
- 	$list= $demo->table(C('DB_PREFIX')."auth_group a")
+ 	$list= $demo->table(C('DB_PREFIX')."authgroup a")
                 ->join("left join ".C('DB_PREFIX')."authgroupaccess b ON (a.id=b.group_id and b.uid='".$UserID."')")
                 ->where("a.status='1'")
                 ->field("a.id as RuleGroupID,a.title as RuleGroupName, case when ifnull(b.uid,'') != '' then 'selected' else '' end as selected")

@@ -16,7 +16,7 @@
 			  </a>
 			  </span>
               <!-- __URL__/del -->
-		      <span class="right"><a href="" class="btn btn-blue" data-toggle="doajax" data-icon="arrow-up">导入</a></span>
+		      <span class="right" style="display:none"><a href="" class="btn btn-blue" data-toggle="doajax" data-icon="arrow-up">导入</a></span>
 			  
 
 </block>
@@ -31,12 +31,15 @@
 		    <th>所在部门</th>
 	    	<th>担任职务</th>
 		    <th>固定电话</th>
+		    <th>内线</th>
             <th>移动电话</th>
+            <th>传真</th>
             <th>电子邮箱</th>
 			<th>权限</th>
             <th data-order-direction="desc" data-order-field="logintime">登陆时间</th>
-		    <th>登陆IP</th>
+		    <!-- <th>登陆IP</th> 
 		    <th data-order-direction="desc" data-order-field="logins">登陆次数</th>
+		    -->
 		    <th>状态</th>
 		    <th>编辑</th>
             </tr>
@@ -51,12 +54,15 @@
 		   <td>{$v.OrgName} </td>
 		   <td>{$v.DepName}</td>
 		   <td>{$v.tel}</td>
+		   <td>{$v.ins}</td>
            <td>{$v.phone}</td>
+           <td>{$v.fax}</td>
            <td>{$v.email}</td>
 		   <td>{$v.RuleGroupName} </td>
            <td>{$v.logintime}</td>
-		   <td>{$v.loginip}</td>
+		   <!-- <td>{$v.loginip}</td> 
 		   <td>{$v.logins}</td>
+		   -->
 		   <td <php>echo display(CONTROLLER_NAME.'/changeStatus');</php> ><a href="__URL__/changeStatus/id/{$v['id']}/navTabId/{:CONTROLLER_NAME}" data-toggle="doajax" data-confirm-msg="确定要操作吗？"><if condition="$v.status EQ 1 "><img src="__PUBLIC__/images/ok.gif" border="0"/><else/><img src="__PUBLIC__/images/locked.gif" border="0"/></if></a></td>
 		   <td <php>echo display(CONTROLLER_NAME.'/edit');</php> > <a href="__URL__/edit/id/{$v['id']}/navTabId/{:CONTROLLER_NAME}"   class="btn btn-green btn-sm" data-toggle="dialog" data-width="600" data-height="600" data-id="dialog-mask" data-mask="true" >编辑</a></td>
          </tr> 

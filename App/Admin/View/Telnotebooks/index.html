@@ -17,6 +17,7 @@
 		    <th>固定电话</th>
 		    <th>内线</th>
             <th>移动电话</th>
+            <th>传真</th>
             <th>电子邮箱</th>
             <th>编辑</th>
             </tr>
@@ -33,6 +34,7 @@
 		   <td>{$v.tel}</td>
 		   <td>{$v.ins}</td>
            <td>{$v.phone}</td>
+           <td>{$v.fax}</td>
            <td>{$v.email}</td>
            <td><a <php>echo display(CONTROLLER_NAME.'/edit');</php>  href="__URL__/edit/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  class="btn btn-green btn-sm" data-toggle="dialog" data-width="600" data-height="400" data-id="dialog-mask" data-mask="true" >编辑</a></td>
          </tr> 

@@ -13,7 +13,7 @@
            <tbody>
 			<tr><td> 
                 <label for="j_title" class="control-label x85">社员编号:</label>
-                <input type="text" data-rule="required" size="25" name="id" id="j_username" value="{$Rs['id']}" <if condition="$id EQ 0"><else/> readonly</if> >
+                <input type="text" data-rule="required" size="25" name="id" id="j_username" value="{$Rs['id']}"  readonly>
              </td></tr>
 
              
@@ -33,9 +33,14 @@
                 <input type="text"  size="25" name="phone" id="j_Phone" value="{$Rs['phone']}" >
             </td></tr>
             
-                        <tr><td>
+            <tr><td>
                 <label for="j_Fax" class="control-label x85">传真：</label>
                 <input type="text"  size="25" name="fax" id="j_Fax" value="{$Rs['fax']}" >
+             </td></tr>
+             
+             <tr><td>
+                <label for="j_Email" class="control-label x85">电子邮箱：</label>
+                <input type="text"  size="25" name="email" id="j_Email" value="{$Rs['email']}" >
              </td></tr>
              
            

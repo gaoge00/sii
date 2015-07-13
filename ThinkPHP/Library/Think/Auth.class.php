@@ -75,7 +75,7 @@ class Auth
         'AUTH_TYPE' => 1, // 认证方式，1为实时认证；2为登录认证。
         'AUTH_GROUP' => 'authgroup', // 用户组数据表名
         'AUTH_GROUP_ACCESS' => 'authgroupaccess', // 用户-用户组关系表
-        'AUTH_RULE' => 'auth_rule', // 权限规则表
+        'AUTH_RULE' => 'authrule', // 权限规则表
         'AUTH_USER' => 'user'
     ) // 用户信息表
 ;

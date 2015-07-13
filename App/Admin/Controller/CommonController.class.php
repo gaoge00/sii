@@ -362,10 +362,35 @@ Class CommonController extends Controller{
 	
 			$data=I('post.');
 
+// 			$pid=$_REQUEST['pid'];
+// 			$id=$_REQUEST['id'];
+// 			// 新选中的上级 级别
+// 			$pidlist = M("Keys")->where("id=".$pid."")
+// 			->field("level")
+// 			->select();
+// 			// 自身 级别
+// 			$idlist = M("Keys")->where("id=".$id."")
+// 			->field("level")
+// 			->select();
+//  			var_dump($pidlist[0]["level"]);
+//  			var_dump($idlist[0]["level"]);
+			
+// 			if($pidlist[0]["level"]>$idlist[0]["level"])
+// 			{
+// 			    var_dump("不能这样做！");
+// 			}
+// 			else
+// 			{
+// 			    var_dump("可以这样做！");
+// 			}
+			
+			
 			if (false === $data = $model->create()) {
 			    //var_dump($model->getError());
-				$this->mtReturn(300,'失败，请检查值是否已经存在--' . $model->getError(),$_REQUEST['navTabId'],true);
+				$this->mtReturn(300,'失败，' . $model->getError(),$_REQUEST['navTabId'],true);
 			}
+			
+			
 			
 			//var_dump($data);
 			if (method_exists($this, '_befor_update')) {

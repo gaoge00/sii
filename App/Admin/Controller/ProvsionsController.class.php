@@ -77,6 +77,8 @@ class ProvsionsController extends CommonController {
 	        $level=$level[0]['level']+1;
 	        $data['level']=$level;
 	    }
+	    
+	    
 	    return $data;
 	}
 	//end v 变成 v 
