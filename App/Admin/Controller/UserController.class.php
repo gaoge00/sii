@@ -34,7 +34,7 @@ class UserController extends CommonController {
           $model = D($this->dbname);
           $data=I('post.');
           if (false === $data = $model->create()) {
-              $this->mtReturn(300,'失败，请检查值是否已经存在--' . $model->getError(),$_REQUEST['navTabId'],true);
+              $this->mtReturn(300,'失败，' . $model->getError(),$_REQUEST['navTabId'],true);
           }
   
           if (method_exists($this, '_befor_insert')) {

@@ -50,6 +50,8 @@ class KeysController extends CommonController {
 	public function _befor_edit(){
 	
 	    $list=cateTree($pid=0,$level=0,$this->dbname);
+	    
+	    
 	    $this->assign('type',I('get.type'));
 	    $this->assign('list',$list);
 	}
@@ -76,7 +78,7 @@ class KeysController extends CommonController {
 	        $level=$level[0]['level']+1;
 	        $data['level']=$level;
 	    }
-
+	    //var_dump($data);
 	    return $data;
 	}
 	

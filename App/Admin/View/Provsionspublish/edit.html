@@ -201,25 +201,27 @@
 					</td>
 				</tr>
 				<if condition="ACTION_NAME NEQ 'view' ">
-				<tr>
-					<td colspan=2>
+				<tr >
+					<td colspan="2" style="padding-left:3px;">
 					<php> //类别初期加载 
 					if(!isset($Rs["attid"])&&trim($Rs["attid"])=="")
 					{
 					  $Rs["attid"]=time();
 					}
 					</php>
-						<label for='attid_input' class='control-label x85'>上传附件:</label>
+						<label for='attid_input' class='control-label x85'>上传附件：</label>
 						<div style='display: inline-block; vertical-align: middle;'>
-						<IFRAME   src="__MODULE__/Public/attfile/attid/{$Rs['attid']}"  frameBorder=0 width='100%' height='30' scrolling=no ></IFRAME>
+						<IFRAME   src="__MODULE__/Public/attfile/attid/{$Rs['attid']}"  frameBorder=0 width='400' height='30' scrolling=no ></IFRAME>
 						<input type='hidden' id='attid' name='attid'  value='{$Rs["attid"]}'  >
 						</div>
 					</td>
 				</tr>
 				</if>
 				<include file="Public/form_edit_status_layout" />
-			    <include file="Public/form_edit_sort_layout" />	
-
+				
+				<!--  <include file="Public/form_edit_sort_layout" />	
+				-->
+			    
 				
 			</tbody>
 		</table>

@@ -78,21 +78,17 @@ function cateTree($pid = 0, $level = 0, $db = 0,$Status='')
 	   	);
     }
     
-//     if($level!=0)
+//     if($level!=0&&isset($level))
 //     {
-//         // level<=$level
-//         $arrayWhere=array(
-//             'level' => array('elt',$level)
-    
-//         );
+//         array_push($arrayWhere, array('level' => array('elt',$level)));
 //     }
     
     //var_dump($arrayWhere);
     $tmp = $cate->where($arrayWhere)
-        ->order("sort")
-        ->select();
-
-  
+         ->order("sort")
+         ->select();
+//      var_dump($cate->getLastSql());
+//      return $cate->getLastSql();
     if (is_array($tmp)) {
         foreach ($tmp as $v) {
             $v['level'] = $level;

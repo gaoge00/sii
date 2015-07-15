@@ -139,8 +139,8 @@ $(function() {
         PLUGINPATH   : '__PUBLIC__/BJUI/plugins/', //[可选]插件路径
         loginInfo    : {url:'admin.php/public/login_dialog.html', title:'登录', width:400, height:200}, // 会话超时后弹出登录对话框
         statusCode   : {ok:200, error:300, timeout:301}, //[可选]
-        ajaxTimeout  : 5000, //[可选]全局Ajax请求超时时间(毫秒)
-        alertTimeout : 3000, //[可选]信息提示[info/correct]自动关闭延时(毫秒)
+        ajaxTimeout  : 20000, //[可选]全局Ajax请求超时时间(毫秒)5000
+        alertTimeout : 20000, //[可选]信息提示[info/correct]自动关闭延时(毫秒)20000
         pageInfo     : {pageCurrent:'pageCurrent', pageSize:'pageSize', orderField:'orderField', orderDirection:'orderDirection'}, //[可选]分页参数
         keys         : {statusCode:'statusCode', message:'message'}, //[可选]
         ui           : {showSlidebar:true, hideMode:'display', clientPaging:true}, //[可选]clientPaging:在客户端响应分页及排序参数
@@ -188,6 +188,8 @@ $(function() {
 	<!--[if lte IE 7]>
         <div id="errorie"><div>您还在使用老掉牙的IE，正常使用系统前请升级您的浏览器到 IE8以上版本 <a target="_blank" href="http://windows.microsoft.com/zh-cn/internet-explorer/ie-8-worldwide-languages">点击升级</a>&nbsp;&nbsp;强烈建议您更改换浏览器：<a href="http://down.tech.sina.com.cn/content/40975.html" target="_blank">谷歌 Chrome</a></div></div>
     <![endif]-->
+    
+    
 	<header class="navbar navbar-default" id="bjui-header">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed"
@@ -292,13 +294,9 @@ $(function() {
 						<div class="panelFooterContent"></div>
 					</div>
 				</div>
-
-
-				 
 			</div>
 		</div>
 	</div>
-
 
 	<div id="bjui-container">
 	
@@ -387,8 +385,6 @@ $(function() {
 		</div>
 		
 	</div>
-
-	
 	<footer id="bjui-footer" style="text-align: left">
 		您好！{$Think.session.username} ({$Think.session.uid})
 		您的IP:{$Think.session.loginip} 登录时间:{$Think.session.logintime}
@@ -397,6 +393,7 @@ $(function() {
 		服务热线：0411-88017622
 		</span>
 	</footer>
+	
 	
 </body>
 </html>

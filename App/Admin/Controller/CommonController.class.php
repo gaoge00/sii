@@ -61,7 +61,7 @@ Class CommonController extends Controller{
 	
 	
 	protected function mtReturn($status,$info,$navTabId="",$closeCurrent=true) {
-		
+
 		//写入日志
 	    //$udata['id']=session('uid');
         $udata['update_time']=time();
@@ -73,7 +73,7 @@ Class CommonController extends Controller{
         $dat['addtime'] = date("Y-m-d H:i:s",time());
         $dat['ip'] = get_client_ip();
         M("log")->add($dat);
-	   
+        //var_dump($dat);
         
 	    //回调
 	    $result = array();
@@ -85,25 +85,26 @@ Class CommonController extends Controller{
         {
             $caltype="index";
         }
+       
         //$result['tabid'] = strtolower($navTabId).'/index';
         $result['tabid'] = strtolower($navTabId).'/'.$caltype;
-       
-        
         //var_dump(strtolower($navTabId).'/'.$caltype);
         $result['forward'] = '';
 		$result['forwardConfirm']='';
         $result['closeCurrent'] =$closeCurrent;
-       
-      
         
+        //$this->dwzajaxReturn($result,"JSON");
         if (empty($type)){
         	$type = C('DEFAULT_AJAX_RETURN');
         	//var_dump($type);
         }
         if (strtoupper($type) == 'JSON') {
             // 返回JSON数据格式到客户端 包含状态信息
-            header("Content-Type:text/html; charset=utf-8");
+            header("Content-Type:application/json; charset=utf-8");
+            //echo(json_encode($result));
             exit(json_encode($result));
+            //dwzajaxReturn($data);
+            
         } elseif (strtoupper($type) == 'XML') {
             // 返回xml格式数据
             header("Content-Type:text/xml; charset=utf-8");
@@ -213,7 +214,7 @@ Class CommonController extends Controller{
 		}
 		$this->assign('pageSize', $pageSize);//数据总数
 		$this->assign('totalCount', $count);//数据总数
-		$this->assign('currentPage', !empty($_REQUEST[C('VAR_PAGE')]) ? $_REQUEST[C('VAR_PAGE')] : 1);//当前的页数，默认为1
+		$this->assign('currentPage', !empty($_REQUEST[C('VAR_PAGE')]) ? $count>1?$_REQUEST[C('VAR_PAGE')]:1 : 1);//当前的页数，默认为1
 		$this->assign('numPerPage', $numPerPage); //每页显示多少条
 		cookie('_currentUrl_', __SELF__);
 		return;
@@ -329,7 +330,7 @@ Class CommonController extends Controller{
 		  
 		  
 		  if (false === $data = $model->create()) {
-			   $this->mtReturn(300,'失败，请检查值是否已经存在--' . $model->getError(),$_REQUEST['navTabId'],true);  
+			   $this->mtReturn(300,'失败，' . $model->getError(),$_REQUEST['navTabId'],true);  
             }
             
           if (method_exists($this, '_befor_insert')) {
@@ -345,8 +346,11 @@ Class CommonController extends Controller{
 			$id = $model->getLastInsID();
 	
 			$this->mtReturn(200,"新增【".$this->opname."】成功".$id,$_REQUEST['navTabId'],true);  
+			
+			//echo($_REQUEST['navTabId']);
+			
+			//$this->mtReturn(200,"更改【".$this->opname."】状态成功".$id,$_REQUEST['navTabId'],false);
 		  }
-	      
 		}
 		if (method_exists($this, '_befor_add')) {
 			$this->_befor_add();
@@ -356,59 +360,35 @@ Class CommonController extends Controller{
 		$this->display("edit");
 	}
 	
+	
+	
 	public function edit() {
+	    
+	   
 		$model = D($this->dbname);
 		if(IS_POST){
-	
 			$data=I('post.');
-
-// 			$pid=$_REQUEST['pid'];
-// 			$id=$_REQUEST['id'];
-// 			// 新选中的上级 级别
-// 			$pidlist = M("Keys")->where("id=".$pid."")
-// 			->field("level")
-// 			->select();
-// 			// 自身 级别
-// 			$idlist = M("Keys")->where("id=".$id."")
-// 			->field("level")
-// 			->select();
-//  			var_dump($pidlist[0]["level"]);
-//  			var_dump($idlist[0]["level"]);
-			
-// 			if($pidlist[0]["level"]>$idlist[0]["level"])
-// 			{
-// 			    var_dump("不能这样做！");
-// 			}
-// 			else
-// 			{
-// 			    var_dump("可以这样做！");
-// 			}
-			
-			
+			//die();
 			if (false === $data = $model->create()) {
 			    //var_dump($model->getError());
 				$this->mtReturn(300,'失败，' . $model->getError(),$_REQUEST['navTabId'],true);
 			}
 			
-			
-			
 			//var_dump($data);
 			if (method_exists($this, '_befor_update')) {
 				$data = $this->_befor_update($data);
 			}
-			
-			
 			if($model->save($data)||$model->save($data)==0){
 				if (method_exists($this, '_after_edit')) {
 					$id = $data['id'];
 					$this->_after_edit($id);
 				}
 			}
-	
-		
 			$id = $data['id'];
 			
 			$this->mtReturn(200,"编辑【".$this->opname."】成功".$id,$_REQUEST['navTabId'],true);  //写入日志
+			//$this->mtReturn(200,"更改【".$this->opname."】状态成功".$id,$_REQUEST['navTabId'],false);
+
 		}
 		
 	
@@ -452,6 +432,7 @@ Class CommonController extends Controller{
 		if (method_exists($this, '_after_del')) {
 		    $data = $this->_after_del($id,$model);
 		}
+		
 		$model->commit();
 		$this->mtReturn(200,"删除【".$this->opname."】成功".$id,$_REQUEST['navTabId'],false);
 	}

@@ -25,7 +25,7 @@ define("APP_NAME", 'SII前台管理');
 define('APP_PATH', './App/');
 
 // 定义模块名 App/Admin 替换原来的Home
-define('BIND_MODULE', 'Index');
+define('BIND_MODULE', 'Admin');
 
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';

@@ -22,14 +22,7 @@
                 <input type="text" data-rule="required" size="30" name="name" id="j_name" value="{$Rs['name']}" >
 				<span>模块/动作/方法</span>
             </td></tr>
-            <tr><td>
-                <label for="j_status" class="control-label x85">是否启用：</label>
-               <select name="status"  data-container="body"  id="j_status" data-toggle="selectpicker" data-rule="required">
-			    <if condition="$Rs['status'] EQ 1 || $Rs['status'] EQ ''"><option value="1" selected>启用</option><else/><option value="0" selected>禁用</option></if>
-                <option value="1">启用</option>
-                <option value="0">禁用</option>
-                 </select>
-             </td></tr>
+            <tr><include file="Public/form_edit_status_layout" /></tr>
               <tr><td>
                 <label for="j_sort" class="control-label x85">排序：</label>
                 <input type="text"  size="5" data-toggle="spinner" data-min="0" data-max="100" data-step="1" data-rule="integer" name="sort" id="j_sort" value="{$Rs['sort']}" >

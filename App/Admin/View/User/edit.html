@@ -9,21 +9,39 @@
 		//alert($('#RuleGroupName1').val());
 		//
 	});
+	
+	$('#j_uid').on('input',function(e){  
+		$('#j_id').val($('#j_uid').val());
+    });  
+	
 </script>
           <table class="table table-condensed table-hover" width="100%">
            <tbody>
 			<tr><td>
-                <label for="j_title" class="control-label x85">社员编号:</label>
-                <input type="text" data-rule="required" size="25" name="id" id="j_username" value="{$Rs['id']}" <if condition="$id EQ 0"><else/> readonly</if> >
+                <label for="j_title" class="control-label x85">社员编号：</label>
+                <input type="text" 
+                 data-rule="required"
+                 size="25" name='uid' id="j_uid" value="{$Rs['id']}" 
+                 <if condition="$id EQ '0'"><else/>readonly</if>
+                 >
+                 <input type="hidden" id="j_id" name="id" value="{$Rs['id']}" >
              </td></tr>
+             
+             
+             
             <tr><td>
                 <label for="j_title" class="control-label x85">登陆密码:</label>
-                <input type="Password" data-rule="required" size="25"  name="password" id="j_pwd" value="{$Rs['password']}" >
+                <input type="Password" 
+                data-rule="required"
+                
+                size="25"  name="password" id="j_pwd" value="{$Rs['password']}" >
 				<span>不修改密码，此项不用改动</span>
              </td></tr>
             <tr><td>
                 <label for="j_title" class="control-label x85">社员姓名：</label>
-                <input type="text" data-rule="required" size="25" name="username" id="j_truename" value="{$Rs['username']}" >
+                <input type="text" 
+               data-rule="required"
+                 size="25" name="username" id="j_truename" value="{$Rs['username']}" >
              </td></tr>
             <tr><td>
             <label for="j_title" class="control-label x85">性别：</label>

@@ -14,7 +14,9 @@ class ProvsionsModel extends Model
         
         array('name', '','基本规定名称已经存在！', 0, 'unique', 3),//1:新增，2:编辑，3:全部
         array('no', '','基本规定编号已经存在！', 0, 'unique', 3),//1:新增，2:编辑，3:全部
-        array('pid','checkLevel','不能选择下级作为上级！',0,'callback',2)
+        //array('pid','checkLevel','不能选择下级作为上级!',0,'unique',2), // 在新增的时候验证name字段是否唯
+        array('pid','checkLevel','不能选择下级作为上级！',0,'callback',2),
+        
     );
     
     

@@ -247,7 +247,7 @@ $('#meetingid').on('change',
 
 <div class="bjui-pageContent">
 
-    <form name="MeetingReservEdit" action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm"  >
+    <form name="MeetingReservEdit" action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm"  method="post" >
  		<!-- hidden -->
 		<input type="hidden" name="id" id="id" value="{$id}">
 		<!-- hidden 判断从哪个画面跳转来的，然后刷新哪个画面 -->
@@ -258,9 +258,10 @@ $('#meetingid').on('change',
            <tbody>
 
            <tr><td>
-                <label for="j_title" class="control-label x85">会议室名称：
+                <label for="j_title" class="control-label x85">会议室名称：</label>
                 
-                </label>
+                </td>
+               	 <td>
                 <select  name="meetingid" id="meetingid"  data-toggle="selectpicker" >
 	               	<option  value="">请选择会议室</option>
 		         	<php>$listz=M('meeting')->where(array('status'=>1))->select();</php>
@@ -275,6 +276,8 @@ $('#meetingid').on('change',
              
             <tr><td>
                 <label for="j_title" class="control-label x85">会议室属性：</label>
+                </td>
+               	 <td>
               	<input type="checkbox" data-toggle="icheck" name="MR_hastv"  id="MR_hastv"  data-label="内置电视"  disabled <if condition="$beforlist.hastv EQ 1 ">checked</if> />
 				<input type="checkbox" data-toggle="icheck" name="MR_hasprojection" id="MR_hasprojection"  data-label="内置投影" disabled <if condition="$beforlist.hasprojection EQ 1 ">checked</if> />
 				<input type="checkbox" data-toggle="icheck" name="MR_hasvideo"   id="MR_hasvideo"    data-label="视频会议" disabled <if condition="$beforlist.hasvideo EQ 1 ">checked</if> />
@@ -284,6 +287,8 @@ $('#meetingid').on('change',
             <tr>
              	 <td>
                 	<label for="j_sort" class="control-label x85">主题：</label>
+                	</td>
+               	 <td>
                		<input type="text"  name="title" id="title" value="{$Rs.title}">
              	 </td>
             </tr>
@@ -291,6 +296,8 @@ $('#meetingid').on('change',
             <tr>
              	 <td>
                 	<label for="j_sort" class="control-label x85">预订人：</label>
+                	</td>
+               	 <td>
                		<input type="text" name="username" id="j_username" value="<php> if(empty($beforlist['username']))  {echo session('username');} else { echo $beforlist['username'];} </php>" size="10"  readonly>
 		            <input type="hidden" name="userid" id="j_userid" value="<php> if(empty($beforlist['userid']))  {echo session('uid');} else { echo $beforlist['userid'];} </php>" >
              	 </td>
@@ -298,28 +305,38 @@ $('#meetingid').on('change',
   
             <tr><td>
                <label for="j_name" class="control-label x85">所在部门：</label>
+               </td>
+               	 <td>
+               <input type="text" name=orgname id="j_orgname" value="{$orgName}" size="10"  readonly>
+               
+			   
+			   <!--  
 			   <select  name="orgidtree" data-toggle="selectpicker" disabled>
                <option  value="0">请选择</option>
 	           <php>$listz=cateTree(0,0,'org','1');</php>
 		          <foreach name="listz" item="v">
-		              <option <if condition="$v.id EQ $beforlist['orgid'] "> selected value="{$beforlist['orgid']}" <else /> <if condition="$v.id EQ $Think.session.orgid ">selected value="{$Think.session.orgid}" <else/>value="{$v.id}"</if></if> >
-
+		              <option <if condition="$v.id EQ $beforlist['orgid'] "> 
+		              				selected value="{$beforlist['orgid']}" 
+		              				<else /> 
+			              				<if condition="$v.id EQ $Think.session.orgid ">selected value="{$Think.session.orgid}" 
+			              				<else/>value="{$v.id}"
+			              				</if>
+		              				</if> 
+		              				>
 					        <assign name="strLevel" value="+" />
 					        <for start="0" end="$v.level" name="i" >
 								<php>$strLevel = $strLevel . "---" ;</php>
 							</for>
 							
 							<switch name="v.level"> 
-							
 					 			<case value="0">+<B>{$v.name}</b></case> 
 								<case value="$v.level">{$strLevel}{$v.name}</case>
-								
 								<default />
 							 </switch>
-
 			         </option>
 		          </foreach>
              </select>
+             -->
              
             <input type="hidden" name=orgid id="j_orgid" value="<php> if(empty($beforlist['orgid']))  {echo session('orgid');} else { echo $beforlist['orgid'];} </php>" >
              </td></tr>
@@ -328,6 +345,8 @@ $('#meetingid').on('change',
             <tr>
              	 <td>
                 	<label for="j_sort" class="control-label x85">日期：</label>
+               	 </td>
+               	 <td>
                		<input type="text" data-min-date="<php>echo date('Y-m-d',time());</php>" name="startdate" id="startdate" value="<php> if(empty($Rs['startdate']))  {   if(empty($_REQUEST['sel_start'])) {echo date('Y-m-d', time());} else {echo date('Y-m-d', strtotime($_REQUEST['sel_start']));}  } else { echo $Rs['startdate'];} </php>" data-toggle="datepicker" data-rule="required;date" size="15">
              	 </td>
             </tr>
@@ -335,7 +354,8 @@ $('#meetingid').on('change',
             <tr>
              	 <td>
                 	<label for="j_sort" class="control-label x85">开始时间：</label>
-                	
+                 </td>
+               	 <td>
                     <input type="text"  name="starttime" id="starttime" value="<php> if(empty($Rs['starttime']))  {echo date('H:i', strtotime($_REQUEST['sel_start']));} else { echo date('H:i', strtotime($Rs['starttime']));} </php>" name="starttime" id="starttime" data-date="$_REQUEST['sel_start'])"  data-date-format="hh:ii" readonly>
 
              	 </td>
@@ -344,6 +364,8 @@ $('#meetingid').on('change',
             <tr>
              	 <td>
                 	<label for="j_sort" class="control-label x85">时长：</label>
+                 </td>
+               	 <td>
                		<input type="text" name='timelength' id='timelength' value=" <php> if(empty($Rs['timelength']))  {echo '0.5';} else { echo $Rs['timelength'];} </php>" data-toggle="spinner" data-min="0.5" data-max="24" data-step="0.5" data-decimalPlace='1' readonly>
              	 </td>
             </tr> 
@@ -351,6 +373,8 @@ $('#meetingid').on('change',
             <tr>
              	 <td>
                 	<label for="j_sort" class="control-label x85">结束时间：</label>
+                 </td>
+               	 <td>
                	    <input type="text" value="<php> if(empty($Rs['endtime']))  {echo date('H:i',strtotime('+30 minute',strtotime($_REQUEST['sel_start'])));} else { echo date('H:i', strtotime($Rs['endtime']));} </php>"  name="endtime" id="endtime" readonly>
              	 </td>
             </tr> 
@@ -358,14 +382,19 @@ $('#meetingid').on('change',
             <tr>
              	 <td>
                 	<label for="j_sort" class="control-label x85">是否全天：</label>
+                 </td>
+               	 <td>
                		<input type="checkbox" data-toggle="icheck"  name="cHasAllDay" id="cHasAllDay" <if condition="$Rs.hasallday EQ 1 ">checked</if>  >	
                		<input type="hidden"  name="hasallday" id="hasallday" value="<php> if(empty($Rs['hasallday']))  {echo '0';} else { echo $Rs['hasallday'];} </php>" >		
              	 </td>
             </tr> 
             
             <tr>
-             	 <td >
-                	
+            
+             	 <td width="20%">
+                	 <label for="j_sort" class="control-label x85">与会设备：</label>
+                 </td>
+               	 <td>
                 	 <empty name="id">
                          <div id="myLoadDiv2" data-toggle="autoajaxload"  data-url="__URL__/Ajaxloaddevs">
                 	 	</div>   	 
@@ -380,6 +409,8 @@ $('#meetingid').on('change',
             <tr>
              	 <td>
                 	<label for="j_sort" class="control-label x85">会议内容：</label>
+                	</td>
+               	 <td>
                	 	<textarea name="note" id="note"  cols="45" rows="2">{$Rs["note"]}</textarea>
                	 	
              	 </td>

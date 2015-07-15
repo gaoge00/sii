@@ -81,20 +81,38 @@ class MeetingreservController extends CommonController {
     	exit(json_encode($list));
     }
     
+    
+    public function getOrgNameByUid()
+    {
+    
+        $demo=M("meetingreserv");
+        $list=$demo->table(C('DB_PREFIX')."user a")
+        ->join("left join ".C('DB_PREFIX')."org b ON (a.orgid=b.id)")
+        ->field("a.id,b.name as orgName")
+        ->where("a.id=".session("uid"))
+        ->select();
+    
+        if(isset($list)&&count($list)>0)
+            $result=$list[0]["orgName"];
+        else
+            $result="";
+    
+        return $result;
+    }
 	
   public function _befor_edit(){
 
         $this->assign('caltype',$_REQUEST["caltype"]);
-        //var_dump($_REQUEST["caltype"]);
-                 
   		$MeetingreservID=$_REQUEST["id"];
   		$this->GetReservByID($MeetingreservID);
-  	
+  		
   }
   
   public function _befor_add(){
   
       $this->assign('caltype',$_REQUEST["caltype"]);
+      $this->assign('orgName',$this->getOrgNameByUid());
+      
       //var_dump($_REQUEST["caltype"]);
     		 
   }
@@ -103,6 +121,9 @@ class MeetingreservController extends CommonController {
   		$MeetingreservID=$_REQUEST["id"];
   		$this->GetReservByID($MeetingreservID);
   }
+  
+  
+  
   
   public function GetReservByID($id){
   	
@@ -126,6 +147,7 @@ class MeetingreservController extends CommonController {
   	
     echo $demo->getLastSql();
     */
+  	$this->assign('orgName',$this->getOrgNameByUid());
   	$this->assign('id',$id);
   	$this->assign('beforlist',$list[0]);
   }
@@ -169,9 +191,7 @@ class MeetingreservController extends CommonController {
 	   			//var_dump($M_Lock->getLastSql());
 	   		}
 	   		$M_Lock->commit();
-	   		
-	   		
-	   		
+
 	   	}
 	}
    

@@ -7,7 +7,9 @@ Class AuthruleController extends CommonController{
 	 public function _initialize() {
         parent::_initialize();
         $this->dbname = 'authrule';
-        $this->opname = "权限管理";    
+        $this->opname = "权限管理"; 
+        
+        
         //123123213123123Test
     }
 	
@@ -18,7 +20,9 @@ Class AuthruleController extends CommonController{
    }
   
    public function _befor_add(){
-     $list=cateTree($pid=0,$level=0,$this->dbname);
+       
+     //var_dump(cateTree($pid=0,$level=1,$this->dbname));
+     $list=cateTree($pid=0,$level=0,'uv_authrule');
      $this->assign('list',$list);
   }
   
@@ -36,7 +40,7 @@ Class AuthruleController extends CommonController{
   
   
   public function _befor_edit(){
-     $list=cateTree($pid=0,$level=0,$this->dbname);
+     $list=cateTree($pid=0,$level=0,'uv_authrule');
      $this->assign('list',$list);
   }
   
@@ -53,24 +57,6 @@ Class AuthruleController extends CommonController{
   }
   
   
-  //无极排序递归删除子级的数据
-  public function _after_del($refid,$model){
   
-      $arrID=D($this->dbname)->where('pid='.$refid.'')->field("id")->select();
-      $intcoun=count($arrID);
-      if($intcoun>0)
-      {
-          foreach ($arrID as $key=>$value)
-          {
-              $model->where('id = ' . $value['id']  )->delete();
-              //var_dump($model->getlastSql());
-              $this->_after_del($value['id'],$model);
-          }
-      }
-      else
-     {
-          return;
-      }
-  }
   
 }

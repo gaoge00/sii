@@ -10,7 +10,14 @@ class ImportantController extends CommonController {
 		$this->opname="重要度";
 		$this->dbname = 'important';
 	}
-	
+	public function _befor_sort($order,$asc){
+	    if(isset($order)&&$order!='')
+	    {
+	        
+	    }
+	    
+	    
+	}
     
   
 }
