@@ -53,12 +53,20 @@ class InfopublishController extends CommonController
             ->where(array('infopublishid'=>array('in',$strDelID)))->delete();
             
             $model->commit();
-            $this->mtReturn(200,"删除【".$this->opname."】成功".$id,$_REQUEST['navTabId'],false);
+            $this->mtReturn(200,"删除【".$this->opname."】成功",$_REQUEST['navTabId'],false);
         }
     }
     
     function _filter(&$map) {
     
+        
+        //用户只能查看自己发布的信息
+        if(!authsuperadmin(session('uid')))
+        {
+        $map['_logic'] = 'and';
+        $map['uid'] =array('eq',session("uid")) ;
+        }
+        
         if(IS_POST){
             if(isset($_REQUEST['s_startdt']) && $_REQUEST['s_startdt'] != ''&&isset($_REQUEST['s_enddt']) && $_REQUEST['s_enddt'] != ''){
                 $map['_logic'] = 'or';
@@ -104,21 +112,14 @@ class InfopublishController extends CommonController
                 $map['_logic'] = 'and';
                 $map['status'] =array('eq',I('s_statusid')) ;
             }
-            
-           
             //return $map;
             //var_dump($map);
         }
     }
 
-    /*
-     * public function index(){
-     * //echo date('y-m-d h:i:s',time());
-     * $list=M($this->dbname)->select();
-     * $this->assign('list',$list);
-     * $this->display();
-     * }
-     */
+    
+
+     
     public function _befor_index(){
          // 重要度important
         $importantlist = M("Important")->where("status=1")
@@ -136,6 +137,8 @@ class InfopublishController extends CommonController
             
         );
        $this->assign('statuslist', $statuslist);
+       
+      
     }
     
     public function _befor_add(){
@@ -149,7 +152,7 @@ class InfopublishController extends CommonController
     
     
     public function _befor_insert($data){
-        $data["uid"]=session("uid");
+        $data["uid"]=session('uid');
         return $data;
     }
 
@@ -260,7 +263,7 @@ class InfopublishController extends CommonController
     
 
     //二级联动中的第一个select 之后 加载第二个 select
-    public function GetInfoType()
+    public function AjaxGetInfoType()
     {
         $infotypeid = $_REQUEST["infotypeid"];
         $arrWhere = array();
@@ -283,9 +286,9 @@ class InfopublishController extends CommonController
             ->field("id as value,name as label")
             ->order("sort asc")
             ->select();
-        // var_dump($infotypelist);
+         //var_dump($infotypelist);
         // $this->assign('infotypelist',$infotypelist);
-        
+        array_unshift($infotypelist,array("value"=>"","label"=>"--请选择--"));
         echo json_encode($infotypelist);
     }
     
@@ -484,8 +487,9 @@ class InfopublishController extends CommonController
     
                 $infopublish->commit();
                 $id = $data[$this->dbname . 'ID'];
-    
-                $this->mtReturn(200, "编辑成功" . $id, $_REQUEST['navTabId'], true); // 写入日志
+                
+                
+                $this->mtReturn(200, "编辑成功", $_REQUEST['navTabId'], true); // 写入日志
             } catch (Exception $e) {
                 $infopublish->rollback();
                 $this->mtReturn(300, "编辑失败" . $e . $id, $_REQUEST['navTabId'], true); // 写入日志
@@ -493,6 +497,10 @@ class InfopublishController extends CommonController
         }
     
     }
+    
+    
+    
+    
     
     
 }

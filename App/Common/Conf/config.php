@@ -3,10 +3,8 @@ return array(
     'URL_MODEL' => 0, // URL访问模式,可选参数0、1、2、3,代表以下四种模式：
     
     'URL_CASE_INSENSITIVE' => true, // 表示URL访问不区分大小写
-    'DB_FIELDS_CACHE' => false, // 关闭缓存
-                              
+    'DB_FIELDS_CACHE' => false, // 关闭缓存                        
     // 权限验证设置
-    
       'AUTH_CONFIG'=>array(
       'AUTH_ON' => true,
       'AUTH_TYPE' => 1, // 认证方式，1为时时认证；2为登录认证。
@@ -21,9 +19,14 @@ return array(
     'ADMINISTRATOR' => array(
         '00000'
     ),
+
     'SESSION_OPTIONS' => array(
-        'expire' => 36000
+        'expire' => 1800
     ),
+    
+    //'SESSION_EXPIRE'=>10,
+    
+    
     'SESSION_PREFIX' => 'SII', // Session 前缀
                                        
     // 加载扩展配置文件 多个用,隔开

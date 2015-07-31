@@ -1,12 +1,7 @@
 
  
- <extend name="Public:form_index_pages_layout"/>
- 
- 
-
-		<block name="index_search">
-		
-		
+<extend name="Public:form_index_pages_layout"/>
+<block name="index_search">	
 <script type="text/javascript">
  // 初期加载 默认日期
 	   $(function(){
@@ -26,6 +21,7 @@
 				   $("#j_index_select_tree_orgs")
 				   ); 
 		}); 
+  
 </script>
 <!-- <php> var_dump($_REQUEST);</php> -->
 
@@ -102,7 +98,7 @@
 	
 		        <button type="submit"  class="btn-default" data-icon="search">查询</button>
 			    <!-- //新增按钮 -->
-			    <include file="Public/form_index_titleoper_layout" h="700" w="800" />
+			    <include file="Public/form_index_titleoper_layout" h="700" w="600" />
 			    
 			    
 				<span><a class="btn btn-orange" href="javascript:;" onclick="$(this).navtab('reloadForm', true);"
@@ -127,33 +123,40 @@
 
 
 	<block name="index_content">
-	<table data-toggle="tablefixed" data-width="100%" data-layout-h="0" data-nowrap="true">
+	<table 
+	data-toggle="tablefixed" 
+	data-width="100%" 
+	data-layout-h="0" 
+	data-nowrap="true"
+
+	>
 		<thead>
 			<tr>
-			    <th  width="3%"><input type="checkbox" class="checkboxCtrl" data-group="deleteid" data-toggle="icheck"></th>
+			    <th  width="3%" ><input type="checkbox" class="checkboxCtrl" data-group="deleteid" data-toggle="icheck"></th>
 				<th  width="5%" data-order-direction="desc" data-order-field="id">编号</th>
-				<th>标题</th>
-				<th>发布日期</th>
-				<th data-order-direction="desc" data-order-field="enddt">截止日期</th>
-				<th data-order-direction="desc" data-order-field="infotypename">类别</th>
-				<th>重要度</th>
+				<th width="13%" data-options="columnResize:false">标题</th>
+				<th width="8%" >发布日期</th>
+				<th width="8%" data-order-direction="desc" data-order-field="enddt">截止日期</th>
+				<th width="8%" data-order-direction="desc" data-order-field="infotypename">类别</th>
+				<th width="8%">重要度</th>
 				<th width="13%">所属部门</th>
 				<th width="13%">关键词</th>
 				<!-- <th>排序</th> -->
 				<th  width="5%" data-order-direction="desc" data-order-field="status">状态</th>
-				<th>操作</th>
+				<th width="20%" >操作</th>
 			</tr>
 		</thead>
 		<tbody>
 			<foreach name="list" item="v">
 			<tr>
 			    <td>
+			    
 			    <if condition="($v.userid EQ session('uid')) or ($v.userid  EQ '') or (authsuperadmin(session('uid')))  ">
 			    <input type="checkbox" name="deleteid"  value="{$v.id}" data-toggle="icheck" />
 			    </if>
 			    </td>
 				<td>{$v.id}</td>
-				<td><b>{$v.title}</b></td>
+				<td><b><a  href="__URL__/view/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"   data-toggle="dialog" data-width="700" data-height="600" data-id="dialog-mask" data-mask="true" >{$v.title}</a></b></td>
 				<td>{$v.startdt}</td>
 				<td>{$v.enddt}</td>
 				<td>{$v.infotypename}</td>
@@ -181,7 +184,7 @@
 					class="btn btn-green btn-sm" data-toggle="dialog" data-width="700"
 					data-height="600" 
 					data-id="dialog-mask" data-mask="true">附件</a> 
-					<include file="Public/form_index_operation_layout" h="700" w="800" />
+					<include file="Public/form_index_operation_layout" h="700" w="600" />
 			</tr>
 			<!-- data-id="dialog-mask" data-mask="true" -->
 			</foreach>

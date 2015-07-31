@@ -339,7 +339,7 @@ function msubstr($str, $start = 0, $length)
 
 function getuserid()
 {
-    return session("uid");
+    return session('uid');
 }
 
 function gettruename()

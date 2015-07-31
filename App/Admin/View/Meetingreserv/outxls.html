@@ -1,0 +1,87 @@
+
+<script type="text/javascript">
+
+
+function checkenddt(){
+	
+    var startdt =  $('#startdt').val();
+    var enddt= $('#enddt').val();
+    
+    if(enddt!=""&&startdt!=""){
+     if(enddt<startdt)
+     {
+    	 //sdfsfsdfsf
+    	 $(this).alertmsg('error',"结束日期不能小于开始日期！");
+    	 //$('#s_enddt').val("");
+    	 return false;
+     }
+     else
+    	 return true;
+    }
+    else
+    	return true;
+}
+</script>
+
+<div class="bjui-pageContent">
+
+    <form name="MeetingReservEdit" action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm"  method="post" >
+ 		<!-- hidden -->
+		<input type="hidden" name="id" id="id" value="{$id}">
+        <div class="pageFormContent" data-layout-h="0">
+          <table class="table table-condensed table-hover" width="100%">
+           <tbody>
+
+           <tr><td width='85px'>
+                <label for="j_strtype" class="control-label x85">名称分类：</label>
+                
+                </td>
+               	 <td>
+                <select  name="strtype" id="meetingid"  data-toggle="selectpicker" 
+                data-rule="名称分类：required;strtype"
+                >
+	               	<option  value="">---请选择---</option>
+	               	<option  value="1">会议室</option>
+	               	<option  value="2">设备</option>
+	            </select>
+             	
+           </td></tr>
+             
+            <tr>
+					<td><label for="j_title" class="control-label x85">起始日期：</label>
+					</td>
+               	    <td>
+						<input type="text" name="startdt" id="startdt"
+						data-toggle="datepicker" size="15"
+						value="{$Rs['startdt']}">
+					</td>
+			</tr>
+             
+            <tr>			
+					<td><label for="j_title" class="control-label x85">截止日期：</label>
+					</td>
+               	    <td>
+						<input type="text" name="enddt" id="enddt"
+						data-toggle="datepicker" 
+						size="15"
+						value="{$Rs['enddt']}">
+						<!-- data-min-date="%y-%M-{%d+30}" -->
+					</td>
+				</tr>
+            
+            
+            </tbody>
+            </table>
+        </div>
+        
+        <div class="bjui-footBar">
+            <ul>
+                 <!-- <li><a type="button" class="btn btn-default" data-toggle="doajax" >取消</a></li>-->
+                <li><button type="button" class="btn-close" data-icon="close">取消</button></li> 
+				<if condition="ACTION_NAME NEQ 'view' ">
+            		<li><button type="submit" class="btn-default"  onclick="return checkenddt();" data-icon="arrow-down">导出</button></li>
+            	</if>
+            </ul>
+        </div>
+    </form>
+</div>

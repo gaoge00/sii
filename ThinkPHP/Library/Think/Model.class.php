@@ -372,6 +372,11 @@ class Model
      */
     public function add($data = '', $options = array(), $replace = false)
     {
+        
+        try {
+      
+        
+        //var_dump($data);
         if (empty($data)) {
             // 没有传递数据，获取当前数据对象的值
             if (! empty($this->data)) {
@@ -383,6 +388,8 @@ class Model
                 return false;
             }
         }
+        
+        
         // 数据处理
         $data = $this->_facade($data);
         
@@ -412,6 +419,12 @@ class Model
             }
         }
         return $result;
+              
+        }
+        catch (Exception $ex)
+        {
+            return false;
+        }
     }
     // 插入数据前的回调方法
     protected function _before_insert(&$data, $options)
@@ -2235,8 +2248,6 @@ class Model
         $idlist = M($this->dbname)->where("id=".$id."")
         ->field("level")
         ->select();
-        //                  var_dump($pidlist[0]["level"]);
-        //                  var_dump($idlist[0]["level"]);
         //顶级可选
         if($pid==0)
             return true;

@@ -3,7 +3,7 @@
 
         <div class="bjui-searchBar">
 		 	<span <php>echo display(CONTROLLER_NAME.'/clear');</php> style="float:right;" >
-			  <a href="__URL__/clear/navTabId/{:CONTROLLER_NAME}" class="btn btn-red" data-toggle="doajaxchecked" data-confirm-msg="确定要删除吗？" data-icon="remove" data-idname="delids" data-group="paths[]">删除</a>
+			  <a href="__URL__/clear/navTabId/{:CONTROLLER_NAME}" class="btn btn-red" data-toggle="doajaxchecked" data-confirm-msg="确定要清除吗？" data-icon="remove" data-idname="delids" data-group="paths[]">清除</a>
 			  </span>
 		</div> 
 </form>
@@ -24,12 +24,11 @@
                         <tr>
                             <td>{$v.name}</td>
                             <td>{$v.path}</td>
-                           <td><input type="checkbox" name="paths[]" data-toggle="icheck" value="{$v.path}"></td>
+                            <td><input type="checkbox" name="paths[]" data-toggle="icheck" value="{$v.path}"></td>
                         </tr>
                     </volist>
                 </tbody>
             </table>
         </form>
     </div>
-
 </block>

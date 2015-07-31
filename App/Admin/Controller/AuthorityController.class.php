@@ -48,7 +48,7 @@ class AuthorityController extends CommonController {
             try {
                 
                 $id = $data[$this->dbname . 'ID'];
-                $this->mtReturn(200, "编辑成功" . $id, $_REQUEST['navTabId'], true); // 写入日志
+                $this->mtReturn(200, "编辑成功", $_REQUEST['navTabId'], true); // 写入日志
             } catch (Exception $e) {
                 $infopublishkeys->rollback();
                 $this->mtReturn(300, "编辑失败" . $e . $id, $_REQUEST['navTabId'], true); // 写入日志

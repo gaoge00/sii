@@ -24,9 +24,9 @@ class AdminService extends CommonService
                 'data' => '密码不正确！'
             );
         }
-        
+        //过期时间
         session('uid', $account['id']);
-        session('username', $account['username']);
+        session('username',$account['username']);
         
         session('depid',$account['depid']);
         session('orgid',$account['orgid']);

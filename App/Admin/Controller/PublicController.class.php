@@ -119,9 +119,9 @@ class PublicController extends Controller {
 	
     protected function dwzajaxReturn($data, $type='') {
         
+
 		$udata['id']=session('uid');
         $udata['update_time']=date("Y-m-d H:i:s",time());
-        
         $Rs=M("user")->save($udata);
         //echo M("user")->getLastSql();
         $dat['username'] = session('uid');
@@ -189,11 +189,33 @@ class PublicController extends Controller {
 	 $upload->maxSize   =     C('UPLOAD_MAXSIZE') ;
 	 $upload->exts      =     C('UPLOAD_EXTS');
 	 $upload->savePath  =     C('UPLOAD_SAVEPATH');
-	 $info   =  $upload->upload(); 
-	 $gourl = 'admin.php/public/attfile/attid/'.I('attid').'/'; 
-	 $errormsg=$upload->getError();
-	 //var_dump($errormsg);
+	 $info   =  $upload->upload();
 	 
+	 $gourl = 'admin.php/public/attfile/attid/'.I('attid').'/';
+	 $errormsg=$upload->getError();
+	 
+	 $filename=$info["filename"]["name"];
+	 
+	 //var_dump($info); 
+	 $filename=reset(split('\.',$filename));
+	 //var_dump($filename);
+	 if(strlen($filename)>20)
+	 {
+	     $info=false;
+	     $errormsg="上传的文件名不能超过20个字符或汉字！";
+	 }
+	 
+	 if(!isset($errormsg)||$errormsg!="") {
+	     
+	     echo "<script language='javascript' type='text/javascript'>";
+	     echo "alert('上传失败！".$errormsg."');";
+	     echo "window.location.href='$gourl'";
+	     echo "</script>";
+	     //$this->error($upload->getError());
+	 }
+	 
+	 //var_dump($errormsg);
+
 	 if(!$info) {
         echo "<script language='javascript' type='text/javascript'>"; 
 		echo "alert('上传失败！".$errormsg."');";
@@ -257,19 +279,27 @@ class PublicController extends Controller {
    public function login_dialog() {
        if(IS_POST){
            $admin = I('post.');
+           //var_dump($admin);
            $rs = D('Admin', 'Service')->login($admin);
+           //var_dump($rs);
            if (!$rs['status']) {
+               
+               
                //$this->error($rs['data']);
                $data['statusCode']=300;
+               //var_dump($data);
                $data['message']=$rs['data'];
                $data['tabid']=$_REQUEST['navTabId'];
                $data['closeCurrent']='false';
                $data['forward']='';
+               //var_dump("123123123123");
+               
                $this->dwzajaxReturn($data);
            }
            
            
            $tabid= cookie("login_action_tabid");
+          
            $data['statusCode']=200;
            $data['message']='登陆成功！';
            $data['tabid']=$tabid; //;
@@ -281,9 +311,10 @@ class PublicController extends Controller {
            
            //var_dump($data);
            //die();
+           
            $this->dwzajaxReturn($data);
            //$this->success('登录成功，正在跳转...',"admin.php"  ,1);	//登录成功跳转到管理画面
-            
+           //var_dump($data);
            //$this->display("index/index");
        }
        else{
@@ -292,5 +323,6 @@ class PublicController extends Controller {
            $this->display();
        }
    }
+   
 
 }

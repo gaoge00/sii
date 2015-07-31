@@ -11,7 +11,7 @@ function CheckAll(form)
 //-->
     </SCRIPT>
 <div class="bjui-pageContent">
- <form action="__URL__/EditRule/navTabId/{:CONTROLLER_NAME}" class="pageForm" data-toggle="validate">
+ <form action="__URL__/EditRule/navTabId/{:CONTROLLER_NAME}" class="pageForm" data-toggle="validate" method="post">
  <input type="hidden" name="id" value="{$id}">
     <div class="pageFormContent" data-layout-h="0">
      <table class="table table-condensed table-hover" width="100%">
@@ -31,14 +31,14 @@ function CheckAll(form)
 	    </td>
 		<td>
 		<Table width="100%">
-		<php>$list1 = M('authrule')->where('level=1 and pid='.$v['id'])->order('sort')->select();</php>
+		<php>$list1 = M('authrule')->where('level=1 and pid='.$v['id'].' and status="1"')->order('sort')->select();</php>
 		<foreach name="list1" item="v">
     	<Tr><Td height=30 width=200>
         <input type="checkbox" name="rules[]" <if condition="in_array($v[id],$rs)">checked="checked"</if> value="{$v.id}">  {$v.title}
 	    </td>
 		<td>
 		
-		<php>$list2 = M('authrule')->where('level=2 and pid='.$v['id'])->order('sort')->select();</php>
+		<php>$list2 = M('authrule')->where('level=2 and pid='.$v['id'].' and status="1"')->order('sort')->select();</php>
 		<foreach name="list2" item="v">
         <span style="width:150px;">
 	    <input type="checkbox" name="rules[]" <if condition="in_array($v[id],$rs)">checked="checked"</if> value="{$v.id}">  {$v.title}

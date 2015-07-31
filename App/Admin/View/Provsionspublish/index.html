@@ -2,8 +2,33 @@
  
  <extend name="Public:form_index_pages_layout"/>
 
+
+
 		<block name="index_search">
-	
+<script type="text/javascript">
+			
+function checkenddtprov(){
+	//alert("checkenddtprov");
+    var startdt =  $('#s_startdtprov').val();
+    var enddt= $('#s_enddtprov').val();
+    if(enddt!=""&&startdt!=""){
+     if(enddt<startdt)
+     {
+    	 //sdfsfsdfsf
+    	 $(this).alertmsg('error',"结束日期不能小于开始日期！");
+    	 //$('#s_enddt').val("");
+    	 return false;
+     }
+     else
+    	 return true;
+    }
+    else
+    	return true;
+}
+</script>
+		
+		
+
 	    <label>标题：</label>
 		<input  type="text" 
 				value="{$_REQUEST['s_title']}" 
@@ -41,10 +66,10 @@
 			         </option>
 		          </foreach>
 					</select> 	
-		<label>开始日期：</label><input type="text" name="s_startdt" id="s_startdt" value="{$_REQUEST['s_startdt']}" data-toggle="datepicker" size="10"/>
-		<label>结束日期：</label><input type="text" name="s_enddt" id="s_enddt" value="{$_REQUEST['s_enddt']}" data-toggle="datepicker" size="10"/>
+		<label>开始日期：</label><input type="text" name="s_startdt" id="s_startdtprov" value="{$_REQUEST['s_startdt']}" data-toggle="datepicker" size="10"/>
+		<label>结束日期：</label><input type="text" name="s_enddt" id="s_enddtprov" value="{$_REQUEST['s_enddt']}" data-toggle="datepicker" size="10"/>
 	
-		        <button type="submit"  class="btn-default" data-icon="search">查询</button>
+		        <button type="submit" id="search"  onclick="return checkenddtprov();" class="btn-default" data-icon="search">查询</button>
 		          
 			    <!-- //新增按钮 -->
 			    <include file="Public/form_index_titleoper_layout" h="700" w="600" />
@@ -56,7 +81,6 @@
 				
 			  <span style="float:right;margin-right:5px;"
 			  <php>echo display(CONTROLLER_NAME.'/del');</php>
-			  
 			  >
 			  <a href="__URL__/del/navTabId/{:CONTROLLER_NAME}" 
 			     class="btn btn-red" 
@@ -75,7 +99,7 @@
 	<table data-toggle="tablefixed" data-width="100%" data-layout-h="0" data-nowrap="true">
 		<thead>
 			<tr>
-			    <th  width="30"><input type="checkbox" class="checkboxCtrl" data-group="deleteid" data-toggle="icheck"></th>
+			    <th  width="30px"><input type="checkbox" class="checkboxCtrl" data-group="deleteid" data-toggle="icheck"></th>
 				<th  width="13%" data-order-direction="desc" data-order-field="provsname">分类</th>
 				<th data-order-direction="desc" data-order-field="no">规定编号</th>
 				<th>规定名称</th>
@@ -97,7 +121,7 @@
 			    </td>
 				<td>{$v.provsname}</td>
 				<td><b>{$v.no}</b></td>
-				<td>{$v.title}</td>
+				<td><b>{$v.title}</b></td>
 				<td>{$v.pages}</td>
 				<td>{$v.orgname}</td>
 				<td>{$v.modifydt}</td>

@@ -7,7 +7,7 @@ class InfopublishModel extends Model
 {
 
     protected $_validate = array(
-        array('title','','标题已经存在！',0,'unique',3),
+        //array('title','','标题已经存在！',0,'unique',3),
         array('orgid','checkOrgName','所属部门必须入力！',0,'callback',3),
         array('keysid','checkKeysName','关键词必须入力！',0,'callback',3),
         

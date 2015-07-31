@@ -102,3 +102,20 @@ function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeob
 		
 		$.fn.zTree.init(p_treeobj, settingKeys);
 }
+
+/*屏蔽Backspace，输入内容不屏蔽*/
+$(document).keydown(function(e){
+    var target = e.target ;
+    var tag = e.target.tagName.toUpperCase();
+    if(e.keyCode == 8){
+     if((tag == 'INPUT' && !$(target).attr("readonly"))||(tag == 'TEXTAREA' && !$(target).attr("readonly"))){
+      if((target.type.toUpperCase() == "RADIO") || (target.type.toUpperCase() == "CHECKBOX")){
+       return false ;
+      }else{
+       return true ;
+      }
+     }else{
+      return false ;
+     }
+    }
+}); 

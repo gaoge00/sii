@@ -1,0 +1,192 @@
+
+ 
+<extend name="Public:form_index_pages_layout"/>
+<block name="index_search">	
+<script type="text/javascript">
+ // 初期加载 默认日期
+	   $(function(){
+ 		    makeTree("__URL__/AjaxGetAllKeys_index",
+				   {id : '{$_REQUEST["s_keysid"]}'},
+				   "j_index_select_tree_keys",
+				   '#indexkeysid',
+				   '#indexkeysname',
+				   $("#j_index_select_tree_keys")
+				   ); 
+		   
+ 		      makeTree("__URL__/AjaxGetAllOrgs_index",
+				   {id : '{$_REQUEST["s_orgid"]}'},
+				   "j_index_select_tree_orgs",
+				   '#indexorgid',
+				   '#indexorgname',
+				   $("#j_index_select_tree_orgs")
+				   ); 
+		}); 
+  
+</script>
+<!-- <php> var_dump($_REQUEST);</php> -->
+
+	    <label>标题：</label>
+		<input  type="text" 
+				value="{$_REQUEST['s_title']}" 
+				name="s_title" 
+				class="form-control" 
+				size="10" />
+				<label for="j_title" class="control-label x75">所属部门：</label>
+						<input type="text" name="s_orgname" id="indexorgname"
+						data-toggle="selectztree" size="10"
+						data-tree="#j_index_select_tree_orgs" 
+						value="{$_REQUEST['orgname']}"
+						readonly> 
+						<input type="hidden" id="indexorgid" name="s_orgid" 
+						value="{$_REQUEST['s_orgid']}">
+						<ul id="j_index_select_tree_orgs" class="ztree hide">
+						</ul>
+				<label for="j_title" class="control-label x65">关键词：</label>
+						<input type="text" name="s_keysname" id="indexkeysname"
+						data-toggle="selectztree" size="10"
+						data-tree="#j_index_select_tree_keys" 
+						value="{$_REQUEST['s_keysname']}"
+						readonly> 
+						<input type="hidden" id="indexkeysid" name="s_keysid" 
+						value="{$_REQUEST['s_keysid']}">
+						<ul id="j_index_select_tree_keys" class="ztree hide">
+						</ul>		
+				<label for="j_name" class="control-label x65">重要度：</label>
+						<select 
+						width="10"
+						name="s_importantid" 
+						data-toggle="selectpicker"
+						data-emptytxt="--请选择--"
+						size="5"
+						value="{$_REQUEST['s_importantid']}"
+						>
+							<option value="">--请选择--</option>
+							<foreach name="importantlist" item="v">
+							<option 
+							<if condition="$v.id EQ $_REQUEST['s_importantid'] "> 
+								selected value="{$id}" 
+							<else />
+								value="{$v.id}"
+							</if>
+							>{$v.name}</option>
+							</foreach>
+					</select>	
+						
+				<label for="j_name" class="control-label x45">状态：</label>
+						<select name="s_statusid" 
+						data-toggle="selectpicker"
+						data-emptytxt="所有">
+							<!-- <option value="">--请选择--</option>	 -->
+							
+							<foreach name="statuslist" item="v">
+							<option value="{$v.id}"
+							<if condition="$v.id EQ $_REQUEST['s_statusid'] && !empty($_REQUEST['s_statusid']) "> 
+								selected value="{$id}" 
+							<else />
+								value="{$v.id}"
+							</if>
+							>{$v.name}</option>
+							</foreach>					
+							<!-- <option value="1"> 有效</option>
+							<option value="0"> 无效</option>
+							<option value="2"> 所有</option> -->
+					</select>		
+				
+				
+	<!-- 	<label>发布日期：</label><input type="text" name="s_startdt" id="s_startdt" value="{$_REQUEST['s_startdt']}" data-toggle="datepicker" size="15"/>
+		<label>截止日期：</label><input type="text" name="s_enddt" id="s_enddt" value="{$_REQUEST['s_enddt']}" data-toggle="datepicker" size="15"/> -->
+	
+		        <button type="submit"  class="btn-default" data-icon="search">查询</button>
+			    <!-- //新增按钮 -->
+			   
+			    
+				<span><a class="btn btn-orange" href="javascript:;" onclick="$(this).navtab('reloadForm', true);"
+				data-icon="undo">刷新</a>
+				</span>
+			
+				</block>
+
+
+	<block name="index_content">
+	<table 
+	data-toggle="tablefixed" 
+	data-width="100%" 
+	data-layout-h="0" 
+	data-nowrap="true"
+
+	>
+		<thead>
+			<tr>
+			    <th  width="3%" ><input type="checkbox" class="checkboxCtrl" data-group="deleteid" data-toggle="icheck"></th>
+				<th  width="5%" data-order-direction="desc" data-order-field="id">编号</th>
+				<th width="13%" data-options="columnResize:false">标题</th>
+				<th width="10%" >发布日期</th>
+				<th width="10%" data-order-direction="desc" data-order-field="enddt">截止日期</th>
+				<th width="8%" data-order-direction="desc" data-order-field="infotypename">类别</th>
+				<th width="8%">重要度</th>
+				<th width="13%">所属部门</th>
+				<th width="13%">关键词</th>
+				<!-- <th>排序</th> -->
+				<th  width="5%" data-order-direction="desc" data-order-field="status">状态</th>
+				<th width="20%" >操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<foreach name="list" item="v">
+			<tr>
+			    <td>
+			    <if condition="($v.userid EQ session('uid')) or ($v.userid  EQ '') or (authsuperadmin(session('uid')))  ">
+			    <input type="checkbox" name="deleteid"  value="{$v.id}" data-toggle="icheck" />
+			    </if>
+			    </td>
+				<td>{$v.id}</td>
+				<td><b><a  href="__URL__/view/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"   data-toggle="dialog" data-width="700" data-height="600" data-id="dialog-mask" data-mask="true" >{$v.title}</a></b></td>
+				<td>{$v.startdt}</td>
+				<td>{$v.enddt}</td>
+				<td>{$v.infotypename}</td>
+				<td>{$v.importantname}</td>
+				<td>{$v.orgsname}</td>
+				<td>{$v.keysname}</td>
+				<!-- <td>{$v.sort}</td> -->
+				<td>
+				<!-- <a
+					href="__URL__/changeStatus/id/{$v['id']}/navTabId/{:CONTROLLER_NAME}"
+					data-toggle="doajax" data-confirm-msg="确定要操作吗？"> -->
+					<if condition="$v.status EQ 1 ">
+						<!-- <img src="__PUBLIC__/images/ok.gif" border="0" /> -->
+						有效
+						<else />
+						无效
+						<!-- <img src="__PUBLIC__/images/locked.gif" border="0" /> -->
+						</if>
+						<!-- </a> -->
+						</td>
+				<td> 
+               <a <php>echo display(CONTROLLER_NAME.'/view');</php>  
+               href="__URL__/view/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  
+               class="btn btn-green btn-sm" data-toggle="dialog" 
+               data-width="700" data-height="600" 
+               data-id="dialog-mask" data-mask="true" >
+               查看</a>
+          
+				<a <php>echo display(CONTROLLER_NAME.'/accessory');</php>
+					href="__URL__/accessory/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"
+					class="btn btn-blue btn-sm" data-toggle="dialog" data-width="700"
+					data-height="600" 
+					data-id="dialog-mask" data-mask="true">附件</a> 
+					
+			</tr>
+			<!-- data-id="dialog-mask" data-mask="true" -->
+			</foreach>
+		</tbody>
+	</table>
+<!-- </div>
+
+<div class="bjui-footBar">
+        <div class="pages">
+            <span>共 {$totalCount} 条  每页 {$numPerPage} 条</span>
+        </div>
+	    <div class="pagination-box" data-toggle="pagination" data-total="{$totalCount}" data-page-size="{$numPerPage}" data-page-current="{$currentPage}">
+        </div>
+    </div> -->
+    </block>

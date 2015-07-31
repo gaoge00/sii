@@ -42,7 +42,7 @@ class ProvsionspublishController extends CommonController
            //var_dump($model->getLastSql());
             
             $model->commit();
-            $this->mtReturn(200,"删除【".$this->opname."】成功".$id,$_REQUEST['navTabId'],false);
+            $this->mtReturn(200,"删除【".$this->opname."】成功",$_REQUEST['navTabId'],false);
         }
         
     }
@@ -50,11 +50,39 @@ class ProvsionspublishController extends CommonController
     function _filter(&$map) {
     
         if(IS_POST){
-            if(isset($_REQUEST['s_startdt']) && $_REQUEST['s_startdt'] != ''&&isset($_REQUEST['s_enddt']) && $_REQUEST['s_enddt'] != ''){
-                $map['_logic'] = 'or';
-                $map['publishdt'] =array(array('egt',I('s_startdt')),array('elt',I('s_enddt'))) ;
-                $map['_logic'] = 'or';
-                $map['modifydt'] =array(array('egt',I('s_startdt')),array('elt',I('s_enddt'))) ;
+            
+            $map['_logic'] = 'or';
+            $map['publishdt'] =array();
+            $map['_logic'] = 'or';
+            $map['modifydt'] =array();
+            if(isset($_REQUEST['s_startdt']) && $_REQUEST['s_startdt'] != '')
+            {
+
+//                 $map['publishdt'] =array(array('egt',I('s_startdt')),array('elt',I('s_enddt'))) ;
+//                 $map['modifydt'] =array(array('egt',I('s_startdt')),array('elt',I('s_enddt'))) ;
+
+                array_push($map['publishdt'], array('egt',I('s_startdt')));
+                array_push($map['modifydt'], array('egt',I('s_startdt')));
+                
+            }
+            if(isset($_REQUEST['s_enddt']) && $_REQUEST['s_enddt'] != '')
+            {
+
+//                 $map['publishdt'] =array(array('egt',I('s_startdt')),array('elt',I('s_enddt'))) ;
+//                 $map['modifydt'] =array(array('egt',I('s_startdt')),array('elt',I('s_enddt'))) ;
+                array_push($map['publishdt'], array('elt',I('s_enddt')));
+                array_push($map['modifydt'], array('elt',I('s_enddt')));
+            }
+            
+            
+            if(count($map['publishdt'])==0)
+            {
+                unset($map['publishdt']);
+            }
+            
+            if(count($map['modifydt'])==0)
+            {
+                unset($map['modifydt']);
             }
 
             if(isset($_REQUEST['s_title']) && $_REQUEST['s_title'] != ''){
@@ -84,7 +112,7 @@ class ProvsionspublishController extends CommonController
     {
         $data["publishdt"]=date('Y-m-d',time());
         
-        $data["uid"]=session("uid");
+        $data["uid"]=session('uid');
         
         return $data;
         
@@ -107,7 +135,8 @@ class ProvsionspublishController extends CommonController
     
     public function _befor_update($data)
     {
-        $data["modifydt"]=date('Y-m-d',time());
+        $data["publishdt"]=date('Y-m-d',time());
+        //$data["modifydt"]=date('Y-m-d',time());
         return $data;
     }
 
@@ -121,7 +150,6 @@ class ProvsionspublishController extends CommonController
         $this->GetMasters();
     }
     
-
 
     // 得到Menu
     public function GetMasters()

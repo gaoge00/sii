@@ -1427,7 +1427,7 @@ th[align=right] {
 
 .bjui-tablefixed>.fixedtableScroller>.fixedtableTbody>.table>tbody>tr>td
 	{
-	word-wrap: break-word;
+	word-wrap: none;/*break-word;*/
 	word-break: normal;
 	line-height: 1.3;
 }

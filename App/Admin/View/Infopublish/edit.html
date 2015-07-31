@@ -246,7 +246,7 @@
 		}); 
 
 	 $('#enddt').on('afterchange.bjui.datepicker', function(e, data) {
-		 //checkenddt(e, data);
+		 checkenddt(e, data);
 		}); 
 
 	 function getNowFormatDate(newdate)
@@ -329,18 +329,19 @@
 	
 		<table class="table table-condensed table-hover" width="100%">
 			<tbody>
+
 				<tr>
 				
 					<td colspan="2">
 					
 					<label for="j_title" class="control-label x85">标题：</label>
 					<!-- data-rule="标题：required;title"  -->
-						<input type="text" 
+					<input type="text" 
 						data-rule="标题: required;title"
 						size="30"
+						maxlength=20 
 						name="title" id="j_title"
 						value="{$Rs['title']}"
-						
 						></td>
 				</tr>
 
@@ -366,8 +367,7 @@
 					<td colspan="2"><label for="j_title" class="control-label x85">类别：</label>
 						<select name="infotypeid1" id="InfoType1" data-toggle="selectpicker"
 						data-nextselect="#j_form_InfoType2"
-						data-refurl="__URL__/getInfoType/infotypeid/{value}"
-						
+						data-refurl="__URL__/AjaxgetInfoType/infotypeid/{value}"
 						data-emptytxt="--请选择--">
 							<option value="">--请选择--</option>
 							<foreach name="infotypelist" item="v">
@@ -377,16 +377,18 @@
 								{$v.name}
 							</option>
 							</foreach>
-					</select> <select name="infotypeid" id="j_form_InfoType2"
+					</select> 
+					
+					    <select name="infotypeid" id="j_form_InfoType2"
 						data-toggle="selectpicker" data-emptytxt="--请选择--"
 						data-rule="类别: required;infotypeid"
 						>
 							<option value="">--请选择--</option>
 							<foreach name="listInfotype1" item="v">
 							<option <if
-									condition="$v.id EQ $Rs['infotypeid'] "> selected
+							    condition="$v.id EQ $Rs['infotypeid'] "> selected
 								value="{$Rs['infotypeid']}" <else />value="{$v.id}"</if> >
-								{$v.name}
+								{$v.name}{$v.id}
 							</option>
 							</foreach>
 					</select></td>

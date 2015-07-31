@@ -20,18 +20,10 @@
                 <input type="text" data-rule="required" size="30" name="title" id="j_title" value="{$Rs['title']}" >
              </td></tr>
             
-            <tr><td>
-                <label for="j_status" class="control-label x85">是否启用：</label>
-               <select name="status"  data-container="body"  id="j_status" data-toggle="selectpicker" data-rule="required">
-			    <option value="1"  <if condition="$Rs['status'] EQ 1 ">selected</if> >启用</option>
-                <option value="0"   <if condition="$Rs['status'] EQ 0 ">selected</if> >禁用</option>
-                 </select>
-           </td></tr>
-
-              <tr><td>
-                <label for="j_sort" class="control-label x85">排序：</label>
-                <input type="text"  size="5" data-toggle="spinner" data-min="0" data-max="100" data-step="1" data-rule="integer" name="sort" id="j_sort" value="{$Rs['sort']}" >
-            </td></tr>
+            
+            <include file="Public/form_edit_status_layout" />
+          
+			<include file="Public/form_edit_sort_layout" />
             </tbody>
             </table>
 </block>

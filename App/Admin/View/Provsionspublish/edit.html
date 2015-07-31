@@ -118,13 +118,10 @@
 						size="30"
 						name="title" id="j_title"
 						value="{$Rs['title']}"
-						
 						></td>
 				</tr>
 
 				<tr>
-				
-				
 					<td colspan="2"><label for="j_title" class="control-label x85">规定分类：</label>
 						<select name="provsid" id="provsid" data-toggle="selectpicker"
 						data-rule="规定分类：required;title"
@@ -189,6 +186,14 @@
 	           </select>
 						</td>
 				</tr>
+				
+				<tr>
+				<!-- data-min-date="%y-%M-%d" -->
+					<td colspan="2"><label for="j_title" class="control-label x85">修订日期：</label>
+						<input type="text" name="modifydt" id="modifydt"
+						data-toggle="datepicker" size="15"	
+						value="{$Rs['modifydt']}"></td>
+				</tr>
 				<tr>
 					<td colspan="2">
 						<div style="display: inline-block; vertical-align: middle;">
@@ -200,6 +205,9 @@
 						</div>
 					</td>
 				</tr>
+				
+				
+				
 				<if condition="ACTION_NAME NEQ 'view' ">
 				<tr >
 					<td colspan="2" style="padding-left:3px;">

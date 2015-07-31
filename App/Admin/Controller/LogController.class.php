@@ -11,12 +11,26 @@ Class LogController extends CommonController{
     }
 	
    function _filter(&$map) {
+        if(IS_POST)
+        {
+           $map['_logic'] = 'and';
+           $map['addtime'] =array();
+           
+           if(isset($_REQUEST['time1']) && $_REQUEST['time1'] != '')
+           {
+               array_push($map['addtime'],array('egt',I('time1')." 00:00:00"));
+           }
+               
+           if(isset($_REQUEST['time2']) && $_REQUEST['time2'] != '')
+           {
+               array_push($map['addtime'],array('elt',I('time2')." 23:59:59"));
+    	   }
 
-        if(IS_POST&&isset($_REQUEST['time1']) && $_REQUEST['time1'] != ''&&isset($_REQUEST['time2']) && $_REQUEST['time2'] != ''){
-        	$map['_logic'] = 'and';
-        	$map['addtime'] =array(array('egt',I('time1')." 00:00:00"),array('elt',I('time2')." 23:59:59")) ;
-		}
-		
+    	   if(count($map['addtime'])==0)
+    	   {
+    	       unset($map['addtime']);
+    	   }
+        }
 	}
 
 

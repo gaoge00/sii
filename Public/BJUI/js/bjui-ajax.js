@@ -264,6 +264,7 @@
     }
     
     Bjuiajax.prototype.dialogCallback = function(json) {
+
         var that = this
         
         if (json.tabid)

@@ -16,7 +16,13 @@
 			  </a>
 			  </span>
               <!-- __URL__/del -->
-		      <span class="right" style="display:none"><a href="" class="btn btn-blue" data-toggle="doajax" data-icon="arrow-up">导入</a></span>
+		      <span class="right"  <php>echo display(CONTROLLER_NAME.'/upload');</php> >
+		      <a href="__URL__/upload/navTabId/{:CONTROLLER_NAME}"  
+		      class="btn btn-blue" data-toggle="dialog" 
+		      data-width="300" data-height="300" 
+		      data-id="dialog-mask" data-mask="true" 
+		      data-icon="arrow-up">导入</a>
+		      </span>
 			  
 
 </block>
@@ -26,22 +32,22 @@
         <thead>
             <tr>
             <th width="30" height="30"></th>
-            <th data-order-direction="asc" data-order-field="id">社员编号</th>
-            <th>社员姓名</th>
-		    <th>所在部门</th>
-	    	<th>担任职务</th>
-		    <th>固定电话</th>
-		    <th>内线</th>
-            <th>移动电话</th>
-            <th>传真</th>
-            <th>电子邮箱</th>
-			<th>权限</th>
-            <th data-order-direction="desc" data-order-field="logintime">登陆时间</th>
+            <th data-order-direction="asc" data-order-field="id" width="60px">社员编号</th>
+            <th width="60px">社员姓名</th>
+		    <th width="60px">所在部门</th>
+	    	<th width="60px">担任职务</th>
+		    <th width="15%">固定电话</th>
+		    <th width="15%">内线</th>
+            <th width="15%">移动电话</th>
+            <th width="15%">传真</th>
+            <th width="15%">电子邮箱</th>
+			<th width="12%">权限</th>
+            <th width="12%" data-order-direction="desc" data-order-field="logintime">登陆时间</th>
 		    <!-- <th>登陆IP</th> 
 		    <th data-order-direction="desc" data-order-field="logins">登陆次数</th>
 		    -->
-		    <th>状态</th>
-		    <th>编辑</th>
+		    <th width="30px">状态</th>
+		    <th width="100px">编辑</th>
             </tr>
         </thead>
         <tbody>

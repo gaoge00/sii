@@ -1,16 +1,96 @@
 <extend name="Public:form_index_pages_layout"/>
 
 <block name="index_search">
+
+
+<script type="text/javascript">
+			
+function checkenddtlog(){
+	//alert("checkenddtlog");
+    var startdt =  $('#s_startdtlog').val();
+    var enddt= $('#s_enddtlog').val();
+    if(enddt!=""&&startdt!=""){
+     if(enddt<startdt)
+     {
+    	 //sdfsfsdfsf
+    	 $(this).alertmsg('error',"结束日期不能小于开始日期！");
+    	 //$('#s_enddt').val("");
+    	 return false;
+     }
+     else
+    	 return true;
+    }
+    else
+    	return true;
+}
+
+
+
+/*
+var tTD; //用来存储当前更改宽度的Table Cell,避免快速移动鼠标的问题   
+var table = document.getElementById("table1");  
+
+for (j = 0; j < table.rows[0].cells.length; j++) {   
+	
+table.rows[0].cells[j].onmousedown = function () {  
+	
+//记录单元格   
+tTD = this;  
+alert(tTD);
+if (event.offsetX > tTD.offsetWidth - 10) {   
+tTD.mouseDown = true;   
+tTD.oldX = event.x;   
+tTD.oldWidth = tTD.offsetWidth;   
+}   
+
+};   
+table.rows[0].cells[j].onmouseup = function () {   
+//结束宽度调整   
+if (tTD == undefined) tTD = this;   
+tTD.mouseDown = false;   
+tTD.style.cursor = 'default';   
+};   
+table.rows[0].cells[j].onmousemove = function () {   
+//更改鼠标样式   
+if (event.offsetX > this.offsetWidth - 10)   
+this.style.cursor = 'col-resize';   
+else   
+this.style.cursor = 'default';   
+//取出暂存的Table Cell   
+if (tTD == undefined) tTD = this;   
+//调整宽度   
+if (tTD.mouseDown != null && tTD.mouseDown == true) {   
+tTD.style.cursor = 'default';   
+if (tTD.oldWidth + (event.x - tTD.oldX)>0)   
+tTD.width = tTD.oldWidth + (event.x - tTD.oldX);   
+//调整列宽   
+alert(tTD.width);
+tTD.style.width = tTD.width;   
+tTD.style.cursor = 'col-resize';   
+//调整该列中的每个Cell   
+table = tTD; while (table.tagName != 'TABLE') table = table.parentElement;   
+for (j = 0; j < table.rows.length; j++) {   
+table.rows[j].cells[tTD.cellIndex].width = tTD.width;   
+}   
+//调整整个表   
+//table.width = tTD.tableWidth + (tTD.offsetWidth – tTD.oldWidth);   
+//table.style.width = table.width;   
+}   
+};   
+}   */
+</script>
+
+
             <label>关键词：</label><input type="text" value="{$_REQUEST['keys']}" name="keys" class="form-control" size="20" />
             
             <label>开始日期：</label>
-            <input type="text" name="time1" id="j_custom_indate" data-toggle="datepicker" size="15"  value="{$_REQUEST['time1']}">
+            <input type="text" name="time1" id="s_startdtlog" data-toggle="datepicker" size="15"  value="{$_REQUEST['time1']}">
             
             <label>结束日期：</label>
-            <input type="text" name="time2" id="j_custom_indate" data-toggle="datepicker" size="15"  value="{$_REQUEST['time2']}">
+            <input type="text" name="time2" id="s_enddtlog" data-toggle="datepicker" size="15"  value="{$_REQUEST['time2']}">
             
             
-             <button type="submit"  class="btn-default" data-icon="search">查询</button>
+             <button type="submit"  onclick="return checkenddtlog();" class="btn-default" data-icon="search">查询</button>
               <a class="btn btn-orange" href="javascript:;" onclick="$(this).navtab('reloadForm', true);" data-icon="undo">清空查询</a>
 			  <span <php>echo display(CONTROLLER_NAME.'/del');</php> style="float:right;" >
 			  <a href="__URL__/del/navTabId/{:CONTROLLER_NAME}" class="btn btn-red" data-toggle="doajaxchecked" data-confirm-msg="确定要删除吗？" data-icon="remove" data-idname="delids" data-group="ids">删除</a>
@@ -19,18 +99,17 @@
 
 
 <block name="index_content">
-     <table data-toggle="tablefixed" data-width="100%" data-layout-h="0" data-nowrap="true">
+     <table id="table1" data-toggle="tablefixed" data-width="100%" data-layout-h="0" data-nowrap="true">
         <thead>
             <tr>
-
             <th>编号</th>
 			<th>操作人</th>
-			<th width=150>系统环境</th>
+			<th width="150px">系统环境</th>
 			<th>操作内容</th>
-			<th width=150>相关网址</th>
+			<th width="150px">相关网址</th>
 			<th data-order-direction="desc" data-order-field="addtime">操作时间</th>
 			<th>操作IP</th> 
-			<th width="26"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
+			<th width="26px"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
             </tr>
         </thead>
         <tbody>

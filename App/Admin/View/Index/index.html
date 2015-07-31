@@ -127,6 +127,7 @@
 <script src='__PUBLIC__/plugins/jquerysession.js'></script>
 
 <script src='__PUBLIC__/BJUI/other/zTreeExt.js'></script>
+<script src='__PUBLIC__/js/sha256.js'></script>
 
 
 <script type="text/javascript">
@@ -140,7 +141,7 @@ $(function() {
         loginInfo    : {url:'admin.php/public/login_dialog.html', title:'登录', width:400, height:200}, // 会话超时后弹出登录对话框
         statusCode   : {ok:200, error:300, timeout:301}, //[可选]
         ajaxTimeout  : 20000, //[可选]全局Ajax请求超时时间(毫秒)5000
-        alertTimeout : 20000, //[可选]信息提示[info/correct]自动关闭延时(毫秒)20000
+        alertTimeout : 2000, //[可选]信息提示[info/correct]自动关闭延时(毫秒)20000
         pageInfo     : {pageCurrent:'pageCurrent', pageSize:'pageSize', orderField:'orderField', orderDirection:'orderDirection'}, //[可选]分页参数
         keys         : {statusCode:'statusCode', message:'message'}, //[可选]
         ui           : {showSlidebar:true, hideMode:'display', clientPaging:true}, //[可选]clientPaging:在客户端响应分页及排序参数
@@ -340,7 +341,7 @@ $(function() {
 							<hr style="margin: 12px 0 0px;">
 							<style type="text/css">
 								.renav{
-								width:200px;
+								width:100%;
 								height:37px;
 								line-height:21px;
 								overflow:hidden;
@@ -353,7 +354,7 @@ $(function() {
 							<div class="renav">
 								<ul style="margin-top: 0px;">
 									<foreach name="infolist" item="v">
-										<li><a href="__ROOT__/admin.php/infopublish/view/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  data-toggle="dialog" data-width="600" data-height="600" data-id="infopublish_view" data-mask="true" >{$v.title}</a></li>
+										<li><a href="__ROOT__/admin.php/infopublishlist/view/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  data-toggle="dialog" data-width="600" data-height="600" data-id="infopublish_view" data-mask="true" >{$v.title}</a></li>
 									</foreach>
 								</ul>
 							</div> 

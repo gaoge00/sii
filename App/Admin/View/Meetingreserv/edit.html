@@ -1,5 +1,7 @@
 <script type="text/javascript">
 
+var nowdate=getStartTime(); 
+
 $('#starttime').datetimepicker({
 	    language:  'zh-CN',
 	    weekStart: 1,
@@ -11,15 +13,22 @@ $('#starttime').datetimepicker({
 		maxView: 1,
 		viewSelect: 1,
 		forceParse: 0,
-		minuteStep: 10,
-		startDate: $('#startdate').val(),
+		minuteStep: 5,
+		//从什么时间开始
+		startDate: nowdate+" "+$('#starttime').val(),
+		//endDate:"2015-08-06 14:00",
 		//showMeridian: true,
-		weekends: '0,6' 
+		weekends: '0,6', 
+		autoclose: true,
 	})
 	.on('changeDate', function(ev){
 	    //if (ev.date.valueOf() < date-start-display.valueOf()){
 	    timeAdd();
-	});
+	})
+	.on('outOfRange', function(ev1){
+		
+	})
+	;
 
 /*
 $('#endtime').datetimepicker({
@@ -39,6 +48,61 @@ $('#endtime').datetimepicker({
 	CalcTimeLen();
 });
 */
+
+
+function getStartTime()
+{
+	var startmyDate=new Date();
+	
+	if($('#startdate').val()==$.fullCalendar.formatDate(startmyDate,"yyyy-MM-dd"))
+		{
+			var addMinutes=15;
+			startminutes=startmyDate.getMinutes()
+			if((startminutes%5)!=0){
+				addMinutes+=5;
+			}
+			startmyDate=DateAdd("m",addMinutes-(startminutes%5),startmyDate);
+			var endmyDate;
+			endmyDate=startmyDate;
+			//alert(startmyDate);
+			var nowtime=Appendzero(startmyDate.getHours())+":"+Appendzero(startmyDate.getMinutes()); 
+			endmyDate=DateAdd("m",30,endmyDate);
+			//alert(startmyDate);
+			var endnowtime=Appendzero(endmyDate.getHours())+":"+Appendzero(endmyDate.getMinutes()); 
+			
+			if($('#starttime').val()=="00:00")
+			{
+				$('#starttime').val(nowtime);
+				$('#endtime').val(endnowtime);	
+			}
+			return $('#startdate').val();
+		}
+	else
+		{
+		    return $.fullCalendar.formatDate(startmyDate,"yyyy-MM-dd");
+		}
+}
+//
+function DateAdd(interval,number,date){
+		switch(interval.toLowerCase()){
+			case "y": return new Date(date.setFullYear(date.getFullYear()+number));
+			case "M": return new Date(date.setMonth(date.getMonth()+number));
+			case "d": return new Date(date.setDate(date.getDate()+number));
+			case "w": return new Date(date.setDate(date.getDate()+7*number));
+			case "H": return new Date(date.setHours(date.getHours()+number));
+			case "m": return new Date(date.setMinutes(date.getMinutes()+number));
+			case "s": return new Date(date.setSeconds(date.getSeconds()+number));
+			case "l": return new Date(date.setMilliseconds(date.getMilliseconds()+number));
+		}
+	} 
+	
+function Appendzero (obj) {
+	         if (obj < 10) return "0" + obj; else return obj;    
+	         }	
+function pad(num, n) {  
+    return Array(n>num?(n-(''+num).length+1):0).join(0)+num;  
+  }  
+
 function CalcTimeLen(){
 	
     var timeLen =  $('#timelength');
@@ -53,7 +117,6 @@ function CalcTimeLen(){
     if(endTime <= startTime){
     	alert("结束时间不能大于开始时间");
     }
-    	
     timeLen.val("1");
 }
 
@@ -64,18 +127,20 @@ $('#endtime')
 	$('#hasallday').val("0");
 	$("#cHasAllDay").iCheck('uncheck');
 });
-         
-      */       
+*/        
+             
 $('#startdate').on('afterchange.bjui.datepicker', function(e, data) {
+	var nowDate=$.fullCalendar.formatDate(new Date(),"yyyy-MM-dd");
+	var startDate=$('#startdate').val();
+	var mydate =startDate + ' ' + $('#starttime').val();
 
-    var mydate =$.fullCalendar.formatDate(data.value,"yyyy-MM-dd") + ' ' + $('#starttime').val(); 
-    
-	//alert(mydate);
-    //timeAdd();
-	$('#starttime').datetimepicker('setDate',mydate);
-
+	if($('#startdate').val()!=nowDate)
+	{
+		$('#starttime').datetimepicker('setStartDate',startDate + ' 00:00'); 
+	    //$('#starttime').datetimepicker('setStartDate');
+	    //$('#starttime').datetimepicker('setStartDate', null);
+	}
 });
-
 
 $('#cHasAllDay').on('ifChecked', function(event){
 	
@@ -95,20 +160,28 @@ $('#cHasAllDay').on('ifChecked', function(event){
 
 $('#cHasAllDay').on('ifUnchecked', function(event){
 	
-    var timeLen =  $('#timelength').val();
+    var timeLen =  $('#timelength');
     var startDate= $('#startdate');
     var startTime= $('#starttime');
     var endTime= $('#endtime');
     var hasAllDay= $('#hasallday');
     
+    getStartTime();
+    //startTime.val(nowtime);
+    
+    //alert($.fullCalendar.formatDate(new Date(),"yyyy-MM-dd")+" "+nowtime);
+    var nowtime30=$.fullCalendar.formatDate(new Date(),"yyyy-MM-dd")+" "+startTime.val();
+    nowtime30=nowtime30.parseDate('yyyy-MM-dd HH:mm');
+    nowtime30=DateAdd("m",30,nowtime30);
+    var strnowtime30= nowtime30.getHours()+":"+nowtime30.getMinutes()
+    endTime.val(strnowtime30);
+    timeLen.val("0.5");
     hasAllDay.val("0");
 });
 	
 	
 $('#timelength').on('afterchange.bjui.spinner', function(e, data) {
-
 	timeAdd();
-
 });
 
 function timeAdd(){
@@ -133,7 +206,6 @@ $('#meetingid').on('change',
 			$("#MR_MeetingProjection").iCheck('uncheck');
 			$("#MR_MeetingVideo").iCheck('uncheck');
 			$("#MR_MeetingTel").iCheck('uncheck');
-			
         	$.ajax( {    
         	    url:'__URL__/AjaxGetMeetingRoomProperty',// 跳转到 action    
         	    data:{    
@@ -262,7 +334,10 @@ $('#meetingid').on('change',
                 
                 </td>
                	 <td>
-                <select  name="meetingid" id="meetingid"  data-toggle="selectpicker" >
+                <select  name="meetingid" id="meetingid"  data-toggle="selectpicker" 
+                data-rule="会议室名称: required;meetingid"
+                
+                >
 	               	<option  value="">请选择会议室</option>
 		         	<php>$listz=M('meeting')->where(array('status'=>1))->select();</php>
 		          	<foreach name="listz" item="v">
@@ -344,10 +419,14 @@ $('#meetingid').on('change',
             
             <tr>
              	 <td>
-                	<label for="j_sort" class="control-label x85">日期：</label>
+                	<label for="j_sort" class="control-label x85">日期：<php>echo $Rs['maxDate']</php></label>
                	 </td>
                	 <td>
-               		<input type="text" data-min-date="<php>echo date('Y-m-d',time());</php>" name="startdate" id="startdate" value="<php> if(empty($Rs['startdate']))  {   if(empty($_REQUEST['sel_start'])) {echo date('Y-m-d', time());} else {echo date('Y-m-d', strtotime($_REQUEST['sel_start']));}  } else { echo $Rs['startdate'];} </php>" data-toggle="datepicker" data-rule="required;date" size="15">
+               		<input type="text" 
+               		data-min-date="<php>echo date('Y-m-d',time());</php>" 
+               		data-max-date="{$Rs['maxDate']}"
+               		name="startdate" id="startdate" 
+               		value="<php> if(empty($Rs['startdate']))  {   if(empty($_REQUEST['sel_start'])) {echo date('Y-m-d', time());} else {echo date('Y-m-d', strtotime($_REQUEST['sel_start']));}  } else { echo $Rs['startdate'];} </php>" data-toggle="datepicker" data-rule="required;date" size="15">
              	 </td>
             </tr>
             
@@ -356,8 +435,13 @@ $('#meetingid').on('change',
                 	<label for="j_sort" class="control-label x85">开始时间：</label>
                  </td>
                	 <td>
-                    <input type="text"  name="starttime" id="starttime" value="<php> if(empty($Rs['starttime']))  {echo date('H:i', strtotime($_REQUEST['sel_start']));} else { echo date('H:i', strtotime($Rs['starttime']));} </php>" name="starttime" id="starttime" data-date="$_REQUEST['sel_start'])"  data-date-format="hh:ii" readonly>
-
+                    <input type="text"  name="starttime" id="starttime" 
+                    value="<php> if(empty($Rs['starttime']))  {echo '00:00';} else { echo date('H:i', strtotime($Rs['starttime']));} </php>" 
+                    data-date="$_REQUEST['sel_start'])"  
+                    data-date-format="hh:ii" 
+                    data-min-time="00:00" 
+                    readonly>
+                 
              	 </td>
             </tr>
             
@@ -411,7 +495,7 @@ $('#meetingid').on('change',
                 	<label for="j_sort" class="control-label x85">会议内容：</label>
                 	</td>
                	 <td>
-               	 	<textarea name="note" id="note"  cols="45" rows="2">{$Rs["note"]}</textarea>
+               	 	<textarea name="note" id="note"  cols="45" rows="10">{$Rs["note"]}</textarea>
                	 	
              	 </td>
             </tr>
@@ -425,20 +509,15 @@ $('#meetingid').on('change',
             <ul>
                  <!-- <li><a type="button" class="btn btn-default" data-toggle="doajax" >取消</a></li>-->
                 <li><button type="button" class="btn-close" data-icon="close">取消</button></li> 
-				<if condition="ACTION_NAME NEQ 'view' ">
+				<if condition="(ACTION_NAME NEQ 'view')  
+				                and (
+				                	   ($beforlist['userid'] EQ session('uid'))
+				                	or ($beforlist['userid'] EQ '')
+				                	)
+				              ">
             		<li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
             	</if>
             </ul>
         </div>
     </form>
 </div>
-<script type="text/javascript">
-
-$(document).ready(function(){
-		
-	//alert('dddd');
-     //$(".msg-box,.n-right").hide(); 
-		 
-	 
-});
-</script>	

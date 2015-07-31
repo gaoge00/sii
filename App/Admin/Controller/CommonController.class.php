@@ -21,9 +21,7 @@ Class CommonController extends Controller{
 		    cookie("login_action_tabid",null);
 		    $tabid = CONTROLLER_NAME.'/'.ACTION_NAME;
 		    cookie("login_action_tabid",strtolower($tabid));
-		    
 
-		    
 		    $result = array();
 		    $result['statusCode']=301;
 		    $result['message']="请先登录";
@@ -45,23 +43,70 @@ Class CommonController extends Controller{
         }
         C($config);
         
-       
-
 		$name=MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME;
 		//$name=strtolower($name);
 		//如果方法名是Ajax开头的就部进行验证 用于获取JSON数据
-		if(substr(ACTION_NAME, 0,4) !='Ajax' ){
+		if(substr(strtolower(ACTION_NAME), 0,4) !='ajax' ){
+		    //var_dump("Ajax的Action进不来:".ACTION_NAME."&&&&&&".substr(ACTION_NAME, 0,4) !='Ajax');
 		    if(!authcheck(strtolower($name),session('uid'))){
 		        //$this->error(''.session('username').'很抱歉,此项操作您没有权限！');
-		        $this->mtReturn(300,''.session('username').'很抱歉,此项操作您没有权限！',$_REQUEST['navTabId']);
+		        $this->mtReturn(300,''.session('username').'很抱歉,此项操作您没有权限！',$_REQUEST['navTabId'],true);
 		    }
 		}
  
 	}
 	
 	
+	protected function mtReturnUpload($status,$info,$navTabId="",$closeCurrent=true) {
+	    $udata['update_time']=time();
+	    $Rs=M("user")->save($udata);
+	    $dat['username'] = session('uid');
+	    $dat['content'] = $info;
+	    $dat['os']=$_SERVER['HTTP_USER_AGENT'];
+	    $dat['url'] = U();
+	    $dat['addtime'] = date("Y-m-d H:i:s",time());
+	    $dat['ip'] = get_client_ip();
+	    M("log")->add($dat);
+	    //回调
+	    $result = array();
+	    $result['statusCode'] = $status;
+	    $result['message'] = $info;
+	    $caltype=$_REQUEST ['caltype'];
+	    if(!isset($caltype)||$caltype=="")
+	    {
+	        $caltype="index";
+	    }
+	     
+	    //$result['tabid'] = strtolower($navTabId).'/index';
+	    $result['tabid'] = strtolower($navTabId).'/'.$caltype;
+	    $result['forward'] = '';
+	    $result['forwardConfirm']='';
+	    $result['closeCurrent'] =$closeCurrent;
+	
+	    if (empty($type)){
+	        $type = C('DEFAULT_AJAX_RETURN');
+	    }
+	    if (strtoupper($type) == 'JSON') {
+	        // 返回JSON数据格式到客户端 包含状态信息
+	        exit(json_encode($result));
+	
+	    } elseif (strtoupper($type) == 'XML') {
+	        // 返回xml格式数据
+	        header("Content-Type:text/xml; charset=utf-8");
+	        exit(xml_encode($result));
+	    } elseif (strtoupper($type) == 'EVAL') {
+	        // 返回可执行的js脚本
+	        header("Content-Type:text/html; charset=utf-8");
+	        exit($data);
+	    } else {
+	        // TODO 增加其它格式
+	    }
+	}
+	
+	
+	
 	protected function mtReturn($status,$info,$navTabId="",$closeCurrent=true) {
-
+	    //var_dump("111111111111");
 		//写入日志
 	    //$udata['id']=session('uid');
         $udata['update_time']=time();
@@ -73,7 +118,7 @@ Class CommonController extends Controller{
         $dat['addtime'] = date("Y-m-d H:i:s",time());
         $dat['ip'] = get_client_ip();
         M("log")->add($dat);
-        //var_dump($dat);
+        
         
 	    //回调
 	    $result = array();
@@ -136,7 +181,7 @@ Class CommonController extends Controller{
 		        $this->_befor_sort($order,$asc);
 		    }
 		}
-		//var_dump($asc);
+		//var_dump($map);
 		if($order=='') {
 			$order = $model->getPk();
 
@@ -164,11 +209,8 @@ Class CommonController extends Controller{
 		
 	     //$count = count($model->where($map)->select());
 		//取得满足条件的记录数
-		//var_dump($map);
 		$count = $model->where($map)->count();
-        //echo $model->getLastSql();
-	
-		
+
 		//$count=10;
 		if ($count > 0) {
 
@@ -184,6 +226,13 @@ Class CommonController extends Controller{
 		    //var_dump($model);
 		    //die();
 		    //var_dump($map);
+		    //var_dump("`" . $order . "` " . $sort);
+		    if($count<$numPerPage*($pageCurrent-1))
+		    {
+		        $pageCurrent=1;
+		    }
+		    
+		    
 		    if($pageCurrent==1 and $numPerPage==0){
 		        //分页
 		        $voList = $model->where($map)->order("`" . $order . "` " . $sort)->select();
@@ -191,10 +240,9 @@ Class CommonController extends Controller{
 		    else{
 		        $voList = $model->where($map)->order("`" . $order . "` " . $sort)->limit($numPerPage)->page($pageCurrent.','.$numPerPage.'')->select();
 		    }
-		   
+		    //var_dump("22222");
+		    //var_dump($model->getLastSql());
 		    //echo $model->getLastSql();
-		   
-		   // echo $model->getLastSql();
            // var_dump($numPerPage);
             //echo M('')->getLastSql();
 			
@@ -212,9 +260,11 @@ Class CommonController extends Controller{
 			$this->assign('list', $voList);
 
 		}
+		
+		$currentPage=!empty($_REQUEST[C('VAR_PAGE')]) ? $count>1?$_REQUEST[C('VAR_PAGE')]:1 : 1;
 		$this->assign('pageSize', $pageSize);//数据总数
 		$this->assign('totalCount', $count);//数据总数
-		$this->assign('currentPage', !empty($_REQUEST[C('VAR_PAGE')]) ? $count>1?$_REQUEST[C('VAR_PAGE')]:1 : 1);//当前的页数，默认为1
+		$this->assign('currentPage', $currentPage);//当前的页数，默认为1
 		$this->assign('numPerPage', $numPerPage); //每页显示多少条
 		cookie('_currentUrl_', __SELF__);
 		return;
@@ -261,13 +311,14 @@ Class CommonController extends Controller{
 		
 		//全文检索用
 		$map = $this->_search($this->dbname);
-	
+		//var_dump($map);
 		//查询条件 参考MeetingreservController
 		if (method_exists($this, '_filter')) {
 			$this->_filter($map);
+			//var_dump($map);
 		}
 		
-
+		
 		if (!empty($model)) {
 		    $this->_list($model, $map);
 		    //echo $model->getLastSql();
@@ -319,14 +370,14 @@ Class CommonController extends Controller{
 		
 		//$model->where($this->dbname.'ID' . ' = ' . $id)->save($data);
 				//echo($model->getLastSql());
-		$this->mtReturn(200,"更改【".$this->opname."】状态成功".$id,$_REQUEST['navTabId'],false);  
+		$this->mtReturn(200,"更改【".$this->opname."】状态成功",$_REQUEST['navTabId'],false);  
 	}
     
 	 public function add() {
 		if(IS_POST){
 		  $model = D($this->dbname);
 		  $data=I('post.');
-		  //var_dump($model->create());
+		 
 		  
 		  
 		  if (false === $data = $model->create()) {
@@ -345,7 +396,7 @@ Class CommonController extends Controller{
 		    }
 			$id = $model->getLastInsID();
 	
-			$this->mtReturn(200,"新增【".$this->opname."】成功".$id,$_REQUEST['navTabId'],true);  
+			$this->mtReturn(200,"新增【".$this->opname."】成功",$_REQUEST['navTabId'],true); //.$id 
 			
 			//echo($_REQUEST['navTabId']);
 			
@@ -367,6 +418,35 @@ Class CommonController extends Controller{
 	   
 		$model = D($this->dbname);
 		if(IS_POST){
+		    
+		    
+// 		    $pid=$_REQUEST['pid'];
+// 		    $id=$_REQUEST['id'];
+// 		    // 新选中的上级 级别
+// 		    $pidlist = M($this->dbname)->where("id=".$pid."")
+// 		    ->field("level")
+// 		    ->select();
+// 		    // 自身 级别
+// 		    $idlist = M($this->dbname)->where("id=".$id."")
+// 		    ->field("level")
+// 		    ->select();
+// 		    //顶级可选
+// 		    if($pid==0)
+// 		        var_dump("true".$pid);
+// 		    if($pidlist[0]["level"]>$idlist[0]["level"])
+// 		    {
+// 		        var_dump("false");
+// 		    }
+// 		    else
+// 		    {
+// 		        var_dump("true");
+// 		    }
+		    
+		    
+		    
+		    
+		    
+		    
 			$data=I('post.');
 			//die();
 			if (false === $data = $model->create()) {
@@ -386,7 +466,7 @@ Class CommonController extends Controller{
 			}
 			$id = $data['id'];
 			
-			$this->mtReturn(200,"编辑【".$this->opname."】成功".$id,$_REQUEST['navTabId'],true);  //写入日志
+			$this->mtReturn(200,"编辑【".$this->opname."】成功",$_REQUEST['navTabId'],true);  //写入日志
 			//$this->mtReturn(200,"更改【".$this->opname."】状态成功".$id,$_REQUEST['navTabId'],false);
 
 		}
@@ -434,7 +514,7 @@ Class CommonController extends Controller{
 		}
 		
 		$model->commit();
-		$this->mtReturn(200,"删除【".$this->opname."】成功".$id,$_REQUEST['navTabId'],false);
+		$this->mtReturn(200,"删除【".$this->opname."】成功",$_REQUEST['navTabId'],false);
 	}
 	
 	public function _fenxi($fd,$ft,$type) {
@@ -484,99 +564,63 @@ Class CommonController extends Controller{
 		import("Org.Util.PHPExcel");
 		import("Org.Util.PHPExcel.Writer.Excel5");
 		import("Org.Util.PHPExcel.IOFactory.php");
-		$this->getExcel($filename,$headArr,$list);
+		if (method_exists($this, '_getExcel')) {
+		    //var_dump($list);
+		    $this->_getExcel($filename,$headArr,$list);
+		}
+		else 
+		{
+		    
+		  $this->getExcel($filename,$headArr,$list);
+		}
+
 	}
-	public function xlsin(){
-			
-		//导入PHPExcel类库，因为PHPExcel没有用命名空间，只能inport导入
-		import("Org.Util.PHPExcel");
-		//要导入的xls文件，位于根目录下的Public文件夹
-		$filename="./Public/1.xls";
-		//创建PHPExcel对象，注意，不能少了\
-		$PHPExcel=new \PHPExcel();
-		//如果excel文件后缀名为.xls，导入这个类
-		import("Org.Util.PHPExcel.Reader.Excel5");
-		//如果excel文件后缀名为.xlsx，导入这下类
-		//import("Org.Util.PHPExcel.Reader.Excel2007");
-		//$PHPReader=new \PHPExcel_Reader_Excel2007();
-
-		$PHPReader=new \PHPExcel_Reader_Excel5();
-		//载入文件
-		$PHPExcel=$PHPReader->load($filename);
-		//获取表中的第一个工作表，如果要获取第二个，把0改为1，依次类推
-		$currentSheet=$PHPExcel->getSheet(0);
-		//获取总列数
-		$allColumn=$currentSheet->getHighestColumn();
-		//获取总行数
-		$allRow=$currentSheet->getHighestRow();
-		//循环获取表中的数据，$currentRow表示当前行，从哪行开始读取数据，索引值从0开始
-		for($currentRow=1;$currentRow<=$allRow;$currentRow++){
-			//从哪列开始，A表示第一列
-			for($currentColumn='A';$currentColumn<=$allColumn;$currentColumn++){
-				//数据坐标
-				$address=$currentColumn.$currentRow;
-				//读取到的数据，保存到数组$arr中
-				$arr[$currentRow][$currentColumn]=$currentSheet->getCell($address)->getValue();
-			}
-
-		}
-			
+	
+	
+	public function outxls() {
+	    if(IS_POST){
+	        $this->mtReturn(200,"无数据导入！",$_REQUEST['navTabId'],false);
+	        //die();
+	        ///$this->mtReturn(200,"用户数据导入成功！",$_REQUEST['navTabId'],false);
+	         
+	        //$this->xlsout($filename,$headArr,$list);
+	    }
+	    else
+	        $this->display("outxls");
 	}
-	public	function getExcel($fileName,$headArr,$data){
-		//对数据进行检验
-		if(empty($data) || !is_array($data)){
-			die("data must be a array");
-		}
-		//检查文件名
-		if(empty($fileName)){
-			exit;
-		}
-
-		$date = date("Y_m_d",time());
-		$fileName .= "_{$date}.xls";
-
-
-		//创建PHPExcel对象，注意，不能少了\
-		$objPHPExcel = new \PHPExcel();
-		$objProps = $objPHPExcel->getProperties();
-			
-		//设置表头
-		$key = ord("A");
-		foreach($headArr as $v){
-			$colum = chr($key);
-			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum.'1', $v);
-			$key += 1;
-		}
-
-		$column = 2;
-		$objActSheet = $objPHPExcel->getActiveSheet();
-
-
-		//设置为文本格式
-		foreach($data as $key => $rows){ //行写入
-			$span = ord("A");
-			foreach($rows as $keyName=>$value){// 列写入
-				$j = chr($span);
-
-				$objActSheet->setCellValueExplicit($j.$column, $value);
-				$span++;
-			}
-			$column++;
-		}
-
-		$fileName = iconv("utf-8", "gb2312", $fileName);
-		//重命名表
-		// $objPHPExcel->getActiveSheet()->setTitle('test');
-		//设置活动单指数到第一个表,所以Excel打开这是第一个表
-		$objPHPExcel->setActiveSheetIndex(0);
-		ob_end_clean();//清除缓冲区,避免乱码
-		header('Content-Type: application/vnd.ms-excel');
-		header("Content-Disposition: attachment;filename=\"$fileName\"");
-		header('Cache-Control: max-age=0');
-
-		$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-		$objWriter->save('php://output'); //文件通过浏览器下载
-		exit;
+	
+	public function deleteaccessory()
+	{
+	    $strid =  $_REQUEST ['id'];
+	    if(isset($strid)&&$strid!=''){
+	        $strDelID = $strid;
+	    }
+	    else
+	    {
+	        exit;
+	    }
+	    
+	    if(isset($strDelID)&&count($strDelID)>0){
+	        $model=M("");
+	        $list=$model->table(C('DB_PREFIX')."files")
+	        ->where(" id = ".$strDelID." ")->select();
+	        if(count($list)>0)
+	        {
+    	        //删除文件
+    	        $file = $list[0]['folder'].$list[0]['filename'];
+    	        //var_dump($file);
+    	        $result = @unlink ($file);
+    	       
+    	       
+    	        $model->startTrans();
+    	        $model
+    	        ->table(C('DB_PREFIX')."files")
+    	        ->where(" id = ".$strDelID." ")->delete();
+    	        $model->commit();
+    	        $this->mtReturn(200,"删除【附件】成功",$_REQUEST['navTabId'],false);
+	        }
+	    }
 	}
+	
 	
 }

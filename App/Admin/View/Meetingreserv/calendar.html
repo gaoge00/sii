@@ -22,21 +22,7 @@ $(function() {
 		$.cookie('sel_start',null);
 	}
 	
-	function openDialog(view,fstart)	{
-		this.fstart=fstart;
-		alert(this.fstart);
-		return new $(view).dialog({
-	    	id:'mydialog1', 
-	    	//type:'post',
-	    	//url:'__URL__/edit/id/0/navTabId/{:CONTROLLER_NAME}/calendar/add?MeetingreservID=0&startdate=' + $selectdate + '&start=' + $.session.get('start'), 
-	    	url:'__URL__/add/navTabId/{:CONTROLLER_NAME}/calendar', 		
-	    	data:{'start':fstart,'caltype':'calendar'},
-	    	title:'新增',
-	    	fresh:true,
-	    	
-	    	onClose:celClose
-	    });
-	}
+
 	
 	$('#calendar').fullCalendar({
 		header: {
@@ -57,8 +43,12 @@ $(function() {
 				alert("Error");
 			}
 		},
+		
+		//空白日期点击
 		dayClick: function(date, allDay, jsEvent, view) {
-			//alert("22222");skjdfksdjhkfajhsk fj  ggh
+			//alert("空白日期点击1");
+			//return false;
+			
 			var ftempH=$.fullCalendar.formatDate(date,"HH");
 			var ftempM=$.fullCalendar.formatDate(date,"mm");
 			var tempClassName=ftempH*2;
@@ -71,10 +61,22 @@ $(function() {
 			//alert($(tempClassName));
 			//alert($(this).parent().parent().parent().parent().parent().parent().attr('class'));
 			
-			
+	
 			var fstart=$.fullCalendar.formatDate(date,"yyyy-MM-dd HH:mm");
 		 	var fend=$.fullCalendar.formatDate(date,"yyyy-MM-dd HH:mm");
 		 	var selectdate = $.fullCalendar.formatDate(date,"yyyy-MM-dd HH:mm");
+
+		 	//当前日期
+		 	var selDay = $.fullCalendar.formatDate(date,"yyyy-MM-dd");
+		 	var toDay = $.fullCalendar.formatDate(new Date(),"yyyy-MM-dd");
+		 	if(selDay<toDay)
+		 	{	 		
+		 		//$('#export').alertmsg(alerttype, info)
+		 		//$.alertmsg("不能预订过去日期！",'alert-error');
+		 		$(this).alertmsg('error',"不能预订过去日期！");
+		 		return false;
+		 	}
+		 	//alert("空白日期点击1");
 		 	//alert(view.name);
 			//$.cookie('sel_start',fstart);
 			if(view.name=='month'){
@@ -93,6 +95,8 @@ $(function() {
                     width: 600,
 			    	onClose:celClose
 			});
+			
+			//alert("空白日期点击2");
 
     	},
     	eventClick: function(event, jsEvent, view) {
@@ -119,6 +123,7 @@ $(function() {
 			*/
     	}
 	});
+	//alert();
 	
 });
 </script>
@@ -140,12 +145,15 @@ $(function() {
 	           		</select>
 
 		            <button type="submit"  class="btn-default" data-icon="search">查询</button> -->
-					<span<php>echo display(CONTROLLER_NAME.'/add');</php>
-						style="float:right;margin-right:20px;"><a
+					   <span>
+					   
+					   <a <php>echo display(CONTROLLER_NAME.'/add');</php>
 						href="__URL__/add/navTabId/{:CONTROLLER_NAME}?caltype='calendar'"
 						class="btn btn-green" data-toggle="dialog" data-width="600"
 						data-height="800" data-id="dialog-mask" data-mask="true"
-						data-icon="plus" id="btn_add">新增</a></span> 
+						data-icon="plus" id="btn_add">新增</a>
+						
+						</span> 
 						
 						<span>
 							<a class="btn btn-orange"
