@@ -7,17 +7,16 @@ Class CommonController extends Controller{
 
 	public function _initialize(){
 		
-	   
-	
 		$this->opname = "";	//操作名用于记录日志
 		
         $this->_dbname = CONTROLLER_NAME; //添加插入用Model
         
         $this->_selname = CONTROLLER_NAME; //查询用Model
 
-		if(!session('uid')){
+        //var_dump("SessionID".session('uid'));
+        //var_dump($_COOKIE);
+		if(!session('uid')||empty($_COOKIE['login_action_tabid'])){
 			//redirect(U('Public/login'));
-		    // var_dump($_SERVER['REQUEST_URI']);
 		    cookie("login_action_tabid",null);
 		    $tabid = CONTROLLER_NAME.'/'.ACTION_NAME;
 		    cookie("login_action_tabid",strtolower($tabid));
@@ -33,7 +32,6 @@ Class CommonController extends Controller{
 		    
             //$this->mtReturn(301,"",$_REQUEST['navTabId'],false);
 		}
-     
         //
         
         $config =   S('DB_CONFIG_DATA');
@@ -418,35 +416,7 @@ Class CommonController extends Controller{
 	   
 		$model = D($this->dbname);
 		if(IS_POST){
-		    
-		    
-// 		    $pid=$_REQUEST['pid'];
-// 		    $id=$_REQUEST['id'];
-// 		    // 新选中的上级 级别
-// 		    $pidlist = M($this->dbname)->where("id=".$pid."")
-// 		    ->field("level")
-// 		    ->select();
-// 		    // 自身 级别
-// 		    $idlist = M($this->dbname)->where("id=".$id."")
-// 		    ->field("level")
-// 		    ->select();
-// 		    //顶级可选
-// 		    if($pid==0)
-// 		        var_dump("true".$pid);
-// 		    if($pidlist[0]["level"]>$idlist[0]["level"])
-// 		    {
-// 		        var_dump("false");
-// 		    }
-// 		    else
-// 		    {
-// 		        var_dump("true");
-// 		    }
-		    
-		    
-		    
-		    
-		    
-		    
+
 			$data=I('post.');
 			//die();
 			if (false === $data = $model->create()) {

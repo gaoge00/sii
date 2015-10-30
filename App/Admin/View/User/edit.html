@@ -14,6 +14,22 @@
 		$('#j_id').val($('#j_uid').val());
     });  
 	
+	function onblurs(){
+	    if($('#j_uid').val()!='')
+	    	{
+	    		$('#j_uid').val(pad($('#j_uid').val(), 5));
+	    		$('#j_id').val(pad($('#j_uid').val(), 5));
+	    	}
+
+	}
+	function pad(num, n) {  
+	    var len = num.toString().length;  
+	    while(len < n) {  
+	        num = "0" + num;  
+	        len++;  
+	    }  
+	    return num;  
+	} ;
 </script>
           <table class="table table-condensed table-hover" width="100%">
            <tbody>
@@ -22,6 +38,8 @@
                 <input type="text" 
                  data-rule="required"
                  size="25" name='uid' id="j_uid" value="{$Rs['id']}" 
+                 maxlength=5
+                 onblur="onblurs()"
                  <if condition="$id EQ '0'"><else/>readonly</if>
                  >
                  <input type="hidden" id="j_id" name="id" value="{$Rs['id']}" >
@@ -33,7 +51,7 @@
                 <label for="j_title" class="control-label x85">登陆密码:</label>
                 <input type="Password" 
                 data-rule="required"
-                
+                maxlength=20
                 size="25"  name="password" id="j_pwd" value="{$Rs['password']}" >
 				<span>不修改密码，此项不用改动</span>
              </td></tr>
@@ -60,6 +78,8 @@
 	         <php>$listz=cateTree($orgid=0,$orglevel=0,'org','1');</php>
 		          <foreach name="listz" item="v">
 		              <option <if condition="$v.id EQ $Rs['orgid'] ">selected value="{$Rs['orgid']}" <else/>value="{$v.id}"</if> >
+							
+							<!-- 改成循环 -->
         
 					        <assign name="strLevel" value="+" />
 					        <for start="0" end="$v.level" name="i" >
@@ -69,11 +89,12 @@
 							<switch name="v.level"> 
 							
 					 			<case value="0">+<B>{$v.name}</b></case> 
-								<case value="$v.level">{$strlevel}{$v['name']}</case>
+								<case value="$v.level">{$strLevel}{$v['name']}</case>
 								
 								<default />
 							 </switch>
-
+							 
+							 
 			         </option>
 		          </foreach>
              </select>

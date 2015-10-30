@@ -13,8 +13,6 @@ class UserController extends CommonController {
         $this->selname = 'uv_user';
     }
 	
-	
-  
    public function _befor_add(){
      $list=orgcateTree($pid=0,$level=0,$type=0);
      $this->assign('list',$list);
@@ -34,6 +32,7 @@ class UserController extends CommonController {
       if(IS_POST){
           $model = D($this->dbname);
           $data=I('post.');
+         
           if (false === $data = $model->create()) {
               $this->mtReturn(300,'失败，' . $model->getError(),$_REQUEST['navTabId'],true);
           }
@@ -269,7 +268,7 @@ class UserController extends CommonController {
        $model->startTrans();
    try {
        $i=0;
-       $row=0;
+       $row=0;//$j = 1;
        foreach ($data as $k=>$v){
            $row++;
            if(
@@ -324,11 +323,11 @@ class UserController extends CommonController {
                $orgName=$v['D'];
                
                if(isset($orgName)&&$orgName!=="")
-               {
+               {    //$j ++;
                    $result = $model->table(C('DB_PREFIX')."org")->where(array('name' => $orgName))->select();
                    if(count($result)>0)
                    {
-                       //var_dump($model->getLastSql());
+                       //var_dump($result);
                        $orgid= $result[0]["id"];
                        $user['orgid'] = $orgid;
                    }
@@ -336,6 +335,10 @@ class UserController extends CommonController {
                  {
                        $this->sendError($row,"部门","部门不存在！");
                    }
+               }
+               else
+             {
+                   $user['orgid'] = '';
                }
 
                //职务
@@ -350,9 +353,11 @@ class UserController extends CommonController {
                        $user['depid'] = $depid;
                    }
                    else
-                   {
+                   {  
                        $this->sendError($row,"职务","职务不存在！");
                    }
+               }else{
+                   $user['depid'] = '';
                }
                
                //内线
@@ -402,6 +407,7 @@ class UserController extends CommonController {
                }
                $i++;  
            }
+           //var_dump($j);
            $model->commit();
            if($i==0)
            {

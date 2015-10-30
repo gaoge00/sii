@@ -7,10 +7,14 @@ class PublicController extends Controller {
     public function login(){
 	  if(IS_POST){ 
         $admin = I('post.');
+        //var_dump($admin);
         $rs = D('Admin', 'Service')->login($admin);
+        setcookie("uid",$admin["userid"]);
 		if (!$rs['status']) {
             $this->error($rs['data']);
         }
+        $tabid = CONTROLLER_NAME.'/'.ACTION_NAME;
+        cookie("login_action_tabid",strtolower($tabid));
 		$this->success('登录成功，正在跳转...',"admin.php"  ,1);	//登录成功跳转到管理画面
 	  }
 	  else{
@@ -19,6 +23,36 @@ class PublicController extends Controller {
   
     }
 
+    public function login_dialog() {
+        if(IS_POST){
+            $admin = I('post.');
+            $rs = D('Admin', 'Service')->login($admin);
+            if (!$rs['status']) {
+                $data['statusCode']=300;
+                $data['message']=$rs['data'];
+                $data['tabid']=$_REQUEST['navTabId'];
+                $data['closeCurrent']='false';
+                $data['forward']='';
+                $this->dwzajaxReturn($data);
+            }
+            $tabid= cookie("login_action_tabid");
+            $data['statusCode']=200;
+            $data['message']='登陆成功！';
+            $data['tabid']=$tabid; //;
+            $data['closeCurrent']='true';
+            $data['divid']='indexLeft,indexHeader';
+            $data['dialogid']='infopublish_view'; //;
+            $this->dwzajaxReturn($data);
+
+        }
+        else{
+            $this->display();
+        }
+    }
+	
+	
+	
+	
 	public function verify(){
 	    ob_clean();
 		$config =    array(
@@ -34,12 +68,10 @@ class PublicController extends Controller {
 	
 	public function logout() {
 		D('Admin', 'Service')->logout();
+		setcookie("uid",NULL);
 		$this->redirect('Public/login');
 	}
 	
-
-	
-
 	public function changepwd() {
 		if(IS_POST){
 	    $password=I('post.password');
@@ -121,6 +153,7 @@ class PublicController extends Controller {
         
 
 		$udata['id']=session('uid');
+		setcookie("uid",session('uid'));
         $udata['update_time']=date("Y-m-d H:i:s",time());
         $Rs=M("user")->save($udata);
         //echo M("user")->getLastSql();
@@ -131,8 +164,6 @@ class PublicController extends Controller {
         $dat['addtime'] = date("Y-m-d H:i:s",time());
         $dat['ip'] = get_client_ip();
         M("log")->add($dat);
-        
-        
         $result = array();
         $result['statusCode'] = $data['statusCode'];
         $result['tabid'] = $data['tabid'];
@@ -143,7 +174,7 @@ class PublicController extends Controller {
 		$result['forwardConfirm']=$data['forwardConfirm'];
 		$result['divid']=$data['divid'];
 
-       //var_dump($result);
+       //var_dump($_COOKIE);
         if (empty($type))
             $type = C('DEFAULT_AJAX_RETURN');
         if (strtoupper($type) == 'JSON') {
@@ -199,7 +230,7 @@ class PublicController extends Controller {
 	 //var_dump($info); 
 	 $filename=reset(split('\.',$filename));
 	 //var_dump($filename);
-	 if(strlen($filename)>20)
+	 if(mb_strlen($filename,'utf8')>20)
 	 {
 	     $info=false;
 	     $errormsg="上传的文件名不能超过20个字符或汉字！";
@@ -276,53 +307,7 @@ class PublicController extends Controller {
     $this->display();
    }
    
-   public function login_dialog() {
-       if(IS_POST){
-           $admin = I('post.');
-           //var_dump($admin);
-           $rs = D('Admin', 'Service')->login($admin);
-           //var_dump($rs);
-           if (!$rs['status']) {
-               
-               
-               //$this->error($rs['data']);
-               $data['statusCode']=300;
-               //var_dump($data);
-               $data['message']=$rs['data'];
-               $data['tabid']=$_REQUEST['navTabId'];
-               $data['closeCurrent']='false';
-               $data['forward']='';
-               //var_dump("123123123123");
-               
-               $this->dwzajaxReturn($data);
-           }
-           
-           
-           $tabid= cookie("login_action_tabid");
-          
-           $data['statusCode']=200;
-           $data['message']='登陆成功！';
-           $data['tabid']=$tabid; //;
-           $data['closeCurrent']='true';
-           $data['divid']='indexLeft,indexHeader';
-           $data['dialogid']='infopublish_view'; //;
-           //$data['forwardConfirm']="ddddd?";
-           //$data['forward']='admin.php?m=Admin&c=Public&a=login';
-           
-           //var_dump($data);
-           //die();
-           
-           $this->dwzajaxReturn($data);
-           //$this->success('登录成功，正在跳转...',"admin.php"  ,1);	//登录成功跳转到管理画面
-           //var_dump($data);
-           //$this->display("index/index");
-       }
-       else{
-           
-           //$this->assign("tabid",$tabid);
-           $this->display();
-       }
-   }
+  
    
 
 }

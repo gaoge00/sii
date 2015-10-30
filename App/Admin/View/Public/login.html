@@ -56,6 +56,8 @@ $(function() {
 	/*$("#captcha_img").click(function(){
 		changeCode();
 	});*/
+	
+	
 	$("#login_form").submit(function(){
 		var issubmit = true;
 		var i_index  = 0;
@@ -82,7 +84,11 @@ $(function() {
 		//$("#j_password").val(HMAC_SHA256_MAC($("#j_randomKey").val(), password));
         return true;
 	});
+	
+
 });
+
+
 function genTimestamp(){
 	var time = new Date();
 	return time.getTime();
@@ -93,6 +99,22 @@ function changeCode(){
 function choose_bg() {
 	$('body').css('background-image', 'url(__PUBLIC__/images/loginbg/loginbg_01.jpg)');
 }
+
+function onblurs(){
+    if($('#j_userid').val()!='')
+    	{
+    		$('#j_userid').val(pad($('#j_userid').val(), 5));
+    	}
+}
+function pad(num, n) {  
+    var len = num.toString().length;  
+    while(len < n) {  
+        num = "0" + num;  
+        len++;  
+    }  
+    return num;  
+} ;
+
 </script>
 </head>
 <body>
@@ -114,10 +136,13 @@ function choose_bg() {
     		<form action="{:U('Login')}" name="frmlogin" id="login_form" method="post">
                 <input type="hidden" name="jfinal_token" id="KeyID" value="" />
     			<div class="form-group">
-    				<label for="j_userid" class="t">社员编号：</label> <input id="j_userid" value="00001" name="userid" type="text" class="form-control x319 in" autocomplete="off">
+    				<label for="j_userid" class="t">社员编号：</label> <input 
+    				onblur="onblurs()"
+    				maxlength=5
+    				id="j_userid" value="" name="userid" type="text" class="form-control x319 in" autocomplete="off">
     			</div>
     			<div class="form-group">
-    				<label for="j_password" class="t">密　　码：</label> <input id="j_password" value="123456" name="password" type="password" class="form-control x319 in">
+    				<label for="j_password" class="t">密　　码：</label> <input id="j_password" value="" name="password" type="password" class="form-control x319 in">
     			</div>
 				<!--
     			<div class="form-group">

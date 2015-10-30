@@ -28,8 +28,12 @@ $(function() {
 		header: {
 			left: 'prev,next today',
 			center: 'title',
-			right: 'month,agendaWeek,agendaDay'
+			right: 'month,agendaWeek,agendaDay',
+			defaultView: "month",
+			//fixedWeekCount:false
+			//weekMode:'liquid'
 		},
+		weekMode:'liquid',
 		events: {
 			url:'__URL__/AjaxCale' ,
 			type:'post',
@@ -41,7 +45,8 @@ $(function() {
 			},
 			error: function(){
 				alert("Error");
-			}
+			},
+			textColor: 'black',
 		},
 		
 		//空白日期点击

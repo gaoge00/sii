@@ -5,7 +5,7 @@ class AdminService extends CommonService
 {
 
     public function login($admin)
-    {
+    {   
     	
         if (! $this->existAccount($admin['userid'])) {
             return array(

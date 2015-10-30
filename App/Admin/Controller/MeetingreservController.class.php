@@ -50,7 +50,7 @@ class MeetingreservController extends CommonController {
     	$Start = $_REQUEST["start"];		//开始时间
     	$End = $_REQUEST["end"];			//结束时间
     	$MeetingID=$_REQUEST["meetingid"];	//会议室ID
-    	
+    	//var_dump($demo->);
     	$strWhere=format("a.startdate between date_format(from_unixtime({0}),'%Y-%m-%d') and date_format(from_unixtime({1}),'%Y-%m-%d') ",$Start,$End);
     	if(isset($MeetingID) && $MeetingID!="0"){
     	    $strWhere =$strWhere . " and a.meetingid = '" . $MeetingID ."'";
@@ -70,7 +70,7 @@ class MeetingreservController extends CommonController {
     	->order("a.startdate,a.starttime asc")
     	->where($strWhere)
     	->select();
-    	
+    	//var_dump($demo->getLastSql());
     	foreach ($list as $key=>$value){
     		if($value["allDay"]=="true"){
     			$list[$key]["allDay"]=true;
@@ -107,6 +107,7 @@ class MeetingreservController extends CommonController {
 	
   public function _befor_edit(){
 
+      //var_dump("111111111111111111");
         $this->assign('caltype',$_REQUEST["caltype"]);
   		$MeetingreservID=$_REQUEST["id"];
   		$this->GetReservByID($MeetingreservID);
@@ -114,13 +115,15 @@ class MeetingreservController extends CommonController {
   }
   
   public function _befor_add(){
-
+      
+      //echo SessionSavePath();
       $this->assign('caltype',$_REQUEST["caltype"]);
-      $this->assign('orgName',$this->getOrgNameByUid());		 
+      $this->assign('orgName',$this->getOrgNameByUid());
+      $MeetingreservID=$_REQUEST["id"];
+      $this->GetReservByID($MeetingreservID); 
   }
 
   public function _befor_view(){
-      
   		$MeetingreservID=$_REQUEST["id"];
   		$this->GetReservByID($MeetingreservID);
   }
@@ -145,8 +148,6 @@ class MeetingreservController extends CommonController {
   	
     echo $demo->getLastSql();
     */
-  	
-  
             $nowDate=date('Y-m-d',time());
             $Date315=date('Y')."-03-15";
             $Date331=date('Y')."-03-31";
@@ -157,15 +158,16 @@ class MeetingreservController extends CommonController {
             }
             else
            {
-                $maxDate=$Date315;
+                $maxDate="2050-12-31";
             }
-  	
+            //var_dump($maxDate);
+            
+    
   	$this->assign('orgName',$this->getOrgNameByUid());
   	$this->assign('id',$id);
   	$this->assign('beforlist',$list[0]);
   	$this->assign('maxDate',$maxDate);
-  	
-  	$this->assign('maxDate111',"maxDate111");
+
   }
   
   //添加更新会议设备
@@ -345,13 +347,16 @@ class MeetingreservController extends CommonController {
             $where="";
             $field="";
             if($StartDate!=""&&isset($StartDate))
-                $where.=" and startdate>='".$StartDate."'";
+                //var_dump(222);exit;
+                $where.=" startdate>='".$StartDate."'";
             if($EndDate!=""&&isset($EndDate))
+                //var_dump(224);exit;
                 $where.=" and startdate<='".$EndDate."'";
             
             if($Strtype=="1")
-            {
-                $where=" ifnull(meetingName,'')<>'' ";
+            {   
+                $where.="and ifnull(meetingName,'')<>'' ";
+                //var_dump($where);exit;
                 $field=" distinct meetingName,userName,group_concat(ifnull(deviceName,'无')) deviceName,startdate,starttime,endtime,timelength  ";
                 $headArr=array('会议室名称','预订人','占用设备','日期','开始时间','结束时间','占用时长');
                 $filename="会议室占用情况统计表";
@@ -361,6 +366,7 @@ class MeetingreservController extends CommonController {
                 ->group('id')
                 ->order("startdate,starttime,endtime ")
                 ->select();
+                //var_dump($model->getLastSql());exit;
                 
             }
             else
