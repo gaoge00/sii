@@ -136,8 +136,9 @@ function pad(num, n) {
     		<form action="{:U('Login')}" name="frmlogin" id="login_form" method="post">
                 <input type="hidden" name="jfinal_token" id="KeyID" value="" />
     			<div class="form-group">
-    				<label for="j_userid" class="t">社员编号：</label> <input 
-    				onblur="onblurs()"
+    				<label for="j_userid" class="t">社员编号：</label> 
+    				<!-- onblur="onblurs()" -->
+    				<input 
     				maxlength=5
     				id="j_userid" value="" name="userid" type="text" class="form-control x319 in" autocomplete="off">
     			</div>

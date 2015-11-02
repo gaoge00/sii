@@ -7,7 +7,9 @@ class PublicController extends Controller {
     public function login(){
 	  if(IS_POST){ 
         $admin = I('post.');
-        //var_dump($admin);
+        //var_dump(D('Admin', 'Service'));
+        //die();
+        
         $rs = D('Admin', 'Service')->login($admin);
         setcookie("uid",$admin["userid"]);
 		if (!$rs['status']) {

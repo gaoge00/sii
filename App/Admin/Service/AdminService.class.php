@@ -6,7 +6,10 @@ class AdminService extends CommonService
 
     public function login($admin)
     {   
-    	
+    	//不足5位补足5位(两种补0的方法)
+        $admin['userid']=sprintf("%05d", $admin['userid']);
+        
+        //$admin['userid']=str_pad($admin['userid'],5,"0",STR_PAD_LEFT);
         if (! $this->existAccount($admin['userid'])) {
             return array(
                 'status' => 0,
