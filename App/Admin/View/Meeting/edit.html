@@ -16,7 +16,19 @@ $('input').on('ifUnchecked', function(event){
 	//this.value = "0";
 	//alert(this.value);
 });
-	
+
+
+//$(function(){
+//	   makeTree("__URL__/AjaxGetAllDevices",
+//			   {id : {$id}},
+//			   //{id : ''},
+//			   "j_select_tree_devices",
+//			   '#devicesid',
+//			   '#devicesname',
+//			   $("#j_select_tree_devices")
+//			   );
+//	}); 
+
 </script>
 		<table class="table table-condensed table-hover" width="100%">
 			<tbody>
@@ -28,7 +40,7 @@ $('input').on('ifUnchecked', function(event){
 				</tr>
 
 				<tr>
-					<td><label for="j_title" class="control-label x85">会议室设备：</label>
+					<td><label for="j_title" class="control-label x85">固定设备：</label>
 						<input type="checkbox" data-toggle="icheck" value="{$Rs.hastv}"  name="tv"  data-label="内置电视" <if condition="$Rs.hastv EQ 1 ">checked</if> >
 						<input type="hidden"  value="{$Rs.hastv}"  name="hastv" id="hastv"  >
 						
@@ -42,7 +54,19 @@ $('input').on('ifUnchecked', function(event){
 						<input type="hidden"  value="{$Rs.hastel}"  name="hastel" id="hastel"  >
 					</td>
 				</tr>
-				
+				<!--  
+				<tr>
+					<td>
+						<label for="j_title" class="control-label x85">移动设备：</label>
+						<input 	type="text" name="devicesname" id="devicesname"
+								data-toggle="selectztree" size="30"
+								data-tree="#j_select_tree_devices" readonly> 
+						<input
+								type="hidden" id="devicesid" name="devicesid" value="">
+						<ul id="j_select_tree_devices" class="ztree hide"></ul>
+					</td>
+				</tr>
+				-->
 				<tr>
 					<td><label for="j_title" class="control-label x85">容纳人数：</label>
 					<input type="text" size="5" data-toggle="spinner" data-min="0"

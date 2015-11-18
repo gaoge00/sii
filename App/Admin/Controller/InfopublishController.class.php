@@ -117,9 +117,6 @@ class InfopublishController extends CommonController
         }
     }
 
-    
-
-     
     public function _befor_index(){
          // 重要度important
         $importantlist = M("Important")->where("status=1")
@@ -150,14 +147,11 @@ class InfopublishController extends CommonController
         $this->GetMasters();
     }
     
-    
     public function _befor_insert($data){
         $data["uid"]=session('uid');
         return $data;
     }
 
-
-    
     public function _after_add($id)
     {
         $this->addkeys_org($id);

@@ -436,6 +436,8 @@ Class CommonController extends Controller{
 			}
 			$id = $data['id'];
 			
+			//var_dump($model->getLastSql());
+			
 			$this->mtReturn(200,"编辑【".$this->opname."】成功",$_REQUEST['navTabId'],true);  //写入日志
 			//$this->mtReturn(200,"更改【".$this->opname."】状态成功".$id,$_REQUEST['navTabId'],false);
 

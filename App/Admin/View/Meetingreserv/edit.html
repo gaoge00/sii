@@ -217,40 +217,48 @@ $('#meetingid').on('change',
         	    success:function(data) {    
         	    	
         	    	//var dataObj=eval("("+data+")");//转换为json对象
-
+					//alert(data);
         	    	$.each(data[0], function(key, val){
-
         	          	var ctlObj = $("#MR_" + key);
+        	          	var divObj = $("#DIV_" + key);
         	          	//ctlObj.attr("checked",true);
         	          	//$('input').iCheck('check'); — 将输入框的状态设置为checked
 						//$('input').iCheck('uncheck'); — 移除 checked 状态
-        	          	if(val == '0'){
-        	          		ctlObj.iCheck('uncheck');
-        	          	}
-        	          	else if (val == '1'){
-        	          		ctlObj.iCheck('check');
+        	          
+						//alert(val);
+						//if (val == '0'){
+        	          		//ctlObj.iCheck('uncheck');
+        	          	//	divObj.attr("hidden",true);
+        	          	//}
+
+        	          	//else 
+        	          	if (val == '1'){
+        	          		//ctlObj.iCheck('check');
+        	          		divObj.attr("hidden",false);
         	          	}
         	          	else{
-        	          		ctlObj.iCheck('uncheck');
+        	          		//ctlObj.iCheck('uncheck');
+        	          		divObj.attr("hidden",true);
         	          	}
+						ctlObj.iCheck('uncheck');
+	
         	    	}); 
-        	    	
-        	    	
-        	    	
+
         	     },    
         	     error : function() {    
         	          // view("异常！");    
         	          alert("异常！");    
         	     }
-        	});  
-        	  
+        	});
+        	
+        	
+        	//alert("22222！");    
+        	
 });
-        
-           	
+                	
  //表单验证
  function CommitVerify(form)
  {
-	 
 	 var flag = true;
 	 $.ajax({
          	url: "__URL__/AjaxExistMeeingRoom",
@@ -334,30 +342,58 @@ $('#meetingid').on('change',
                 
                 </td>
                	 <td>
+               	 
+               	 
+               	 <!-- 
+               	 data-nextselect="#myLoadDiv2" 
+               	 data-refurl="__URL__/Ajaxloaddevsbymeetid?meetid={value}"
+               	 data-nextselect="#myLoadDiv2" 
+				data-refurl="__URL__/Ajaxloaddevs"
+				data-toggle="refreshlayout" 
+				data-target="#myLoadDiv2"
+               	  -->
                 <select  name="meetingid" id="meetingid"  data-toggle="selectpicker" 
                 data-rule="会议室名称: required;meetingid"
                 
                 >
 	               	<option  value="">请选择会议室</option>
-		         	<php>$listz=M('meeting')->where(array('status'=>1))->select();</php>
+		         	
 		          	<foreach name="listz" item="v">
-	              	<option <if condition="$v.id EQ $Rs['meetingid'] ">selected value="{$Rs['meetingid']}" <else/>value="{$v.id}"</if> >
+	              	<option <if condition="$v.id EQ $Rs['meetingid'] ">selected value="{$Rs['meetingid']}" <else/>value="{$v.id}"</if>
+	              	 >
 		          	{$v.name}
 		          	</option>
+		          	
 	              	</foreach>
 	            </select>
-             	
-           </td></tr>
+           </td>
+           </tr>
              
-            <tr><td>
-                <label for="j_title" class="control-label x85">会议室属性：</label>
+            <tr>
+            	<td>
+                	<label for="j_title" class="control-label x85">会议室属性：</label>
                 </td>
-               	 <td>
-              	<input type="checkbox" data-toggle="icheck" name="MR_hastv"  id="MR_hastv"  data-label="内置电视"  disabled <if condition="$beforlist.hastv EQ 1 ">checked</if> />
-				<input type="checkbox" data-toggle="icheck" name="MR_hasprojection" id="MR_hasprojection"  data-label="内置投影" disabled <if condition="$beforlist.hasprojection EQ 1 ">checked</if> />
-				<input type="checkbox" data-toggle="icheck" name="MR_hasvideo"   id="MR_hasvideo"    data-label="视频会议" disabled <if condition="$beforlist.hasvideo EQ 1 ">checked</if> />
-				<input type="checkbox" data-toggle="icheck" name="MR_hastel" id="MR_hastel"  data-label="电话会议"  disabled <if condition="$beforlist.hastel EQ 1 ">checked</if> />						
-             </td></tr>
+               	<td>
+               	
+				   	<div style="padding-left:0px !important;"  id="DIV_hastv" class="col-md-3"  <if condition="$beforlist.hastv EQ 0"> hidden="false"</if> >
+				  	<input type="checkbox" data-toggle="icheck" name="MR_hastv"  id="MR_hastv"  data-label="内置电视"   {$builtindeviceslist.hastv}/>
+				</div>
+			
+					<div style="padding-left:0px !important;" id="DIV_hasprojection" class="col-md-3" <if condition="$beforlist.hasprojection EQ 0"> hidden="false"</if>>
+					<input type="checkbox" data-toggle="icheck" name="MR_hasprojection" id="MR_hasprojection"  data-label="投影"  {$builtindeviceslist.hasprojection}/>
+				</div>
+				
+					<div style="padding-left:0px !important;" id="DIV_hasvideo" class="col-md-3" <if condition="$beforlist.hasvideo EQ 0"> hidden="false"</if>>
+					<input type="checkbox" data-toggle="icheck" name="MR_hasvideo"   id="MR_hasvideo"    data-label="视频会议"  {$builtindeviceslist.hasvideo}/>
+				</div>
+				
+					<div style="padding-left:0px !important;" id="DIV_hastel" class="col-md-3" <if condition="$beforlist.hastel EQ 0"> hidden="false"</if>>
+					<input type="checkbox" data-toggle="icheck" name="MR_hastel" id="MR_hastel"  data-label="电话会议"   {$builtindeviceslist.hastel}/>	
+				</div>
+						
+															
+               </td>
+            </tr>
             
             <tr>
              	 <td>
@@ -383,36 +419,6 @@ $('#meetingid').on('change',
                </td>
                	 <td>
                <input type="text" name=orgname id="j_orgname" value="{$orgName}" size="10"  readonly>
-               
-			   
-			   <!--  
-			   <select  name="orgidtree" data-toggle="selectpicker" disabled>
-               <option  value="0">请选择</option>
-	           <php>$listz=cateTree(0,0,'org','1');</php>
-		          <foreach name="listz" item="v">
-		              <option <if condition="$v.id EQ $beforlist['orgid'] "> 
-		              				selected value="{$beforlist['orgid']}" 
-		              				<else /> 
-			              				<if condition="$v.id EQ $Think.session.orgid ">selected value="{$Think.session.orgid}" 
-			              				<else/>value="{$v.id}"
-			              				</if>
-		              				</if> 
-		              				>
-					        <assign name="strLevel" value="+" />
-					        <for start="0" end="$v.level" name="i" >
-								<php>$strLevel = $strLevel . "---" ;</php>
-							</for>
-							
-							<switch name="v.level"> 
-					 			<case value="0">+<B>{$v.name}</b></case> 
-								<case value="$v.level">{$strLevel}{$v.name}</case>
-								<default />
-							 </switch>
-			         </option>
-		          </foreach>
-             </select>
-             -->
-             
             <input type="hidden" name=orgid id="j_orgid" value="<php> if(empty($beforlist['orgid']))  {echo session('orgid');} else { echo $beforlist['orgid'];} </php>" >
              </td></tr>
             
@@ -499,8 +505,6 @@ $('#meetingid').on('change',
                	 	
              	 </td>
             </tr>
-            
-            
             </tbody>
             </table>
         </div>

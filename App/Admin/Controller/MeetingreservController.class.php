@@ -105,30 +105,58 @@ class MeetingreservController extends CommonController {
         return $result;
     }
 	
-  public function _befor_edit(){
-
+    public function _befor_edit(){
+    
       //var_dump("111111111111111111");
         $this->assign('caltype',$_REQUEST["caltype"]);
-  		$MeetingreservID=$_REQUEST["id"];
-  		$this->GetReservByID($MeetingreservID);
-  		
-  }
-  
-  public function _befor_add(){
+    	$MeetingreservID=$_REQUEST["id"];
+    	$this->GetReservByID($MeetingreservID);
+    }
+    
+    public function _befor_add(){
       
       //echo SessionSavePath();
       $this->assign('caltype',$_REQUEST["caltype"]);
       $this->assign('orgName',$this->getOrgNameByUid());
       $MeetingreservID=$_REQUEST["id"];
       $this->GetReservByID($MeetingreservID); 
-  }
-
-  public function _befor_view(){
-  		$MeetingreservID=$_REQUEST["id"];
-  		$this->GetReservByID($MeetingreservID);
-  }
-  
-  public function GetReservByID($id){
+ 
+    }
+    
+    public function _befor_view(){
+    	$MeetingreservID=$_REQUEST["id"];
+    	$this->GetReservByID($MeetingreservID);
+    }
+    
+    public function _befor_insert($data){
+      $MR_hastv = $_REQUEST["MR_hastv"]=="on"?"checked":"unchecked";	//内置电视
+      $MR_hasprojection = $_REQUEST["MR_hasprojection"]=="on"?"checked":"unchecked";	//内置投影
+      $MR_hasvideo = $_REQUEST["MR_hasvideo"]=="on"?"checked":"unchecked";	//视频会议
+      $MR_hastel = $_REQUEST["MR_hastel"]=="on"?"checked":"unchecked";	//电话会议
+      $builtindevices=$MR_hastv.','.$MR_hasprojection.','.$MR_hasvideo.','.$MR_hastel;
+      
+      $data["builtindevices"]=$builtindevices;
+      
+      //var_dump($builtindevices);
+      //die();
+      return $data;
+    }
+    
+    public function _befor_update($data){
+      $MR_hastv = $_REQUEST["MR_hastv"]=="on"?"checked":"unchecked";	//内置电视
+      $MR_hasprojection = $_REQUEST["MR_hasprojection"]=="on"?"checked":"unchecked";	//内置投影
+      $MR_hasvideo = $_REQUEST["MR_hasvideo"]=="on"?"checked":"unchecked";	//视频会议
+      $MR_hastel = $_REQUEST["MR_hastel"]=="on"?"checked":"unchecked";	//电话会议
+      $builtindevices=$MR_hastv.','.$MR_hasprojection.','.$MR_hasvideo.','.$MR_hastel;
+      
+      $data["builtindevices"]=$builtindevices;
+      
+      //var_dump($data);
+      //die();
+      return $data;
+    }
+    
+    public function GetReservByID($id){
   	$demo=M("uv_getmeetingreserv");
   	$list = $demo->where("id = '".$id."'")
   	    ->select();
@@ -150,24 +178,87 @@ class MeetingreservController extends CommonController {
     */
             $nowDate=date('Y-m-d',time());
             $Date315=date('Y')."-03-15";
-            $Date331=date('Y')."-03-31";
+            $Date331=(date('Y')+1)."-03-31";
 
-            if($nowDate>=$Date315&&$nowDate<=$Date331)
-            {
+//             if($nowDate>=$Date315&&$nowDate<=$Date331)
+//             {
                 $maxDate=$Date331;
-            }
-            else
-           {
-                $maxDate="2050-12-31";
-            }
+//             }
+//             else
+//            {
+//                 $maxDate="2050-12-31";
+//             }
             //var_dump($maxDate);
             
+    $builtindevices=$list[0]["builtindevices"];
+    $listbuiltindevices=Array();
+    if($builtindevices==''||!isset($builtindevices))
+    {
+        $listbuiltindevices=array(
+            "hastv"=>"unchecked",
+            "hasprojection"=>"unchecked",
+            "hasvideo"=>"unchecked",
+            "hastel"=>"unchecked"  
+        );
+    }
+    else {
+        
+        $arrbuiltindevices=explode(',', $builtindevices);
+        
+        $listbuiltindevices=array(
+            "hastv"=>$arrbuiltindevices[0],
+            "hasprojection"=>$arrbuiltindevices[1],
+            "hasvideo"=>$arrbuiltindevices[2],
+            "hastel"=>$arrbuiltindevices[3]
+        );
+    }
+
     
+    //工厂长，部长，副总，总经理，秘书 可以预约 5#和接待室
+    
+    $MeetingRoomRule=Array(
+        "工厂长",
+        "部长",
+        "副总",
+        "总经理",
+        "秘书"
+        );
+    $demo=M("meetingreserv");
+    //var_dump( $demo);
+    $list=$demo->table(C('DB_PREFIX')."user a")
+    ->join("left join ".C('DB_PREFIX')."dep b ON (a.depid=b.id)")
+    ->field("a.id,TRIM(BOTH ' ' FROM b.name) as depName")
+    ->where("a.id='".session('uid')."'")
+    ->select();
+//     var_dump($demo->getLastSql());
+//     die();
+    
+    if(isset($list)&&count($list)>0)
+        $result=$list[0]["depName"];
+    else
+       $result="";
+//     var_dump($result);
+//     die();
+    $demo=M('meeting');
+    if(in_array($result,$MeetingRoomRule)||authsuperadmin(session('uid')))
+    {
+        $listz=$demo->where(array('status'=>1))->select();
+    }
+    else 
+   {
+        $listz=$demo->where("status='1' and TRIM(BOTH ' ' FROM name) not in ('5#','接待室')")->select();
+    }
+    
+//          var_dump($demo->getLastSql());
+//          die();
+    //工厂长，部长，副总，总经理，秘书 可以预约 5#和接待室
   	$this->assign('orgName',$this->getOrgNameByUid());
   	$this->assign('id',$id);
+  	$this->assign('builtindeviceslist',$listbuiltindevices);
   	$this->assign('beforlist',$list[0]);
   	$this->assign('maxDate',$maxDate);
-
+  	
+  	$this->assign('listz',$listz);
   }
   
   //添加更新会议设备
@@ -184,14 +275,11 @@ class MeetingreservController extends CommonController {
 	   	if(IS_POST){
 	   		$Devs = $_REQUEST["devs"];	//选择的设备ID
 	   		 
-	   		 
 	   		$M_Lock=M("meetingreservdevice");
-	   		 
-	   		 
+
 	   		$data=array(
-	   				"meetingreservid"=>$id,
+	   				"meetingreservid" => $id,
 	   				"meetingdeviceid"=>""
-	  
 	   		);
 	   		 
 	   		$M_Lock->startTrans();
@@ -216,10 +304,8 @@ class MeetingreservController extends CommonController {
    public function AjaxGetMeetingRoomProperty(){
     
     	$meetingid=$_REQUEST["meetingid"];
-    
     	$demo=M("meeting");
-    
-    	$list=$demo->where("id = '".$meetingid."' and Status=1 ")
+    	$list=$demo->where("id = if(ifnull('".$meetingid."','')='',id,'".$meetingid."') and Status=1 ")
     	->field("hastv,hasprojection,hasvideo,hastel,peoples")
     	->select();
     	
@@ -246,9 +332,40 @@ class MeetingreservController extends CommonController {
     	
     	$devlist = $M_MeetDev->query($querySql);
     	
-    	//var_dump($M_MeetDev->getLastSql());
+    	//var_dump($devlist);
     	$this->assign('Devlist',$devlist);
     	$this->display("loaddevs");
+    
+    }
+    
+    //得到可用的会议室设备
+    public function Ajaxloaddevsbymeetid(){
+    
+        $meetid=$_REQUEST["meetid"];
+        $meetreservid=$_REQUEST["meetreservid"];
+        
+        
+        $M_MeetDev=M("");
+         
+        $querySql="
+				select b.*
+                 ,CASE WHEN IFNULL(e.meetingdeviceid, '') != '' THEN 'checked'  ELSE '' END AS checked
+                from __MEETING__ a
+                left join __MEETINGANDDEVICE__ b on (a.id=b.meetingid)
+                left join __MEETINGDEVICE__ c on(b.meetingid=c.id)
+                left join __MEETINGRESERV__ d on(a.id=d.meetingid and  d.id='".$meetreservid."')
+                left join __MEETINGRESERVDEVICE__ e on (d.id=e.MEETINGRESERVID and b.meetingdeviceid=e.meetingdeviceid)
+
+                where a.id='".$meetid."'
+				  and c.Status='1'
+				order by b.meetingdeviceid desc,c.sort asc;
+    			";
+        $devlist = $M_MeetDev->query($querySql);
+        //var_dump($M_MeetDev->getLastSql());
+        //var_dump($devlist);
+        //echo json_encode($devlist);
+        $this->assign('Devlist',$devlist);
+        $this->display("loaddevs");
     
     }
     
@@ -344,21 +461,22 @@ class MeetingreservController extends CommonController {
             $Strtype=$_REQUEST["strtype"];	//会议室/设备
             $model = D($this->dbname);
             
-            $where="";
+            $where=" 1=1 ";
             $field="";
             if($StartDate!=""&&isset($StartDate))
                 //var_dump(222);exit;
-                $where.=" startdate>='".$StartDate."'";
+                $where.=" and startdate>='".$StartDate."'";
             if($EndDate!=""&&isset($EndDate))
                 //var_dump(224);exit;
                 $where.=" and startdate<='".$EndDate."'";
             
+            //var_dump($where);die();
             if($Strtype=="1")
             {   
-                $where.="and ifnull(meetingName,'')<>'' ";
-                //var_dump($where);exit;
-                $field=" distinct meetingName,userName,group_concat(ifnull(deviceName,'无')) deviceName,startdate,starttime,endtime,timelength  ";
-                $headArr=array('会议室名称','预订人','占用设备','日期','开始时间','结束时间','占用时长');
+                $where.=" and ifnull(meetingName,'')<>'' ";
+                //var_dump($where);die();
+                $field=" distinct meetingName,userName,indevices1,indevices2,indevices3,indevices4,group_concat(ifnull(deviceName,'无')) deviceName,startdate,starttime,endtime,timelength  ";
+                $headArr=array('会议室名称','预订人','内置电视','投影','视频会议','电话会议','占用设备','日期','开始时间','结束时间','占用时长');
                 $filename="会议室占用情况统计表";
                 $list= $model->table(C('DB_PREFIX')."uv_meetingreservdeviceexcel  ")
                 ->where($where)
@@ -366,21 +484,28 @@ class MeetingreservController extends CommonController {
                 ->group('id')
                 ->order("startdate,starttime,endtime ")
                 ->select();
-                //var_dump($model->getLastSql());exit;
+                //var_dump($model->getLastSql());
                 
             }
             else
            {
-                $where=" ifnull(deviceName,'')<>'' ";
-                $field=" distinct ifnull(deviceName,'无'),userName, meetingName,startdate,starttime,endtime,timelength  ";
-                $headArr=array('设备名称','预订人','占用设备','日期','开始时间','结束时间','占用时长');
+                $where.=" and ifnull(deviceName,'')<>'' ";
+                //var_dump($where);die();
+                $field=" distinct ifnull(deviceName,'无'),userName,indevices1,indevices2,indevices3,indevices4,meetingName,startdate,starttime,endtime,timelength  ";
+                $headArr=array('设备名称','预订人','内置电视','投影','视频会议','电话会议','占用会议室','日期','开始时间','结束时间','占用时长');
                 $filename="设备占用情况统计表";
                 $list= $model->table(C('DB_PREFIX')."uv_meetingreservdeviceexcel  ")
                 ->where($where)
                 ->field($field)
                 ->order("startdate,starttime,endtime ")
                 ->select();
+                //var_dump($model->getLastSql());
            }
+           
+           
+           
+           
+           //var_dump($list);
 
 //             //include('PHPExcel.php');
 //             import("Org.Util.PHPExcel");
@@ -463,58 +588,97 @@ class MeetingreservController extends CommonController {
         $highestColumn = $sheet->getHighestColumn(); // 取得总列数
         $k = 0;
         
+        
+        
         //循环读取excel文件,读取一条,插入一条
-        for($j=2;$j<=$highestRow;$j++)
-        {
-            $d['id'] = $objPHPExcel->getActiveSheet()->getCell("A".$j)->getValue();//ID
-            $d['name'] = $objPHPExcel->getActiveSheet()->getCell("D".$j)->getValue();//姓名
-            $date = explode('/',$objPHPExcel->getActiveSheet()->getCell("F".$j)->getValue());//日期
-        }
+//         for($j=2;$j<=$highestRow;$j++)
+//         {
+//             $d['id'] = $objPHPExcel->getActiveSheet()->getCell("A".$j)->getValue();//ID
+//             $d['name'] = $objPHPExcel->getActiveSheet()->getCell("D".$j)->getValue();//姓名
+//             $date = explode('/',$objPHPExcel->getActiveSheet()->getCell("F".$j)->getValue());//日期
+//         }
+        
+        
         
         
         $objProps = $objPHPExcel->getProperties();
         
         
         $objActSheet = $objPHPExcel->getActiveSheet();
+        
         $objActSheet->setCellValue ( 'A1', $title );
         //设置表头
         $key = ord("A");
+        
+        
+        //var_dump($headArr);
+        //var_dump($headArr);
+        //die();
         foreach($headArr as $v){
             $colum = chr($key);
             $objActSheet->setCellValue($colum.'2', $v);
             $key += 1;
         }
-    
-        
-        
-        $column = 3;
-        $row=2;
-        //设置为文本格式
-        foreach($data as $key => $rows){ //行写入
-            $row++;
-            $span = ord("A");
-            foreach($rows as $keyName=>$value){// 列写入
-                $j = chr($span);
-    
-                $objActSheet->setCellValueExplicit($j.$column, $value);
-                if($row%2!=0)
-                {
-                    $objActSheet->getStyle('A'.($row).':G'.($row))->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
-                    $objActSheet->getStyle('A'.($row).':G'.($row))->getFill()->getStartColor()->setARGB('FFcccccc');
-                }
-                $span++;
-            }
-            $column++;
-        }
-        
 
+        $column = 3;
+        $row=3;
+        
+        //var_dump($data);
+        //die();
+        //var_dump($row);
         //设置字体
-         $objActSheet->getStyle('A3:G'.($row+1))->getFont()->setName('宋体');
-         $objActSheet->getStyle('A3:G'.($row+1))->getFont()->setSize(11);
+        //$objActSheet->getStyle('A3:K'.($row+1))->getFont()->setName('宋体');
+        //$objActSheet->getStyle('A3:K'.($row+1))->getFont()->setSize(11);
          
         //设置单元格边框
-        $objActSheet->getStyle('A3:G'.($row))->getBorders()->getAllBorders()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
+        //$objActSheet->getStyle('A3:K'.($row))->getBorders()->getAllBorders()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
+        
+        //设置为文本格式
+        foreach($data as $key => $rows){ //行写入
+             if($row%2!=0)
+             {
+                 
+                //$excelStyle=$objActSheet->getStyle('A'.($row).':K'.($row));
+                //$excelStyle->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
+                //$excelStyle->getFill()->getStartColor()->setARGB('FFcccccc');
+
+                    //$objActSheet->getComment('A'.($row))->getFillColor()->setRGB('FFcccccc' );
+//                 //$excelStyle->getBorders()->getAllBorders()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
+//                 //var_dump('A'.($row).':K'.($row));
+
+                 
+             }
+            $span = ord("A");
+            foreach($rows as $keyName=>$value){// 列写入
+                $j = chr($span);  
+                $objActSheet->setCellValue($j.$column, $value);//setCellValueExplicit
+                $span++;
+            }
+            
+            $column++;
+            $row++;
+        }
+        
+        
+        //设置字体
+        $objActSheet->getStyle('A3:K'.($row+1))->getFont()->setName('宋体');
+        $objActSheet->getStyle('A3:K'.($row+1))->getFont()->setSize(11);
+         
+        //设置单元格边框
+        $objActSheet->getStyle('A3:K'.($row-1))->getBorders()->getAllBorders()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
+
+        //将B2的样式复制到B3至B7
+//         $objActSheet->duplicateConditionalStyle(
+//             $objActSheet->getStyle('A3')->getConditionalStyles(),
+//             'A5:K'.($row)
+//         );
+        
+        // 格式刷 其他单元区域
+        //$objActSheet->duplicateStyle($objActSheet->getStyle('E4'), 'E5:E13' );
+        //$objActSheet->duplicateStyle($objActSheet->getStyle('A3:K4'), 'A5:K6');
         $fileName = iconv("utf-8", "gb2312", $fileName);
+        //var_dump($row);
+        //die();
         //重命名表
         //$objPHPExcel->getActiveSheet()->setTitle('test');
         //设置活动单指数到第一个表,所以Excel打开这是第一个表
@@ -627,7 +791,11 @@ class MeetingreservController extends CommonController {
                     (!isset($v['F'])||$v['F']=="")&&
                     (!isset($v['G'])||$v['G']=="")&&
                     (!isset($v['H'])||$v['H']=="")&&
-                    (!isset($v['I'])||$v['I']=="")
+                    (!isset($v['I'])||$v['I']=="")&&
+                    (!isset($v['J'])||$v['J']=="")&&
+                    (!isset($v['K'])||$v['K']=="")&&
+                    (!isset($v['L'])||$v['L']=="")&&
+                    (!isset($v['M'])||$v['M']=="")
                     ){
                     //var_dump("111111111");
                    continue;    
@@ -778,15 +946,26 @@ class MeetingreservController extends CommonController {
                 $note=$v['I'];
                 $meetingreserv["note"]=$note;
                 
+                //内置设备
+                $builtindevices1=$v['J']=="使用"?"checked":"unchecked";
+                $builtindevices2=$v['K']=="使用"?"checked":"unchecked";
+                $builtindevices3=$v['L']=="使用"?"checked":"unchecked";
+                $builtindevices4=$v['M']=="使用"?"checked":"unchecked";
+                $meetingreserv["builtindevices"]=$builtindevices1.','
+                                                .$builtindevices2.','
+                                                .$builtindevices3.','
+                                                .$builtindevices4;
+                
+                //var_dump($meetingreserv["builtindevices"]);
                 
                 //与会设备
                 if(isset($v['H'])&&$v['H']!="")
                 {
-                    
-                    var_dump("0.0.0.0.0.0.0");
+                    //var_dump("0.0.0.0.0.0.0");
                     $devices=split('\,',$v['H']);
                     
                     $meetingreservid=0;
+                    //判断是否为第一次插入
                     $flag=false;
                     for($j=0;$j<count($devices);$j++)
                     {
@@ -794,8 +973,6 @@ class MeetingreservController extends CommonController {
                         //var_dump($result) ;
                         if(count($result)>0)
                         {
-                            
-                    
                             //$meetingreservdevice['meetingreservid'] = $meetingreserv["meetingid"];
                             $meetingreservdevice['meetingdeviceid'] = $result[0]["id"];
    
@@ -813,6 +990,12 @@ class MeetingreservController extends CommonController {
                          {  
                                  if($flag==false)
                                  {
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
                                      $model->table(C('DB_PREFIX')."meetingreserv")->add($meetingreserv);
                                      //var_dump($model->getLastSql());
                                      $meetingreservid=$model->getLastInsID();
@@ -843,7 +1026,7 @@ class MeetingreservController extends CommonController {
                 }
                 else
               {
-                    
+
                   $model->table(C('DB_PREFIX')."meetingreserv")->add($meetingreserv);
                     
                 }

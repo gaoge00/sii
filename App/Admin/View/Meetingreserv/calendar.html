@@ -73,6 +73,11 @@ $(function() {
 
 		 	//当前日期
 		 	var selDay = $.fullCalendar.formatDate(date,"yyyy-MM-dd");
+		 	var d=new Date();
+		 	d.setFullYear(d.getFullYear()+1);
+		 	d.setMonth(2);
+		 	d.setDate(31);
+		 	//alert(d.toLocaleString());
 		 	var toDay = $.fullCalendar.formatDate(new Date(),"yyyy-MM-dd");
 		 	if(selDay<toDay)
 		 	{	 		
@@ -81,6 +86,16 @@ $(function() {
 		 		$(this).alertmsg('error',"不能预订过去日期！");
 		 		return false;
 		 	}
+		 	var vNextYear331 = $.fullCalendar.formatDate(d,"yyyy-MM-dd");
+		 	if(selDay>vNextYear331)
+		 	{	 		
+		 		//$('#export').alertmsg(alerttype, info)
+		 		//$.alertmsg("不能预订过去日期！",'alert-error');
+		 		$(this).alertmsg('error',"不能预订下一年度！");
+		 		return false;
+		 	}
+		 	
+		 	
 		 	//alert("空白日期点击1");
 		 	//alert(view.name);
 			//$.cookie('sel_start',fstart);
@@ -157,7 +172,6 @@ $(function() {
 						class="btn btn-green" data-toggle="dialog" data-width="600"
 						data-height="800" data-id="dialog-mask" data-mask="true"
 						data-icon="plus" id="btn_add">新增</a>
-						
 						</span> 
 						
 						<span>

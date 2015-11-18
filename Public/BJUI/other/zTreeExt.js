@@ -3,6 +3,7 @@
  */
 function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeobj)
 {
+	//alert("111111111");
 	 var settingKeys = {
 				async : {
 					enable : true,//启用异步加载
@@ -17,6 +18,7 @@ function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeob
 				//autoParam:["id", "str1"], //需要传递的参数,为你在ztree中定义的参数名称
 				//
 				},
+				
 				view : {
 					selectedMulti : false  //是否多选
 				//,addDiyDom: M_AddDiyDom
@@ -33,7 +35,8 @@ function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeob
 						checked : "checked",
 						children : "children",
 						name : "name",
-						title : "name"
+						title : "name",
+						//expand:"open"
 					},
 					simpleData : {
 						enable : true,
@@ -44,8 +47,10 @@ function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeob
 					keep : {
 						parent : true,
 						leaf : true
-					},
+					}
+					//expandAll:false
 				},
+				//expandAll:false,
 				callback : {
 					onAsyncSuccess : zTreeOnAsyncSuccessKeys,
 					onAsyncError : zTreeOnAsyncError,
@@ -53,18 +58,22 @@ function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeob
 				}
 			};  
 	 
-	 
-	 function zTreeOnAsyncError(event, treeId, treeNode) {
-			alert("异步加载失败!");
-		}
-
-		  function zTreeOnAsyncSuccessKeys(event, treeId, treeNode, msg) {
-			//var treeObj = $.fn.zTree.getZTreeObj("j_select_tree_keys");
-			var treeObj = $.fn.zTree.getZTreeObj(p_treeid);
-			treeObj.expandAll(true);
-			getSelectedNodesKeys();
-			//getRules();
-		}  
+	        //alert("expandAll(false)");
+			function zTreeOnAsyncError(event, treeId, treeNode) {
+				alert("异步加载失败!");
+			}
+			
+			function zTreeOnAsyncSuccessKeys(event, treeId, treeNode, msg) {
+				//var treeObj = $.fn.zTree.getZTreeObj("j_select_tree_keys");
+				var treeObj = $.fn.zTree.getZTreeObj(p_treeid);
+				getSelectedNodesKeys();
+				//alert("expandAll(false)");
+				//展开关闭所有节点
+				treeObj.expandAll(false);
+				//$(p_treeid).jstree("close_all");
+				//alert("expandAll(true)");
+				//getRules();
+			}  
 		
 		
 
@@ -75,6 +84,7 @@ function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeob
 						.getCheckedNodes();
 				//var checkedValueID = $('#keysid').val();
 				//var checkedValueName = $('#keysname').val();
+				selectedNode.open=false;
 				var checkedValueID = $(p_optionid).val();
 				checkedValueID = "";
 				var checkedValueName = $(p_optionname).val();
@@ -86,6 +96,7 @@ function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeob
 					//alert(selectedNode[i].MenuID);
 					tempCheckedValueID += "," + selectedNode[i].id;
 					tempCheckedValueName += "," + selectedNode[i].name;
+					//selectedNode[i].open=false;
 					//$('#CheckedRule').val(checkedValue + "," + selectedNode[i].MenuID);
 				}
 		
@@ -101,6 +112,7 @@ function makeTree(p_getjosnurl,p_param,p_treeid,p_optionid,p_optionname,p_treeob
 		 
 		
 		$.fn.zTree.init(p_treeobj, settingKeys);
+		
 }
 
 /*屏蔽Backspace，输入内容不屏蔽*/

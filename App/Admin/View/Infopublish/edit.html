@@ -233,7 +233,7 @@
 				   "j_select_tree_keys",
 				   '#keysid',
 				   '#keysname',
-				   $("#j_select_tree_keys")
+				   $('#j_select_tree_keys')
 				   );
 		   
 		   makeTree("__URL__/AjaxGetAllOrgs",
@@ -241,10 +241,10 @@
 				   "j_select_tree_orgs",
 				   '#orgid',
 				   '#orgname',
-				   $("#j_select_tree_orgs")
+				   $('#j_select_tree_orgs')
 				   );
 		}); 
-
+     
 	 $('#enddt').on('afterchange.bjui.datepicker', function(e, data) {
 		 checkenddt(e, data);
 		}); 
@@ -323,7 +323,7 @@
 
 
 	<php> //类别初期加载 
-	$listInfotype1=M('Infotype')->where( "status='1' and pid=(select pid from ".C('DB_PREFIX')."Infotype where id='".$Rs["infotypeid"]."')" )->select();
+	//$listInfotype1=M('Infotype')->where( "status='1' and pid=(select pid from ".C('DB_PREFIX')."Infotype where id='".$Rs["infotypeid"]."')" )->select();
 	//var_dump($listInfotype1->getLastSql()) ; 
 	</php>
 	
@@ -384,7 +384,7 @@
 						data-rule="类别: required;infotypeid"
 						>
 							<option value="">--请选择--</option>
-							<foreach name="listInfotype1" item="v">
+							<foreach name="listInfotype2" item="v">
 							<option <if
 							    condition="$v.id EQ $Rs['infotypeid'] "> selected
 								value="{$Rs['infotypeid']}" <else />value="{$v.id}"</if> >
@@ -414,7 +414,8 @@
 						<input type="text" name="orgname" id="orgname"
 						data-toggle="selectztree" size="18"
 						
-						data-tree="#j_select_tree_orgs" readonly> <input
+						data-tree="#j_select_tree_orgs" readonly> 
+						<input
 						type="hidden" id="orgid" name="orgid" value="">
 						<ul id="j_select_tree_orgs" class="ztree hide">
 						</ul></td>
