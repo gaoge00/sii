@@ -1454,6 +1454,7 @@ function session($name = '', $value = '')
             ini_set('session.gc_maxlifetime', $name['expire']);
             ini_set('session.cookie_lifetime', $name['expire']);
         }
+        
         if (isset($name['use_trans_sid']))
             ini_set('session.use_trans_sid', $name['use_trans_sid'] ? 1 : 0);
         if (isset($name['use_cookies']))

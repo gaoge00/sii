@@ -22,7 +22,7 @@ define('APP_DEBUG', False);
 define('APP_PATH', './App/');
 
 // 定义应用名
-define("APP_NAME", 'SII后台管理');
+define("APP_NAME", 'SII揭示板');
 
 // 定义模块名 App/Admin 替换原来的Home
 define('BIND_MODULE', 'Admin');

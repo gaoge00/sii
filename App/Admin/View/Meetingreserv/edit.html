@@ -1,6 +1,16 @@
 <script type="text/javascript">
 
 var nowdate=getStartTime(); 
+var nowtime=new Date();
+//$.fullCalendar.formatDate(new Date(),"HH:mm");
+var addMinutes=15;
+startminutes=nowtime.getMinutes();
+if((startminutes%5)!=0){
+	addMinutes+=5;
+}
+
+nowtime=DateAdd("m",addMinutes-(startminutes%5),nowtime);
+nowtime=$.fullCalendar.formatDate(nowtime,"HH:mm");
 
 $('#starttime').datetimepicker({
 	    language:  'zh-CN',
@@ -15,7 +25,8 @@ $('#starttime').datetimepicker({
 		forceParse: 0,
 		minuteStep: 5,
 		//从什么时间开始
-		startDate: nowdate+" "+$('#starttime').val(),
+		//startDate: nowdate+" "+$('#starttime').val(),
+		startDate: $('#startdate').val()+" "+nowtime,
 		//endDate:"2015-08-06 14:00",
 		//showMeridian: true,
 		weekends: '0,6', 
@@ -56,6 +67,7 @@ function getStartTime()
 	
 	if($('#startdate').val()==$.fullCalendar.formatDate(startmyDate,"yyyy-MM-dd"))
 		{
+		    //alert($('#startdate').val());
 			var addMinutes=15;
 			startminutes=startmyDate.getMinutes()
 			if((startminutes%5)!=0){
@@ -501,7 +513,7 @@ $('#meetingid').on('change',
                 	<label for="j_sort" class="control-label x85">会议内容：</label>
                 	</td>
                	 <td>
-               	 	<textarea name="note" id="note"  cols="45" rows="10">{$Rs["note"]}</textarea>
+               	 	<textarea name="note" id="note"  cols="45" rows="5">{$Rs["note"]}</textarea>
                	 	
              	 </td>
             </tr>
@@ -517,6 +529,7 @@ $('#meetingid').on('change',
 				                and (
 				                	   ($beforlist['userid'] EQ session('uid'))
 				                	or ($beforlist['userid'] EQ '')
+				                	or (authsuperadmin(session('uid')))
 				                	)
 				              ">
             		<li><button type="submit" class="btn-default" data-icon="save">保存</button></li>

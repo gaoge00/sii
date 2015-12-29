@@ -17,6 +17,7 @@ class PublicController extends Controller {
         }
         $tabid = CONTROLLER_NAME.'/'.ACTION_NAME;
         cookie("login_action_tabid",strtolower($tabid));
+        cookie("uid",$admin["userid"]);
 		$this->success('登录成功，正在跳转...',"admin.php"  ,1);	//登录成功跳转到管理画面
 	  }
 	  else{
@@ -37,6 +38,7 @@ class PublicController extends Controller {
                 $data['forward']='';
                 $this->dwzajaxReturn($data);
             }
+            cookie("uid",$admin["userid"]);
             $tabid= cookie("login_action_tabid");
             $data['statusCode']=200;
             $data['message']='登陆成功！';
@@ -117,17 +119,40 @@ class PublicController extends Controller {
 	
 	public function selectuser() {
 
+	    $where=" 1=1 ";
+	    if(IS_POST){
+    	    $admin = I('post.');
+    	    if(isset($admin["s_userid"]) && $admin["s_userid"]!="")
+    	    {
+    	        $admin['s_userid']=sprintf("%05d", $admin['s_userid']);
+    	        $where.=" and a.id='".$admin["s_userid"]."' ";
+    	    }
+    	    if(isset($admin["s_username"]) && $admin["s_username"]!="")
+    	    {
+    	        $where.=" and a.username='".$admin["s_username"]."' ";
+    	    }
+    	    if(isset($admin["s_orgid"]) && $admin["s_orgid"]!="0")
+    	    {
+    	        $where.=" and a.orgid='".$admin["s_orgid"]."' ";
+    	    }
+    	    if(isset($admin["s_depid"]) && $admin["s_depid"]!="0")
+    	    {
+    	        $where.=" and a.depid='".$admin["s_depid"]."' ";
+    	    }
+	    }
+
 		$demo=M("User");
 		$list=$demo->table(C('DB_PREFIX')."user a")
 		->join("left join ".C('DB_PREFIX')."org b ON (a.orgid=b.id)")
 		->join("left join ".C('DB_PREFIX')."dep c ON (a.depid=c.id)")
+		->where($where)
 		->field("a.id as userid,a.username, a.password, a.sex,  a.tel,a.ins, a.phone, a.fax, a.email,  a.status, a.logintime, a.loginip, a.logins,a.depid, c.name as depname, a.orgid,b.name as orgname")
 		->order("a.id asc")
 		->select();
-		 
+        //var_dump($demo->getLastSql());
+        
 		$this->assign('list',$list);
-		
-
+	
 		$this->display();
 	}
 	

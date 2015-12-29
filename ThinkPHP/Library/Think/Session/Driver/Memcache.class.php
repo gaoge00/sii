@@ -20,6 +20,9 @@ class Memcache
     public function open($savePath, $sessName)
     {
         $this->lifeTime = C('SESSION_EXPIRE') ? C('SESSION_EXPIRE') : $this->lifeTime;
+        
+//         var_dump($this->lifeTime);
+//         die();
         // $this->sessionName = $sessName;
         $options = array(
             'timeout' => C('SESSION_TIMEOUT') ? C('SESSION_TIMEOUT') : 1,
@@ -68,6 +71,8 @@ class Memcache
      */
     public function write($sessID, $sessData)
     {
+//         var_dump($this->lifeTime);
+//         die();
         return $this->handle->set($this->sessionName . $sessID, $sessData, 0, $this->lifeTime);
     }
 

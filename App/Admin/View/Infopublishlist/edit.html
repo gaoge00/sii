@@ -1,10 +1,22 @@
-<extend name="Public:form_dialog_layout"/>
+<div class="bjui-pageContent">
+	<script type="text/javascript">
+		$("#btnSub").on('click', function(e) {
+			//alert("12312312312");
+			var strSelect=$("select[name='pid'] option:selected").val();
+			var exp="{$Rs['id']}";
 
-<block name="dialog_edit">
- 
-<script type="text/javascript">
-
-	  function doc_upload_success(file, data) {
+			if(strSelect==exp && strSelect!="")
+			{
+				$("#this").alertmsg("不能选择自身作为上级！","");
+			  return false;
+			}
+			else
+			{
+			  return true;
+			}
+	})
+	
+	 function doc_upload_success(file, data) {
         var json = $.parseJSON(data)
         $(this).bjuiajax('ajaxDone', json)
         if (json[BJUI.keys.statusCode] == BJUI.statusCode.ok) {
@@ -132,9 +144,16 @@
 
 		    },
 		}); 
-	 
-	 
-</script> 
+	
+	
+	
+	</script>
+	
+
+    <form action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm" data-toggle="validate" method="post">
+		<input type="hidden" name="id" value="{$id}">
+        <div class="pageFormContent" data-layout-h="0">
+ 
 
 
 	<php> //类别初期加载 
@@ -295,31 +314,27 @@
 					</td>
 				</tr>
 				</if>	
-
-				<!-- <if condition="$id EQ '' "> <else />
-				<tr>
-					<td colspan="2"><label for="j_status"
-						class="control-label x85">是否启用：</label> <select name="status"
-						data-container="body" id="j_status" data-toggle="selectpicker"
-						data-rule="required">
-							<if condition="$Rs['status'] EQ 1 OR  $Rs['status'] EQ ''">
-							<option value="1" selected>启用</option>
-							<option value="0">禁用</option>
-							<else />
-							<option value="1">启用</option>
-							<option value="0" selected>禁用</option>
-							</if>
-					</select></td>
-				</tr>
-				</if> 
-				<tr>
-					<td colspan="2"><label for="j_sort" class="control-label x85">排序：</label>
-						<input type="text" size="5" data-toggle="spinner" data-min="0"
-						data-max="100" data-step="1" data-rule="integer" name="sort"
-						id="j_sort" value="{$Rs['sort']}"></td>
-				</tr>-->
 			</tbody>
 		</table>
-</block>
+</div>
+        
+        <div class="bjui-footBar">
+            <ul>
+                <if condition="ACTION_NAME EQ 'view' and '1' EQ '1' ">
+                <li><a <php>echo display(CONTROLLER_NAME.'/accessory');</php>
+					href="__URL__/accessory/id/{$Rs['id']}/navTabId/{:CONTROLLER_NAME}"
+					class="btn btn-blue btn-sm" data-toggle="dialog" data-width="700"
+					data-height="600" 
+					data-id="dialog-mask" data-mask="true">附件</a><li>
+				</if>
+                <li><button type="button" class="btn-close" data-icon="close">取消</button><li>
+            	<if condition="ACTION_NAME NEQ 'view' ">
+            		<li><button id="btnSub" type="submit" class="btn-default" data-icon="save">保存</button></li>
+            	</if>
+            </ul>
+        </div>
+    </form>
+    
+</div>
 
 

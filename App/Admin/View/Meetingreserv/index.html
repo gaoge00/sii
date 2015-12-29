@@ -44,10 +44,10 @@ function checkenddtmeet(){
 	           		</select>
 
             <label>开始日期：</label>
-            <input type="text" name="time1" id="s_startdtmeet" data-toggle="datepicker" size="10"  value="{$_REQUEST['time1']}">
+            <input type="text" name="time1" id="s_startdtmeet" data-toggle="datepicker" size="12"  value="{$_REQUEST['time1']}">
             
             <label>结束日期：</label>
-            <input type="text" name="time2" id="s_enddtmeet" data-toggle="datepicker" size="10"  value="{$_REQUEST['time2']}">
+            <input type="text" name="time2" id="s_enddtmeet" data-toggle="datepicker" size="12"  value="{$_REQUEST['time2']}">
             
 		            
 		            <button type="submit"  onclick="return checkenddtmeet();" class="btn-default" data-icon="search">查询</button>
@@ -114,7 +114,9 @@ function checkenddtmeet(){
 							<include file="Public/form_index_operation_layout" h="800" w="600" />
 						</td>
 						<td>
-							<if condition="($v.userid EQ session('uid')) or ($v.userid  EQ '') or (authsuperadmin(session('uid')))  ">
+							<if condition=" ($v.userid EQ session('uid')) or 
+											($v.userid  EQ '') or 
+											(authsuperadmin(session('uid')))  ">
 							<input type="checkbox" name="ids" data-toggle="icheck" value="{$v.id}">
 							</if>
 						</td>

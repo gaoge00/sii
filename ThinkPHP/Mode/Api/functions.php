@@ -1040,6 +1040,10 @@ function data_to_xml($data, $item = 'item', $id = 'id')
  */
 function session($name, $value = '')
 {
+//     var_dump($name);
+//     die();
+    
+    
     $prefix = C('SESSION_PREFIX');
     if (is_array($name)) { // session初始化 在session_start 之前调用
         if (isset($name['prefix']))

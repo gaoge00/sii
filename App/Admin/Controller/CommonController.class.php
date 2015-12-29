@@ -14,13 +14,13 @@ Class CommonController extends Controller{
         $this->_selname = CONTROLLER_NAME; //查询用Model
 
         //var_dump("SessionID".session('uid'));
-        //var_dump($_COOKIE);
-		if(!session('uid')||empty($_COOKIE['login_action_tabid'])){
+        //var_dump($_COOKIE['uid']);
+        //$_COOKIE['login_action_tabid']
+		if(!session('uid')||!isset($_COOKIE['uid'])||$_COOKIE['uid']=''){
 			//redirect(U('Public/login'));
 		    cookie("login_action_tabid",null);
 		    $tabid = CONTROLLER_NAME.'/'.ACTION_NAME;
 		    cookie("login_action_tabid",strtolower($tabid));
-
 		    $result = array();
 		    $result['statusCode']=301;
 		    $result['message']="请先登录";
@@ -29,7 +29,6 @@ Class CommonController extends Controller{
 		    
 		    header("Content-Type:text/html; charset=utf-8");
 		    exit(json_encode($result));
-		    
             //$this->mtReturn(301,"",$_REQUEST['navTabId'],false);
 		}
         //
@@ -59,7 +58,7 @@ Class CommonController extends Controller{
 	    $udata['update_time']=time();
 	    $Rs=M("user")->save($udata);
 	    $dat['username'] = session('uid');
-	    $dat['content'] = $info;
+	    $dat['content'] = mb_strcut($info, 0, 100, 'utf-8');
 	    $dat['os']=$_SERVER['HTTP_USER_AGENT'];
 	    $dat['url'] = U();
 	    $dat['addtime'] = date("Y-m-d H:i:s",time());

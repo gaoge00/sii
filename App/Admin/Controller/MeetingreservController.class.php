@@ -7,7 +7,11 @@ use Org\Util\Date;
 use Think\Exception;
 
 class MeetingreservController extends CommonController {
-	
+
+    
+    protected $errCount=0;
+    protected $errString="";
+    
 	public function _initialize() {
 		parent::_initialize();
 		
@@ -15,6 +19,7 @@ class MeetingreservController extends CommonController {
 		$this->dbname = 'meetingreserv';// uv_getmeetingreserv
 		$this->selname='uv_getmeetingreserv';
 	}
+	
 	
 	function _filter(&$map) {
 	    if(IS_POST){
@@ -79,20 +84,23 @@ class MeetingreservController extends CommonController {
     			$list[$key]["allDay"]=false;
     		}
     	}
+    	
+    	//var_dump(json_encode($list));
+    	//die();
     	exit(json_encode($list));
     }
      
-    public function getOrgNameByUid()
+    public function getOrgNameByUid($id)
     {
     
         $demo=M("meetingreserv");
         
         //var_dump( $demo);
         
-        $list=$demo->table(C('DB_PREFIX')."user a")
+        $list=$demo->table(C('DB_PREFIX')."meetingreserv a")
         ->join("left join ".C('DB_PREFIX')."org b ON (a.orgid=b.id)")
         ->field("a.id,b.name as orgName")
-        ->where("a.id='".session('uid')."'")
+        ->where("a.id='".$id."'")
         ->select();
         //var_dump( $demo->getLastSql());
        
@@ -189,9 +197,11 @@ class MeetingreservController extends CommonController {
 //                 $maxDate="2050-12-31";
 //             }
             //var_dump($maxDate);
-            
+//var_dump($demo->getLastSql());
+//die();
     $builtindevices=$list[0]["builtindevices"];
     $listbuiltindevices=Array();
+    
     if($builtindevices==''||!isset($builtindevices))
     {
         $listbuiltindevices=array(
@@ -204,7 +214,6 @@ class MeetingreservController extends CommonController {
     else {
         
         $arrbuiltindevices=explode(',', $builtindevices);
-        
         $listbuiltindevices=array(
             "hastv"=>$arrbuiltindevices[0],
             "hasprojection"=>$arrbuiltindevices[1],
@@ -225,16 +234,17 @@ class MeetingreservController extends CommonController {
         );
     $demo=M("meetingreserv");
     //var_dump( $demo);
-    $list=$demo->table(C('DB_PREFIX')."user a")
-    ->join("left join ".C('DB_PREFIX')."dep b ON (a.depid=b.id)")
-    ->field("a.id,TRIM(BOTH ' ' FROM b.name) as depName")
-    ->where("a.id='".session('uid')."'")
+    $listdep=$demo->table(C('DB_PREFIX')."meetingreserv a")
+    ->join("left join ".C('DB_PREFIX')."user b ON (a.userid=b.id)")
+    ->join("left join ".C('DB_PREFIX')."dep c ON (b.depid=c.id)")
+    ->field("b.id,TRIM(BOTH ' ' FROM c.name) as depName")
+    ->where("a.id='".$id."'")
     ->select();
-//     var_dump($demo->getLastSql());
-//     die();
+//      var_dump($demo->getLastSql());
+//      die();
     
-    if(isset($list)&&count($list)>0)
-        $result=$list[0]["depName"];
+    if(isset($listdep)&&count($listdep)>0)
+        $result=$listdep[0]["depName"];
     else
        $result="";
 //     var_dump($result);
@@ -249,10 +259,10 @@ class MeetingreservController extends CommonController {
         $listz=$demo->where("status='1' and TRIM(BOTH ' ' FROM name) not in ('5#','接待室')")->select();
     }
     
-//          var_dump($demo->getLastSql());
+    //var_dump($list[0]);
 //          die();
     //工厂长，部长，副总，总经理，秘书 可以预约 5#和接待室
-  	$this->assign('orgName',$this->getOrgNameByUid());
+  	$this->assign('orgName',$this->getOrgNameByUid($id));
   	$this->assign('id',$id);
   	$this->assign('builtindeviceslist',$listbuiltindevices);
   	$this->assign('beforlist',$list[0]);
@@ -338,7 +348,7 @@ class MeetingreservController extends CommonController {
     
     }
     
-    //得到可用的会议室设备
+    //得到可用的会议室设备(未使用)
     public function Ajaxloaddevsbymeetid(){
     
         $meetid=$_REQUEST["meetid"];
@@ -435,18 +445,24 @@ class MeetingreservController extends CommonController {
     public function Del() {
         
         $id=$_REQUEST["id"];
+        
+        //var_dump(U('index'));
+        //die();
         if(isset($id)&&$id!="")
         {
-            $list = M('meetingreserv')->where("id = " . $id ."")->delete();
-            $this->mtReturn(200,"清理【".$this->opname."】记录成功",'','',U('index'));
+            //$list = M('meetingreserv')->where("id = " . $id ."")->delete();
+            
+            $this->mtReturn(200,"删除【".$this->opname."】记录成功","",false);
+            //$this->mtReturn(200,"删除【".$this->opname."】记录成功",$_REQUEST['navTabId'],false);
+
         }
-        else 
-        {
-        $ids=$_REQUEST["delids"];
-        if(isset($ids)&&count($ids)>0){
-        $list = M('meetingreserv')->where("id in (" . $ids .")")->delete();
-        $this->mtReturn(200,"清理【".$this->opname."】记录成功",'','',U('index'));
-        }
+        else{
+                $ids=$_REQUEST["delids"];
+                if(isset($ids)&&count($ids)>0){
+                //$list = M('meetingreserv')->where("id in (" . $ids .")")->delete();
+                //$this->mtReturn(200,"清理【".$this->opname."】记录成功",'','',U('index'));
+                $this->mtReturn(200,"删除【".$this->opname."】记录成功","",true);
+            }
         }
     } 
     
@@ -612,8 +628,8 @@ class MeetingreservController extends CommonController {
         
         
         //var_dump($headArr);
-        //var_dump($headArr);
-        //die();
+        var_dump($this->$errString);
+        die();
         foreach($headArr as $v){
             $colum = chr($key);
             $objActSheet->setCellValue($colum.'2', $v);
@@ -626,28 +642,40 @@ class MeetingreservController extends CommonController {
         //var_dump($data);
         //die();
         //var_dump($row);
-        //设置字体
-        //$objActSheet->getStyle('A3:K'.($row+1))->getFont()->setName('宋体');
-        //$objActSheet->getStyle('A3:K'.($row+1))->getFont()->setSize(11);
-         
-        //设置单元格边框
-        //$objActSheet->getStyle('A3:K'.($row))->getBorders()->getAllBorders()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
+        
         
         //设置为文本格式
         foreach($data as $key => $rows){ //行写入
-             if($row%2!=0)
-             {
-                 
-                //$excelStyle=$objActSheet->getStyle('A'.($row).':K'.($row));
-                //$excelStyle->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
-                //$excelStyle->getFill()->getStartColor()->setARGB('FFcccccc');
-
-                    //$objActSheet->getComment('A'.($row))->getFillColor()->setRGB('FFcccccc' );
-//                 //$excelStyle->getBorders()->getAllBorders()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
-//                 //var_dump('A'.($row).':K'.($row));
-
-                 
-             }
+//              if($row%2!=0)
+//              {
+//                 $excelStyle=$objActSheet->getStyle('A'.($row).':K'.($row));
+//                 $excelStyle->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
+//                 $excelStyle->getFill()->getStartColor()->setARGB('FFcccccc');
+//                 $excelStyle->applyFromArray(
+//                     array(
+//                         'font'    => array (
+//                             'bold'      => false,
+//                             'name'=>'宋体'                            
+//                         ),
+                       
+//                         'borders' => array (
+//                             'both'     => array (
+//                                         'style' => \PHPExcel_Style_Border::BORDER_THIN
+//                             )
+//                         ),
+//                         'fill' => array (
+//                             'type'       => \PHPExcel_Style_Fill::FILL_SOLID ,
+//                             'rotation'   => 90,
+//                             'startcolor' => array (
+//                             'argb' => 'FFcccccc'
+//                             ),
+//                             'endcolor'   => array (
+//                                 'argb' => 'FFcccccc'
+//                             )
+//                         )
+//                     )
+//                 );
+//              }
             $span = ord("A");
             foreach($rows as $keyName=>$value){// 列写入
                 $j = chr($span);  
@@ -659,14 +687,16 @@ class MeetingreservController extends CommonController {
             $row++;
         }
         
-        
-        //设置字体
-        $objActSheet->getStyle('A3:K'.($row+1))->getFont()->setName('宋体');
-        $objActSheet->getStyle('A3:K'.($row+1))->getFont()->setSize(11);
+        //$objActSheet->getDefaultStyle()->getFont()->setName('宋体');
+        //$objActSheet->getDefaultStyle()->getFont()->setSize(11);
+       //设置字体
+         $objActSheet->getStyle('A3:K'.($row+1))->getFont()->setName('宋体');
+         $objActSheet->getStyle('A3:K'.($row+1))->getFont()->setSize(11);
          
         //设置单元格边框
+        
         $objActSheet->getStyle('A3:K'.($row-1))->getBorders()->getAllBorders()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
-
+      
         //将B2的样式复制到B3至B7
 //         $objActSheet->duplicateConditionalStyle(
 //             $objActSheet->getStyle('A3')->getConditionalStyles(),
@@ -743,6 +773,7 @@ class MeetingreservController extends CommonController {
         $currentSheet=$PHPExcel->getSheet(0);
         //获取总列数
         $allColumn=$currentSheet->getHighestColumn();
+        $allColumn='M';
         //获取总行数
         $allRow=$currentSheet->getHighestRow();
         //循环获取表中的数据，$currentRow表示当前行，从哪行开始读取数据，索引值从0开始
@@ -752,7 +783,7 @@ class MeetingreservController extends CommonController {
             for($currentColumn='A';$currentColumn<=$allColumn;$currentColumn++){
                 //数据坐标
                 $address=$currentColumn.$currentRow;
-                
+                //var_dump($address);
                 //if($currentRow==17)
                     //var_dump($currentSheet->getCell($address)->getValue());
                 //读取到的数据，保存到数组$arr中
@@ -760,6 +791,9 @@ class MeetingreservController extends CommonController {
             }
         }
         
+        
+        //var_dump($data);
+        //die();
         $this->save_import($data);
     }
      
@@ -778,9 +812,13 @@ class MeetingreservController extends CommonController {
             $i=1;
             //判断行号
             $row=0;
+            
+//             var_dump($data);
+//             die();
+            
+            $this->$errCount=0;
+            $this->$errString="";
             foreach ($data as $k=>$v){
-                
-                
                 $row++;
                 if(
                     (!isset($v['A'])||$v['A']=="")&&
@@ -801,14 +839,23 @@ class MeetingreservController extends CommonController {
                    continue;    
                 }
                 
-                
+//                  var_dump($v);
+//                  die();
                 
                 //var_dump("111111111");
                 //检查会议室名称
                 $meetingName=$v['A'];
+                
+                //var_dump($v['A']);
                 //判断字段是否为空。
-                $this->checkFieldIsNull($row,$meetingName,"会议室名称");
+                if($this->checkFieldIsNull($row,$meetingName,"会议室名称"))
+                    continue;
+                
+                
                 $result = $model->table(C('DB_PREFIX')."meeting")->where(array('name' => $meetingName))->select();
+                
+                
+                
                 if(count($result)>0)
                 {
                    //var_dump($model->getLastSql());
@@ -817,32 +864,45 @@ class MeetingreservController extends CommonController {
                 }
                 else 
               {
+                  //var_dump("000000");
                   $this->sendError($row,"会议室名称","会议室不存在！".$meetingName);
+                  //var_dump($this->errString);
+                  
+                  continue;
+                  
                 }
+                
                 
                 //主题
                 $meetingTitle=$v['B'];
                 //判断字段是否为空。
-                $this->checkFieldIsNull($row,$meetingTitle,"主题");
+                if($this->checkFieldIsNull($row,$meetingTitle,"主题"))
+                    continue;
 //                 if($row==16)
 //                     var_dump($meetingTitle);
                 if(mb_strlen($meetingTitle,"utf8")<=20)
                 {
-                   
                     $meetingreserv["title"]=$meetingTitle;
                 }
                 else 
               {
                     //var_dump(sizeof($meetingTitle));
                     $this->sendError($row,"主题","字段长度超过20个字符！");
-                }
+                    continue;
+              }
+              
+              
                 
                 //预订人
                 $userID=$v['C'];
                 //判断字段是否为空。
-                $this->checkFieldIsNull($row,$userID,"预订人");
+                if($this->checkFieldIsNull($row,$userID,"预订人"))
+                    continue;
+
+                //$userID=sprintf("%05d", $userID);
+                
                 $result = $model->table(C('DB_PREFIX')."user")->where(array('username' => $userID))->select();
-                //var_dump($model->getLastSql());
+                
                 if(count($result)>0)
                 {
                     $userid= $result[0]["id"];
@@ -853,35 +913,44 @@ class MeetingreservController extends CommonController {
                 }
                 else
               {
-                    
-                    $this->sendError($i,"预订人","预订人不存在！".$model->getLastSql());
+                    $this->sendError($i,"预订人","预订人不存在！");//.$model->getLastSql()
+                    continue;
                 }
                 
-
+                //var_dump("else");
                 //时长
                 $timeLength=$v['G'];
+                
                 if(!is_numeric($timeLength))
                 {
+                    
                     $this->sendError($row,"时长","格式不正确！");
+                    continue;
                 }
                 else
               {
                     if($timeLength>24)
                     {
                         $this->sendError($row,"时长","时长不能超过24小时！");
+                        continue;
                     }
                     $meetingreserv["timelength"]=$timeLength;
                 }
+                
+               
+                
                 //日期
                 $startDate=$v['D'];
                 //判断字段是否为空。
-                $this->checkFieldIsNull($row,$startDate,"日期");
+                if($this->checkFieldIsNull($row,$startDate,"日期"))
+                    continue;
                 
                 //这里可以任意格式，因为strtotime函数很强大
                 $is_date=strtotime($startDate)?strtotime($startDate):false;
                 
                 if($is_date===false){
                     $this->sendError($row,"日期","日期格式不正确！");
+                    continue;
                 }else{
                     $startDate= date('Y-m-d',$is_date);//只要提交的是合法的日期，这里都统一成2014-11-11格式
                     $meetingreserv["startdate"]=$startDate;
@@ -893,7 +962,6 @@ class MeetingreservController extends CommonController {
                     $startTime="00:00:00";
                     $endTime="23:59:00";
                     $meetingreserv["hasallday"]="1";
-
                 }
                 else
               {
@@ -901,18 +969,20 @@ class MeetingreservController extends CommonController {
                   $endTime=$v['F'];
                   
                 }    
-               
-
-                //判断字段是否为空。
-                $this->checkFieldIsNull($row,$startTime,"开始时间");
-                //判断字段是否为空。
-                $this->checkFieldIsNull($row,$endTime,"结束时间");
                 
+                
+                //判断字段是否为空。
+                if($this->checkFieldIsNull($row,$startTime,"开始时间"))
+                    continue;
+                //判断字段是否为空。
+                if($this->checkFieldIsNull($row,$endTime,"结束时间"))
+                    continue;
                 //这里可以任意格式，因为strtotime函数很强大
                 $is_startTime=strtotime($startTime)?strtotime($startTime):false;
                 
                 if($is_startTime===false){
-                    $this->sendError($row,"开始时间","时间格式不正确！".$startTime);
+                    $this->sendError($row,"开始时间","时间格式不正确！");
+                    continue;
                 }else{
                     $startTime= date('H:i:s',$is_startTime);//只要提交的是合法的日期，这里都统一成2014-11-11格式
                     $meetingreserv["starttime"]=$startTime;
@@ -923,25 +993,28 @@ class MeetingreservController extends CommonController {
                 
                 if($is_endTime===false){
                     $this->sendError($row,"开始时间","时间格式不正确！");
+                    continue;
                 }else{
                     $endTime= date('H:i:s',$is_endTime);//只要提交的是合法的日期，这里都统一成2014-11-11格式
                     $meetingreserv["endtime"]=$endTime;
                 }
                 
-
+                
                 $strSql=format("Call UP_ExistMeeingRoom('{0}','{1}','{2}','{3}','{4}')",-1,$meetingreserv["meetingid"],$startDate,$startTime,$endTime);
                 //echo $strSql;
+                //var_dump($meetingreserv);
+                //die();
                 $Meetslist =M('')->query($strSql);
-                 
+                
                 $result = array();
                 //var_dump($strSql);
                 //var_dump($meetingreserv);
                 if (count($Meetslist) > 0) {
                     //var_dump($strSql);
                     $this->sendError($row,"开始时间","会议室时间存在冲突！");
+                    continue;
                 }
-                
-                
+
                 //会议内容
                 $note=$v['I'];
                 $meetingreserv["note"]=$note;
@@ -969,6 +1042,7 @@ class MeetingreservController extends CommonController {
                     $flag=false;
                     for($j=0;$j<count($devices);$j++)
                     {
+                        //var_dump(count($devices));
                         $result = $model->table(C('DB_PREFIX')."meetingdevice")->where(array('name' => $devices[$j]))->select();
                         //var_dump($result) ;
                         if(count($result)>0)
@@ -985,25 +1059,23 @@ class MeetingreservController extends CommonController {
                                 //var_dump($meetingreserv) ;
                                 //var_dump($DevsList) ;
                                 $this->sendError($i,"与会设备",$devices[$j]."存在冲突！");
+                                continue;
                             }
                             else    
                          {  
                                  if($flag==false)
                                  {
-                                     
-                                     
-                                     
-                                     
-                                     
-                                     
+
                                      $model->table(C('DB_PREFIX')."meetingreserv")->add($meetingreserv);
-                                     //var_dump($model->getLastSql());
+                                     //var_dump("meetingreserv_false_".$model->getLastSql());
                                      $meetingreservid=$model->getLastInsID();
                                      $meetingreservdevice['meetingreservid']=$meetingreservid;
                                      //var_dump($meetingreservdevice);
                                      $model->table(C('DB_PREFIX')."meetingreservdevice")->field('meetingreservid,meetingdeviceid')->data($meetingreservdevice)->add();
-                                     //var_dump($model->getLastSql());
-                                     $flag==true;
+                                     
+                                     $flag=true;
+                                     //var_dump("meetingreservdevice_".$flag."_".$model->getLastSql());
+                                     
                                  }
                                  else 
                              {
@@ -1012,7 +1084,7 @@ class MeetingreservController extends CommonController {
                                      $meetingreservdevice['meetingreservid']=$meetingreservid;
                                      //var_dump($meetingreservdevice);
                                      $model->table(C('DB_PREFIX')."meetingreservdevice")->field('meetingreservid,meetingdeviceid')->data($meetingreservdevice)->add();
-                                     //var_dump($model->getLastSql());
+                                     //var_dump("meetingreservdevice_true_".$model->getLastSql());
                                  }
                             }
 
@@ -1020,20 +1092,30 @@ class MeetingreservController extends CommonController {
                         else
                      {
                             $this->sendError($row,"与会设备",$devices[$j]."不存在！");
+                            continue;
                         } 
                     }
-                
                 }
                 else
               {
-
+                  //var_dump($meetingreserv);
                   $model->table(C('DB_PREFIX')."meetingreserv")->add($meetingreserv);
-                    
+                  //var_dump("else");
                 }
+                
+                
                 //var_dump($i);
                 $i++;
             }
+            if($this->errCount>0)
+            {
+                //var_dump($this->errString);
+                $model->rollback();
+                $this->mtReturnUpload(300, $this->errString, $_REQUEST['navTabId'], true);
+                
+            }
             
+            //
             $model->commit();
       
             if($i==0)
@@ -1059,13 +1141,22 @@ class MeetingreservController extends CommonController {
     {
         if(!isset($strField)||$strField=="")
         {
-            $this->mtReturnUpload(300, "第".($i+1)."行数据错误:请检查【".$Field."】字段，不能为空!", $_REQUEST['navTabId'], true); // 写入日志
+            //$this->mtReturnUpload(300, "第".($i+1)."行数据错误:请检查【".$Field."】字段，不能为空!", $_REQUEST['navTabId'], true); // 写入日志
+            $this->errCoun=$this->errCoun+1;
+            $this->errString.="第".($i+1)."行数据错误:请检查【".$Field."】字段，不能为空!"."</br>";
+            return true;
         }
+        else 
+            return false;
     }
     
     public function sendError($i,$errField="",$errMsg="")
     {
-        $this->mtReturnUpload(300, "第".($i+1)."行数据错误:请检查【".$errField."】字段!".$errMsg, $_REQUEST['navTabId'], true); // 写入日志
+        //$this->mtReturnUpload(300, "第".($i+1)."行数据错误:请检查【".$errField."】字段!".$errMsg, $_REQUEST['navTabId'], true); // 写入日志
+        
+        $this->errCount=$this->errCount+1;
+        $this->errString.="第".($i+1)."行数据错误:请检查【".$errField."】字段!"."</br>";
+        
     }
     
     

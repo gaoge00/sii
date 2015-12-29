@@ -17,12 +17,12 @@ return array(
     'NOT_AUTH_MODULE' => 'Public,Index', // 默认无需认证模块
                                          // 超级管理员id,拥有全部权限,只要用户uid在这个角色组里的,就跳出认证.可以设置多个值,如array('1','2','3')
     'ADMINISTRATOR' => array(
-        '00000'
+        '00000','99999'
     ),
 
-    'SESSION_OPTIONS' => array(
-        'expire' => 1800
-    ),
+//     'SESSION_OPTIONS' => array(
+//         'expire' => 3600
+//     ),
     
     //'SESSION_EXPIRE'=>10,
     

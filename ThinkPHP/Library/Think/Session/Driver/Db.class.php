@@ -129,9 +129,17 @@ class Db
      */
     public function write($sessID, $sessData)
     {
+        
+        
         $hander = is_array($this->hander) ? $this->hander[0] : $this->hander;
+        //$expire = time() + $this->lifeTime;
         $expire = time() + $this->lifeTime;
+        
+//         var_dump($expire);
+//         die();
         mysql_query("REPLACE INTO  " . $this->sessionTable . " (  session_id, session_expire, session_data)  VALUES( '$sessID', '$expire',  '$sessData')", $hander);
+        
+        
         if (mysql_affected_rows($hander))
             return true;
         return false;

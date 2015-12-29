@@ -22,18 +22,23 @@ $(function() {
 		$.cookie('sel_start',null);
 	}
 	
-
-	
 	$('#calendar').fullCalendar({
 		header: {
 			left: 'prev,next today',
 			center: 'title',
+			//按时间范围排列
 			right: 'month,agendaWeek,agendaDay',
+			//按数据正常排列
+			//right: 'month,basicWeek,basicDay',
 			defaultView: "month",
 			//fixedWeekCount:false
 			//weekMode:'liquid'
+			
 		},
 		weekMode:'liquid',
+		//设置视图中的事件显示是否可以重叠覆盖
+		slotEventOverlap:false,
+		allDaySlot:false,
 		events: {
 			url:'__URL__/AjaxCale' ,
 			type:'post',

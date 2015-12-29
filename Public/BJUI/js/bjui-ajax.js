@@ -261,6 +261,10 @@
                 _forward()
             }
         }
+//        else if(json.bsjs)
+//    	{
+//    		setTimeout(json.bsjs, 100)
+//    	}
     }
     
     Bjuiajax.prototype.dialogCallback = function(json) {
