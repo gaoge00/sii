@@ -644,6 +644,74 @@
         }
     }
     
+    
+    Bjuiajax.prototype.doAjaxUnChecked = function(options) {
+        var that = this, $element = that.$element, $target = options.target ? $(options.target) : null
+
+        if (!options.url) {
+            BJUI.debug('Error trying to open a del link: url is undefined!')
+            return
+        } else {
+            options.url = decodeURI(options.url).replacePlh($element.closest('.unitBox'))
+            
+            if (!options.url.isFinishedTm()) {
+                $element.alertmsg('error', (options.warn || FRAG.alertPlhMsg.replace('#plhmsg#', BJUI.regional.plhmsg)))
+                BJUI.debug('The ajax url is incorrect: '+ options.url)
+                return
+            }
+        }
+        
+        var todo = function() {
+            if (!options.group) {
+                that.$element.alertmsg('error', options.warn || FRAG.alertNoCheckGroup.replace('#nocheckgroup#', BJUI.regional.nocheckgroup))
+                return
+            }
+            if (!$target || !$target.length) {
+                if (that.tools.getTarget() == Bjuiajax.NAVTAB) {
+                    $target = $.CurrentNavtab
+                } else {
+                    $target = $.CurrentDialog
+                }
+            }
+            
+            var ids      = []
+            var $checks  = $target.find(':checkbox[name='+ options.group +']:checked')
+            var callback = options.callback && options.callback.toFunc()
+            
+//            if ($checks.length == 0) {
+//                that.$element.alertmsg('error', FRAG.alertNotChecked.replace('#notchecked#', BJUI.regional.notchecked))
+//                return
+//            }
+            $checks.each(function() {
+                ids.push($(this).val())
+            })
+            
+            options.url += (options.url.indexOf('?') == -1 ? '?' : '&') + (options.idname ? options.idname : 'ids') +'='+ ids.join(',')
+            alert(options.url);
+            $.ajax({
+                type     : options.type || 'POST',
+                url      : options.url,
+                dataType : 'json',
+                timeout  : BJUI.ajaxTimeout,
+                cache    : false,
+                success  : function(data, textStatus, jqXHR) {
+                    callback ? callback.apply(that, [data]) : $.proxy(that.ajaxCallback(data), that)
+                },
+                error    : $.proxy(that.ajaxError, that)
+            })
+        }
+        
+        if (options.confirmMsg) {
+            $element.alertmsg('confirm', options.confirmMsg, {
+                okCall: function() {
+                    todo()
+                }
+            })
+        } else {
+            todo()
+        }
+    }
+    
     // BJUIAJAX PLUGIN DEFINITION
     // =======================
     
@@ -787,6 +855,19 @@
         if (!options.url) options.url = $this.attr('href')
         
         Plugin.call($this, 'doAjaxChecked', options)
+        
+        e.preventDefault()
+    })
+    
+    $(document).on('click.bjui.bjuiajax.data-api', '[data-toggle="doajaxunchecked"]', function(e) {
+        var $this   = $(this)
+        var options = $this.data()
+//        alert("11111111111111111");
+//        alert(options);
+        
+        if (!options.url) options.url = $this.attr('href')
+        
+        Plugin.call($this, 'doAjaxUnChecked', options)
         
         e.preventDefault()
     })

@@ -191,6 +191,55 @@
 	           
 	           
              </td></tr>
+             
+             <tr><td>
+           
+            
+ 			 <label for="meetroomgrouplist" class="control-label x85">会议室权限：</label>
+		     <div style="width:475px; float:right;">
+
+	         <table id ="meetroomgrouplist"  class="table table-condensed" data-toggle="tablefixed" style="width:100%;" data-height='150'>
+				<thead>
+					<tr>
+						
+						<th>编号</th>
+						<th>会议室权限组名称</th>
+						<th width="20%">备注</th>
+						<th width="28"><input type="checkbox" class="checkboxCtrl" data-group="meetroomrules[]" data-toggle="icheck"></th>
+					
+						
+					</tr>
+				</thead>
+				<tbody>
+		
+					<foreach name="meetroomruleslist" item="v">
+					<tr>
+						
+						<Td>{$v.meetroomRuleGroupID}</td>
+						<Td>{$v.meetroomRuleGroupName}</td>
+						<Td>{$v.Note}</td>
+				        <td><input type="checkbox" name="meetroomrules[]" data-toggle="icheck" <if condition="$v.selected EQ 'selected' ">checked</if> value="{$v.meetroomRuleGroupID}"></td>
+
+					</tr>
+					</foreach>
+				</tbody>
+			</table>
+
+			</div>
+			
+			              
+                <!--
+                <select  name="rules" data-toggle="selectpicker" data-width="80%" multiple>
+                	<foreach name="ruleslist" item="rv">
+	              		<option {$rv.selected} value="{$rv.RuleGroupID}" >
+		          		{$rv.RuleGroupName}
+		          	</option>
+	              	</foreach>
+	            </select>
+	           -->   
+	           
+	           
+             </td></tr>
 
              <tr><td>
                 <label for="j_title" class="control-label x85">社员状态：</label>

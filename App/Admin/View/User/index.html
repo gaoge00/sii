@@ -70,7 +70,7 @@
 		   <td>{$v.logins}</td>
 		   -->
 		   <td <php>echo display(CONTROLLER_NAME.'/changeStatus');</php> ><a href="__URL__/changeStatus/id/{$v['id']}/navTabId/{:CONTROLLER_NAME}" data-toggle="doajax" data-confirm-msg="确定要操作吗？"><if condition="$v.status EQ 1 "><img src="__PUBLIC__/images/ok.gif" border="0"/><else/><img src="__PUBLIC__/images/locked.gif" border="0"/></if></a></td>
-		   <td <php>echo display(CONTROLLER_NAME.'/edit');</php> > <a href="__URL__/edit/id/{$v['id']}/navTabId/{:CONTROLLER_NAME}"   class="btn btn-green btn-sm" data-toggle="dialog" data-width="600" data-height="600" data-id="dialog-mask" data-mask="true" >编辑</a></td>
+		   <td <php>echo display(CONTROLLER_NAME.'/edit');</php> > <a href="__URL__/edit/id/{$v['id']}/navTabId/{:CONTROLLER_NAME}"   class="btn btn-green btn-sm" data-toggle="dialog" data-width="580" data-height="800" data-id="dialog-mask" data-mask="true" >编辑</a></td>
          </tr> 
           </volist>
         </tbody>

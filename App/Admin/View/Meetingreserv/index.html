@@ -3,14 +3,29 @@
 
 <extend name="Public:form_index_pages_layout"/>
 
+
+
+
 <block name="index_search">
 
-
 <script type="text/javascript">
-			
+
+
+
+$(function(){
+	   if($('#s_success').val()=="1"){
+		   //$(this).alertmsg('error','数据删除失败！');
+		   $(this).alertmsg('correct', '数据删除成功！');
+	   }
+	   else if($('#s_success').val()=="2"){
+		    $(this).alertmsg('error','数据删除失败！');
+	   }
+		   
+   });
+	
 function checkenddtmeet(){
 	
-	//alert("checkenddtmeet");
+	$('#s_flag').val("0");
     var startdt =  $('#s_startdtmeet').val();
     var enddt= $('#s_enddtmeet').val();
     if(enddt!=""&&startdt!=""){
@@ -27,7 +42,49 @@ function checkenddtmeet(){
     else
     	return true;
 }
+
+function SubmitForm(){
+
+	$(this).alertmsg('confirm', '确定要删除吗？', 
+			{
+		    //type:'confirm',
+			displayMode:'slide', 
+			displayPosition:'bottomcenter', 
+			okName:'是', 
+			cancelName:'否', 
+			title:'提示',
+			okCall:SubmitControl,
+			cancelCall:
+						function(){
+							return false;
+						},
+		}
+	
+	);
+	return false;
+}
+function SubmitControl(){
+	$('#s_flag').val("1");
+    //获取
+	var ids="";
+	$("input[name='ids']:checkbox").each(
+		function(){
+			//alert($(this).attr("checked"));
+			if ("checked" == $(this).attr("checked")) 
+			{
+				ids += $(this).val()+',';
+		    }
+		});
+
+	if(ids.length>0)
+		ids=ids.substring(0,ids.length-1);
+
+	$('#s_ids').val(ids);
+	$("#pagerForm").submit();
+    //return true;
+} 
 </script>
+
 		            <label>发起人：</label>
 		            <input readonly="true" type="text" name="s_username" id="s_username" value="{$_REQUEST['s_username']}" size="10" data-toggle="lookup"  data-title="选择社员" data-url="__ROOT__/admin.php/public/selectuser?key=s_userid&value=s_username" data-width="700" data-height="800">
 		            <input type="hidden" name="s_userid" id="s_userid" value="{$_REQUEST['s_userid']}" >
@@ -54,11 +111,9 @@ function checkenddtmeet(){
 		
 						
 					<include file="Public/form_index_titleoper_layout" h="800" w="600" />	
-					
-					 <span <php>echo display(CONTROLLER_NAME.'/del');</php> style="float:right;margin-right:5px;">
-			  		<a href="__URL__/del/navTabId/{:CONTROLLER_NAME}" class="btn btn-red" data-toggle="doajaxchecked" data-confirm-msg="确定要删除吗？" data-icon="remove" data-idname="delids" data-group="ids">删除</a>
-			  		</span>	
-			  		 <span 
+					<!-- data-toggle="doajaxchecked"  -->
+
+			  		   <span 
 					      <php>echo display(CONTROLLER_NAME.'/upload');</php>>
 					      <a href="__URL__/upload/navTabId/{:CONTROLLER_NAME}"  
 					      class="btn btn-blue" data-toggle="dialog" 
@@ -74,11 +129,32 @@ function checkenddtmeet(){
 						data-icon="arrow-down">导出
 						</a>
 						</span>
-					     
 
-		
+						<span <php>echo display(CONTROLLER_NAME.'/del');</php> >
+				  		<input type="hidden" name="s_flag" id="s_flag"  value="0">
+				  		<input type="hidden" name="s_ids" id="s_ids"  value="0">
+				  		<input type="hidden" name="s_success" id="s_success"  value="{$s_success}">
+				  		<!-- 
+				  		<a href="__URL__/delall/navTabId/{:CONTROLLER_NAME}?userid='$('#s_enddtmeet').val()'" 
+					     class="btn btn-red" 
+					     data-toggle="doajaxunchecked"
+					     data-confirm-msg="确定要删除吗？" 
+					     data-icon="remove" 
+					     data-idname="delids" 
+					     data-group="ids" 
+					     data-icon="minus">删除</a>
+					     -->
+					     
+					     <button 
+					         onclick="return SubmitForm();"
+						     type="submit"   
+						     class="btn btn-red" 
+						     data-icon="remove"
+					     >删除</button>
+			  		</span>	
+	
 </block>
-		
+						
 <block name="index_content">
 			<table data-toggle="tablefixed" data-width="100%" data-layout-h="0"
 				data-nowrap="true">
@@ -111,10 +187,24 @@ function checkenddtmeet(){
 						<Td>{$v.endtime}</td>
 						<td>{$v.status}</td>
 						<td>
-							<include file="Public/form_index_operation_layout" h="800" w="600" />
+							<a <php>echo display(CONTROLLER_NAME.'/view');</php>  href="__URL__/view/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  class="btn btn-blue btn-sm" data-toggle="dialog" data-width="620" data-height="800" data-id="dialog-mask" data-mask="true" >查看</a>
+							<if condition=" ($v.userid EQ session('uid')) or 
+											($v.userid  EQ '') or 
+											(authsuperadmin(session('uid')))  ">
+							<a <php>echo display(CONTROLLER_NAME.'/edit');</php>  href="__URL__/edit/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"  class="btn btn-green btn-sm" data-toggle="dialog" data-width="620" data-height="800" data-id="dialog-mask" data-mask="true" >编辑</a>
+
+							</if>
+							<if condition="  ($v.uploaduid EQ session('uid')) or
+											($v.userid EQ session('uid')) or 
+											($v.userid  EQ '') or 
+											(authsuperadmin(session('uid')))  ">
+							<a <php>echo display(CONTROLLER_NAME.'/del');</php>  href="__URL__/del/id/{$v.id}/navTabId/{:CONTROLLER_NAME}"   class="btn btn-red btn-sm" data-toggle="dialog" data-width="500" data-height="200" data-id="dialog-mask" data-mask="true" >删除</a>				
+							
+							</if>
 						</td>
 						<td>
-							<if condition=" ($v.userid EQ session('uid')) or 
+							<if condition="  ($v.uploaduid EQ session('uid')) or
+											($v.userid EQ session('uid')) or 
 											($v.userid  EQ '') or 
 											(authsuperadmin(session('uid')))  ">
 							<input type="checkbox" name="ids" data-toggle="icheck" value="{$v.id}">
@@ -125,4 +215,6 @@ function checkenddtmeet(){
 				</tbody>
 			</table>
 </block>
+    
+    
     

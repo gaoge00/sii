@@ -1,18 +1,17 @@
 
 <div class="bjui-pageHeader">
-	<form id="pagerForm"  
-		  
-	      name="pagerForm" data-toggle="ajaxsearch" action="__URL__" method="post">
-	
-				<input type="hidden" name="pageSize" value="{$numPerPage}"> 
-				<input type="hidden" name="pageCurrent"	value="{$_REQUEST['pageNum']|default=1}">
-			    
 	
         <div class="bjui-searchBar">
+        
+        <form id="pagerForm"  
+	      name="pagerForm" data-toggle="ajaxsearch" action="__URL__" method="post">
+				<input type="hidden" name="pageSize" value="{$numPerPage}"> 
+				<input type="hidden" name="pageCurrent"	value="{$_REQUEST['pageNum']|default=1}">
             <block name="index_search"></block>
+            </form>
+            <block name="index_delete"></block>
         </div>
 
-    </form>
 </div>
 <div class="bjui-pageContent">
 	<block name="index_content"></block>

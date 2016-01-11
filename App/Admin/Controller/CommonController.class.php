@@ -159,6 +159,20 @@ Class CommonController extends Controller{
             // TODO 增加其它格式
         }
 	}
+	
+	
+	
+	
+	protected function insertLot($info) {
+
+	    $dat['username'] = session('uid');
+	    $dat['content'] = $info;
+	    $dat['os']=$_SERVER['HTTP_USER_AGENT'];
+	    $dat['url'] = U();
+	    $dat['addtime'] = date("Y-m-d H:i:s",time());
+	    $dat['ip'] = get_client_ip();
+	    M("log")->add($dat);
+	}
 
 	
 	 /**
@@ -308,24 +322,34 @@ Class CommonController extends Controller{
 		
 		//全文检索用
 		$map = $this->_search($this->dbname);
-		//var_dump($map);
+
+		
 		//查询条件 参考MeetingreservController
 		if (method_exists($this, '_filter')) {
-			$this->_filter($map);
-			//var_dump($map);
+		    $this->_filter($map);
+		    //var_dump($map);
 		}
 		
-		
-		if (!empty($model)) {
-		    $this->_list($model, $map);
-		    //echo $model->getLastSql();
-		}
-
 		if (method_exists($this, '_befor_index')) {
 		    $this->_befor_index();
 		}
+		//针对批量删除
+		if (method_exists($this, '_befor_index_deleteAll')) {
+		    $intResult=$this->_befor_index_deleteAll();
+		    if($intResult=="1"){
+		        $this->assign('s_success', "1");
+		        $this->insertLot("删除【".$this->opname."】记录成功!");
+		    }else if($intResult=="2"){
+		        $this->assign('s_success', "2");
+		        $this->insertLot("删除【".$this->opname."】记录失败!");
+		    }
+		}
 		
-		
+        if (!empty($model)) {
+            $this->_list($model, $map);
+        }
+        
+        //var_dump($model->getLastSql());
 		$this->display();
 	}
 
@@ -374,9 +398,7 @@ Class CommonController extends Controller{
 		if(IS_POST){
 		  $model = D($this->dbname);
 		  $data=I('post.');
-		 
-		  
-		  
+
 		  if (false === $data = $model->create()) {
 			   $this->mtReturn(300,'失败，' . $model->getError(),$_REQUEST['navTabId'],true);  
             }

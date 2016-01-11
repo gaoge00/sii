@@ -9,8 +9,17 @@ if((startminutes%5)!=0){
 	addMinutes+=5;
 }
 
+
 nowtime=DateAdd("m",addMinutes-(startminutes%5),nowtime);
 nowtime=$.fullCalendar.formatDate(nowtime,"HH:mm");
+
+//如果日期是将来日则时间限定从00 开始
+var startTime =nowdate.parseDate('yyyy-MM-dd'); 
+var endTime =($('#startdate').val()).parseDate('yyyy-MM-dd'); 
+if(startTime<endTime){
+	nowtime="00:00:00";
+}
+
 
 $('#starttime').datetimepicker({
 	    language:  'zh-CN',

@@ -48,6 +48,86 @@ class MeetingreservController extends CommonController {
 	        return $map;
 	    } 
 	}
+	
+	function deletemeetingreservdevice()
+	{
+	    $list = M('meetingreservdevice')->where(" meetingreservid not in (select id from sii_meetingreserv)")->delete();
+	}
+	
+	function _befor_index_deleteAll(){
+	    
+	    $s_flag = $_REQUEST["s_flag"];	
+
+	    if(isset($s_flag)&&$s_flag=="1"){
+	        
+	        $ids=$_REQUEST["s_ids"];
+	        if(isset($ids)&&$ids!=""){
+// 	            var_dump($ids);
+// 	            die();
+	            $list = M('meetingreserv')->where("id in (" . $ids .")")->delete();
+	            $this->deletemeetingreservdevice();
+	            return "1";
+	        }
+	        else{
+	            
+	            $sessionuid=session("uid");
+	            $userid=$_REQUEST["s_userid"];
+	            $meetingid=$_REQUEST["s_meetingid"];
+	            $time1=$_REQUEST["time1"];
+	            $time2=$_REQUEST["time2"];
+	            $where=" 1=1 ";
+	            if(!authsuperadmin(session('uid')))
+	                $where.=" and (userid='".$sessionuid."' or uploaduid='".$sessionuid."')";   
+
+	            
+	            if(isset($userid)&&$userid!=''){
+	                $where.=" and userid='".$userid."'";
+	            }
+	            
+	            if(isset($meetingid)&&$meetingid!=''){
+	                $where.=" and meetingid='".$meetingid."'";
+	            }
+	            
+	            if(isset($time1)&&$time1!=''){
+	                $where.=" and startdate>='".$time1."'";
+	            }
+	            
+	            if(isset($time2)&&$time2!=''){
+	                $where.=" and startdate<='".$time2."'";
+	            }
+	            $list = M('meetingreserv')->where($where)->delete();
+	            
+	        }
+	        $this->deletemeetingreservdevice();
+	        return "1";
+	    }
+	    else{
+	        
+	        return "0";
+	    }  
+	    
+	}
+    
+	public function del() {
+	    
+	    if(IS_POST){  
+        	    $id=$_REQUEST["delid"];
+        	    if(isset($id)&&$id!="")
+        	    {
+        	        $list = M('meetingreserv')->where("id = " . $id ."")->delete();
+        	        $this->deletemeetingreservdevice();
+        	        $this->mtReturn(200,"删除【".$this->opname."】记录成功",$_REQUEST['navTabId'],true);
+        	        //$this->mtReturn(200,"删除【".$this->opname."】记录成功",$_REQUEST['navTabId'],false);
+        	    }else 
+        	        $this->mtReturn(300,"删除数据不存在",$_REQUEST['navTabId'],false);
+	    }
+	    else{
+    	    $id=$_REQUEST["id"];
+    	    $this->assign("delid",$id);
+    	    $this->display("del");
+	    }
+	}
+    
 
     //显示日历用
     public function AjaxCale()
@@ -115,7 +195,7 @@ class MeetingreservController extends CommonController {
 	
     public function _befor_edit(){
     
-      //var_dump("111111111111111111");
+        //var_dump("111111111111111111");
         $this->assign('caltype',$_REQUEST["caltype"]);
     	$MeetingreservID=$_REQUEST["id"];
     	$this->GetReservByID($MeetingreservID);
@@ -145,8 +225,10 @@ class MeetingreservController extends CommonController {
       
       $data["builtindevices"]=$builtindevices;
       
-      //var_dump($builtindevices);
-      //die();
+      $data["uploaduid"]=session('uid');
+//       var_dump($data["uploaduid"]);
+//       die();
+      
       return $data;
     }
     
@@ -158,9 +240,6 @@ class MeetingreservController extends CommonController {
       $builtindevices=$MR_hastv.','.$MR_hasprojection.','.$MR_hasvideo.','.$MR_hastel;
       
       $data["builtindevices"]=$builtindevices;
-      
-      //var_dump($data);
-      //die();
       return $data;
     }
     
@@ -389,8 +468,8 @@ class MeetingreservController extends CommonController {
     	$EndTime =   $_REQUEST["endtime"];
     	$Devs = $_REQUEST["devs"];	//选择的设备ID
 
-    	/*
-    	 * 	P_MeetingID integer,
+    	 /*
+    	  	P_MeetingID integer,
 			P_StartDate date,
     		P_StartTime time,
     		P_EndTime time
@@ -399,7 +478,6 @@ class MeetingreservController extends CommonController {
             $MeetingreservID=0;
         }
             
-
     	//$strSql=format("Call UP_GetMeetingDevicesByAdd ('{0}','{1}','{2}','{3}')",$StartDate,$StartTime,$EndTime,'12');
     	$strSql=format("Call UP_ExistMeeingRoom('{0}','{1}','{2}','{3}','{4}')",$MeetingreservID,$MeetingID,$StartDate,$StartTime,$EndTime);
     	//echo $strSql;
@@ -442,29 +520,10 @@ class MeetingreservController extends CommonController {
 		}
     }
     
-    public function Del() {
-        
-        $id=$_REQUEST["id"];
-        
-        //var_dump(U('index'));
-        //die();
-        if(isset($id)&&$id!="")
-        {
-            //$list = M('meetingreserv')->where("id = " . $id ."")->delete();
-            
-            $this->mtReturn(200,"删除【".$this->opname."】记录成功","",false);
-            //$this->mtReturn(200,"删除【".$this->opname."】记录成功",$_REQUEST['navTabId'],false);
+    
 
-        }
-        else{
-                $ids=$_REQUEST["delids"];
-                if(isset($ids)&&count($ids)>0){
-                //$list = M('meetingreserv')->where("id in (" . $ids .")")->delete();
-                //$this->mtReturn(200,"清理【".$this->opname."】记录成功",'','',U('index'));
-                $this->mtReturn(200,"删除【".$this->opname."】记录成功","",true);
-            }
-        }
-    } 
+    
+    
     
     public function outxls() {
         if(IS_POST){
@@ -750,6 +809,9 @@ class MeetingreservController extends CommonController {
         }
         $this->display("upload");
     }
+    
+   
+    
 
     //导入数据方法
     protected function meeting_import($filename, $exts='xls')
@@ -1030,6 +1092,8 @@ class MeetingreservController extends CommonController {
                                                 .$builtindevices4;
                 
                 //var_dump($meetingreserv["builtindevices"]);
+                //上传人
+                $meetingreserv["uploaduid"]=session("uid");
                 
                 //与会设备
                 if(isset($v['H'])&&$v['H']!="")
