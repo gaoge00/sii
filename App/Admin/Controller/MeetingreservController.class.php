@@ -244,6 +244,7 @@ class MeetingreservController extends CommonController {
     }
     
     public function GetReservByID($id){
+        
   	$demo=M("uv_getmeetingreserv");
   	$list = $demo->where("id = '".$id."'")
   	    ->select();
@@ -265,8 +266,12 @@ class MeetingreservController extends CommonController {
     */
             $nowDate=date('Y-m-d',time());
             $Date315=date('Y')."-03-15";
-            $Date331=(date('Y')+1)."-03-31";
-
+            $Date331=date('Y-m-d',time());
+     
+            if(intval(date("n",time()))>=4)    
+                  $Date331=(date('Y')+1)."-03-31";
+            else
+                $Date331=(date('Y'))."-03-31";
 //             if($nowDate>=$Date315&&$nowDate<=$Date331)
 //             {
                 $maxDate=$Date331;
@@ -303,41 +308,45 @@ class MeetingreservController extends CommonController {
 
     
     //工厂长，部长，副总，总经理，秘书 可以预约 5#和接待室
+     $demo=M("meetingreserv");
+    $listdep=array();
+    //新增时没有会议室ID，用社员ID进行筛选
+    if($id<>""&&isset($id)){
+           $listdep=$demo->table(C('DB_PREFIX')."user a")
+        ->join("left join ".C('DB_PREFIX')."meetroomauthgroup b ON (a.meetroomauthgroupid=b.id)")
+        ->join("left join ".C('DB_PREFIX')."meetingreserv c ON (a.id=c.userid)")
+        ->field("b.rules")
+        ->where("c.id='".$id."'")
+        ->select();
+    }
+    else {
+        $listdep=$demo->table(C('DB_PREFIX')."user a")
+        ->join("left join ".C('DB_PREFIX')."meetroomauthgroup b ON (a.meetroomauthgroupid=b.id)")
+        ->field("b.rules")
+        ->where("a.id='".session('uid')."'")
+        ->select();
+    }
+
     
-    $MeetingRoomRule=Array(
-        "工厂长",
-        "部长",
-        "副总",
-        "总经理",
-        "秘书"
-        );
-    $demo=M("meetingreserv");
-    //var_dump( $demo);
-    $listdep=$demo->table(C('DB_PREFIX')."meetingreserv a")
-    ->join("left join ".C('DB_PREFIX')."user b ON (a.userid=b.id)")
-    ->join("left join ".C('DB_PREFIX')."dep c ON (b.depid=c.id)")
-    ->field("b.id,TRIM(BOTH ' ' FROM c.name) as depName")
-    ->where("a.id='".$id."'")
-    ->select();
 //      var_dump($demo->getLastSql());
 //      die();
     
     if(isset($listdep)&&count($listdep)>0)
-        $result=$listdep[0]["depName"];
+        $result=$listdep[0]["rules"];
     else
        $result="";
-//     var_dump($result);
-//     die();
+   
     $demo=M('meeting');
-    if(in_array($result,$MeetingRoomRule)||authsuperadmin(session('uid')))
+    if(authsuperadmin(session('uid')))
     {
         $listz=$demo->where(array('status'=>1))->select();
     }
-    else 
-   {
-        $listz=$demo->where("status='1' and TRIM(BOTH ' ' FROM name) not in ('5#','接待室')")->select();
+    else if($result!="") 
+    {
+        $listz=$demo->where("status='1' and id in (".$result.")")->select();
     }
-    
+    //var_dump($demo->getLastSql());
+    //die();
     //var_dump($list[0]);
 //          die();
     //工厂长，部长，副总，总经理，秘书 可以预约 5#和接待室
@@ -927,7 +936,7 @@ class MeetingreservController extends CommonController {
                 else 
               {
                   //var_dump("000000");
-                  $this->sendError($row,"会议室名称","会议室不存在！".$meetingName);
+                  $this->sendError($row,"会议室名称","会议室不存在！");
                   //var_dump($this->errString);
                   
                   continue;
@@ -978,7 +987,21 @@ class MeetingreservController extends CommonController {
                     $this->sendError($i,"预订人","预订人不存在！");//.$model->getLastSql()
                     continue;
                 }
+
+                $result = $model->table(C('DB_PREFIX')."user a")
+                ->join("left join ".C('DB_PREFIX')."meetroomauthgroup b on a.meetroomauthgroupid=b.id")
+                ->field(" b.rules ")
+                ->where(" a.id='".$meetingreserv["userid"]."'")->select();
+                $rs=explode(',',$result[0]["rules"]);
                 
+                if(!in_array($meetingreserv["meetingid"],$rs))
+                {
+                    //var_dump("000000");
+                    $this->sendError($row,"会议室名称","该预订人不能预约此会议室！");
+                    //var_dump($this->errString);
+                    continue;
+                }
+
                 //var_dump("else");
                 //时长
                 $timeLength=$v['G'];
@@ -1219,7 +1242,7 @@ class MeetingreservController extends CommonController {
         //$this->mtReturnUpload(300, "第".($i+1)."行数据错误:请检查【".$errField."】字段!".$errMsg, $_REQUEST['navTabId'], true); // 写入日志
         
         $this->errCount=$this->errCount+1;
-        $this->errString.="第".($i+1)."行数据错误:请检查【".$errField."】字段!"."</br>";
+        $this->errString.="第".($i+1)."行数据错误:请检查【".$errField."】字段!".$errMsg."</br>";
         
     }
     

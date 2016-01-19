@@ -221,7 +221,7 @@ function timeAdd(){
 
 
 $('#meetingid').on('change',
-        function () {
+            function () {
 			//动态变更会议室属性
 			$("#MR_MeetingTV").iCheck('uncheck');
 			$("#MR_MeetingProjection").iCheck('uncheck');
@@ -264,6 +264,19 @@ $('#meetingid').on('change',
 						ctlObj.iCheck('uncheck');
 	
         	    	}); 
+        	    	
+        	        var arrdev=[9,10,11,12];
+        	        $("input[name='devs[]']").each(function() {
+        	       	 //alert(parseInt($(this).val()));
+        	       	 $(this).iCheck('enable');
+        	       	 $(this).iCheck('uncheck');
+
+        	   		 if($.inArray(parseInt($(this).val()),arrdev)!=-1){
+        	   			 //$(this).iCheck('disable');
+        	   		 }
+        	    
+        	   	    }); 
+        	    	
 
         	     },    
         	     error : function() {    
@@ -344,6 +357,9 @@ $('#meetingid').on('change',
 		}
 }); 
 */
+ 
+ 
+
 </script>
 
 <div class="bjui-pageContent">
@@ -353,18 +369,19 @@ $('#meetingid').on('change',
 		<input type="hidden" name="id" id="id" value="{$id}">
 		<!-- hidden 判断从哪个画面跳转来的，然后刷新哪个画面 -->
 		 <input type="hidden" name="caltype" id="caltype" value="{$caltype}"> 
+
+		<!-- <input type="button" value="Test1" onclick="getRowlValue()" > -->
+
 		
         <div class="pageFormContent" data-layout-h="0">
           <table class="table table-condensed table-hover" width="100%">
            <tbody>
 
-           <tr><td>
+           <tr>
+           		<td>
                 <label for="j_title" class="control-label x85">会议室名称：</label>
-                
                 </td>
                	 <td>
-               	 
-               	 
                	 <!-- 
                	 data-nextselect="#myLoadDiv2" 
                	 data-refurl="__URL__/Ajaxloaddevsbymeetid?meetid={value}"
@@ -372,6 +389,7 @@ $('#meetingid').on('change',
 				data-refurl="__URL__/Ajaxloaddevs"
 				data-toggle="refreshlayout" 
 				data-target="#myLoadDiv2"
+				onchange="changeMeetroom()"
                	  -->
                 <select  name="meetingid" id="meetingid"  data-toggle="selectpicker" 
                 data-rule="会议室名称: required;meetingid"

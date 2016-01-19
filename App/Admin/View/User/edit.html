@@ -205,7 +205,7 @@
 						<th>编号</th>
 						<th>会议室权限组名称</th>
 						<th width="20%">备注</th>
-						<th width="28"><input type="checkbox" class="checkboxCtrl" data-group="meetroomrules[]" data-toggle="icheck"></th>
+						<th width="28">选择</th>
 					
 						
 					</tr>
@@ -215,10 +215,10 @@
 					<foreach name="meetroomruleslist" item="v">
 					<tr>
 						
-						<Td>{$v.meetroomRuleGroupID}</td>
-						<Td>{$v.meetroomRuleGroupName}</td>
+						<Td>{$v.RuleGroupID}</td>
+						<Td>{$v.RuleGroupName}</td>
 						<Td>{$v.Note}</td>
-				        <td><input type="checkbox" name="meetroomrules[]" data-toggle="icheck" <if condition="$v.selected EQ 'selected' ">checked</if> value="{$v.meetroomRuleGroupID}"></td>
+				        <td><input type="radio" name="meetroomauthgroupid" data-toggle="icheck" <if condition="$v.selected EQ 'selected' ">checked</if> value="{$v.RuleGroupID}"></td>
 
 					</tr>
 					</foreach>

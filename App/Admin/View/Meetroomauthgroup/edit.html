@@ -1,0 +1,32 @@
+<extend name="Public:form_dialog_layout"/>
+	<block name="dialog_edit">
+
+	
+          <table class="table table-condensed table-hover" width="100%">
+           <tbody>
+			<tr><td>
+			    <input name="pid" type="hidden"  id="j_pid" value="0"/>
+                <!-- <label for="j_name" class="control-label x85">所属权限组：</label><select  name="pid" data-toggle="selectpicker" data-rule="required">
+               <option  value="0">顶级</option>
+	          <foreach name="list" item="v">
+	          <option <if condition="$v.id EQ $Rs['pid'] ">selected value="{$Rs['pid']}" <else/>value="{$v.id}"</if> >
+	          <switch name="v.level">  <case value="0">+</case> <case value="1">+--</case><case value="2">+------</case><default /></switch>
+	            {$v.title} <if condition="$v.status EQ 1 "><else/><font color=red>[未启用]</font></if>
+              </foreach>
+             </select> -->
+            </td></tr>
+            <tr><td>
+                <label for="j_title" class="control-label x85">权限组名称：</label>
+                <input type="text" data-rule="required" size="30" name="title" id="j_title" value="{$Rs['title']}" >
+             </td></tr>
+            
+            
+            <include file="Public/form_edit_status_layout" />
+          
+			<include file="Public/form_edit_sort_layout" />
+            </tbody>
+            </table>
+</block>
+
+			
+			

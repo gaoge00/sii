@@ -32,83 +32,83 @@ class MeetingController extends CommonController {
     //}
     
     
-//     public function _after_edit()
-//     {
+    public function _after_edit()
+    {
         
-//        $id=$_REQUEST["id"];
+       $id=$_REQUEST["id"];
        
-//        //var_dump("111111111");
-//        $this->addMeet_Devices($id);
-//        //var_dump("222222222");
-//     }
+       //var_dump("111111111");
+       $this->addMeet_Devices($id);
+       //var_dump("222222222");
+    }
     
-//     public function _after_add($id)
-//     {
-//         $this->addMeet_Devices($id);
-//     }
+    public function _after_add($id)
+    {
+        $this->addMeet_Devices($id);
+    }
     
     
     
-//     //得到所有的Keys关键字信息，ZTree中使用
-//     public function AjaxGetAllDevices()
-//     {
-//         $meetingid = $_REQUEST["id"];
-//         // 关键词首层
-//         $demo = M("Meetingdevice");
-//         $keyslist=$demo->table(C('DB_PREFIX')."meetingdevice a")
-//         ->join("left join ".C('DB_PREFIX')."meetinganddevice b ON (a.id=b.meetingdeviceid and b.meetingid='".$meetingid."')")
-//         ->field("a.id,0 pid,a.name, case when ifnull(b.meetingid,'') != '' then 'true' else 'false' end as checked")
-//         ->where("a.status=1")
-//         ->order("a.sort asc")
-//         ->select();
+    //得到所有的Keys关键字信息，ZTree中使用
+    public function AjaxGetAllDevices()
+    {
+        $meetingid = $_REQUEST["id"];
+        // 关键词首层
+        $demo = M("Meetingdevice");
+        $keyslist=$demo->table(C('DB_PREFIX')."meetingdevice a")
+        ->join("left join ".C('DB_PREFIX')."meetinganddevice b ON (a.id=b.meetingdeviceid and b.meetingid='".$meetingid."')")
+        ->field("a.id,0 pid,a.name, case when ifnull(b.meetingid,'') != '' then 'true' else 'false' end as checked")
+        ->where("a.status=1")
+        ->order("a.sort asc")
+        ->select();
         
-//         $bta = new BuildTreeArray($keyslist, 'id', 'pid', 0);
-//         $data = $bta->getTreeArray();
-//         //var_dump(json_encode($data));
-//         echo json_encode($data);
-//         // $this->ajaxReturn(json_encode($data),'JSON');
-//     }
+        $bta = new BuildTreeArray($keyslist, 'id', 'pid', 0);
+        $data = $bta->getTreeArray();
+        //var_dump(json_encode($data));
+        echo json_encode($data);
+        // $this->ajaxReturn(json_encode($data),'JSON');
+    }
   
-//     public function addMeet_Devices($id)
-//     {
-//         if (IS_POST) {
-//             $data = I('post.');
-//             $meetinganddevice = M("meetinganddevice");
-//             try {
-//                 $meetingID =$id;
-//                 $strDevicesID = $_REQUEST["devicesid"];
-//                 $meetinganddevice->startTrans();
-//                 // 进行相关的业务逻辑操作
-//                 $meetinganddevice->table(C('DB_PREFIX')."meetinganddevice")->where("meetingid  = '" . $meetingID . "'")->delete();
-//                 //var_dump($meetinganddevice->getLastSql());
-//                 $meetinganddevicedata = array(
-//                     "meetingid" => "",
-//                     "meetingdeviceid" => ""
-//                 );
+    public function addMeet_Devices($id)
+    {
+        if (IS_POST) {
+            $data = I('post.');
+            $meetinganddevice = M("meetinganddevice");
+            try {
+                $meetingID =$id;
+                $strDevicesID = $_REQUEST["devicesid"];
+                $meetinganddevice->startTrans();
+                // 进行相关的业务逻辑操作
+                $meetinganddevice->table(C('DB_PREFIX')."meetinganddevice")->where("meetingid  = '" . $meetingID . "'")->delete();
+                //var_dump($meetinganddevice->getLastSql());
+                $meetinganddevicedata = array(
+                    "meetingid" => "",
+                    "meetingdeviceid" => ""
+                );
     
     
-//                 if (isset($strDevicesID) && $strDevicesID != "") {
+                if (isset($strDevicesID) && $strDevicesID != "") {
     
-//                     $DevicesIDArray = explode(",", $strDevicesID);
+                    $DevicesIDArray = explode(",", $strDevicesID);
     
-//                     foreach ($DevicesIDArray as $DevicesID) {
-//                         $meetinganddevicedata["meetingid"] = $meetingID;
-//                         $meetinganddevicedata["meetingdeviceid"] = $DevicesID;
+                    foreach ($DevicesIDArray as $DevicesID) {
+                        $meetinganddevicedata["meetingid"] = $meetingID;
+                        $meetinganddevicedata["meetingdeviceid"] = $DevicesID;
     
-//                         $meetinganddevice->table(C('DB_PREFIX')."meetinganddevice")->field('meetingid,meetingdeviceid')
-//                         ->data($meetinganddevicedata)
-//                         ->add(); // 保存
+                        $meetinganddevice->table(C('DB_PREFIX')."meetinganddevice")->field('meetingid,meetingdeviceid')
+                        ->data($meetinganddevicedata)
+                        ->add(); // 保存
                         
-//                         //var_dump($meetinganddevice->getLastSql());
-//                     }
-//                 }
-//                 $meetinganddevice->commit();
-//                 $this->mtReturn(200, "编辑成功", $_REQUEST['navTabId'], true); // 写入日志
-//             } catch (Exception $e) {
-//                 $meetinganddevice->rollback();
-//                 $this->mtReturn(300, "编辑失败" . $e . $id, $_REQUEST['navTabId'], true); // 写入日志
-//             }
-//         }
-//     }
+                        //var_dump($meetinganddevice->getLastSql());
+                    }
+                }
+                $meetinganddevice->commit();
+                $this->mtReturn(200, "编辑成功", $_REQUEST['navTabId'], true); // 写入日志
+            } catch (Exception $e) {
+                $meetinganddevice->rollback();
+                $this->mtReturn(300, "编辑失败" . $e . $id, $_REQUEST['navTabId'], true); // 写入日志
+            }
+        }
+    }
     
 }

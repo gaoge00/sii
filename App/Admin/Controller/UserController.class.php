@@ -23,9 +23,19 @@ class UserController extends CommonController {
      ->field("a.id as RuleGroupID,a.title as RuleGroupName,''  as selected")
      ->order("a.Sort asc")
      ->select();
-     
      //var_dump($demo->getLastSql());
      $this->assign('ruleslist',$list);
+     
+     $meetdemo=M("user");
+     $meetlist= $meetdemo->table(C('DB_PREFIX')."meetroomauthgroup a")
+     ->where("a.status='1'")
+     ->field("a.id as RuleGroupID,a.title as RuleGroupName,  ''  as selected")
+     ->order("a.Sort asc")
+     ->select();
+     //var_dump($meetlist);
+     
+     $this->assign('meetroomruleslist',$meetlist);
+     
   }
   
   public function add() {
@@ -61,12 +71,9 @@ class UserController extends CommonController {
       $this->display("edit");
   }
   
-
   public function _after_add($id){
       $this->add_auth_group_access($id);
   }
-  
-  
   
   public function _befor_insert($data){
 	 $password=md5(md5(I('password')));
@@ -74,9 +81,6 @@ class UserController extends CommonController {
 	 //unset($data['password']);
 	 return $data;
   }
-  
-
-  
   
   public function _befor_edit(){
  	//得到权限组
@@ -88,8 +92,18 @@ class UserController extends CommonController {
                 ->field("a.id as RuleGroupID,a.title as RuleGroupName, case when ifnull(b.uid,'') != '' then 'selected' else '' end as selected")
                 ->order("a.Sort asc")
                 ->select();
+ 	
+ 	
+ 	$meetdemo=M("user");
+ 	$meetlist= $meetdemo->table(C('DB_PREFIX')."meetroomauthgroup a")
+ 	->join("left join ".C('DB_PREFIX')."user b ON (a.id=b.meetroomauthgroupid and b.id='".$UserID."')")
+ 	->where("a.status='1'")
+ 	->field("a.id as RuleGroupID,a.title as RuleGroupName, case when ifnull(b.id,'') != '' then 'selected' else '' end as selected")
+ 	->order("a.Sort asc")
+ 	->select();
 	//echo $demo->getLastSql();	                        
   	$this->assign('ruleslist',$list);
+  	$this->assign('meetroomruleslist',$meetlist);
   }
   
   public function _befor_update($data){
@@ -101,6 +115,7 @@ class UserController extends CommonController {
 	 unset($data['pwd']);
 	 return $data;
   }
+  
   public function  add_auth_group_access($id){
       $mUser_auth_group_access=M("authgroupaccess");
       try {
@@ -145,12 +160,12 @@ class UserController extends CommonController {
       }
   
   }
-  
-  
+   
  public function  _after_edit($id){
     $this->add_auth_group_access($id);
       
  }
+ 
   public function GetAllOrg(){
   	//import("Home.Library.TreeLib.BuildTreeArray");
   	//import('Common/ORG/Util/BuildTreeArray');
@@ -166,12 +181,10 @@ class UserController extends CommonController {
   	//$this->ajaxReturn(json_encode($data),'JSON');
   }
 
-  
   public function _befor_del($id){
 	  $uid=$id; 
 	  M('authgroupaccess')->where('uid='.$uid.'')->delete(); 
    }
-   
    
    public function telnotebooks(){
         
@@ -188,7 +201,6 @@ class UserController extends CommonController {
        $this->display();
    }
 
-   
    //数据导入
    //上传方法
    public function upload()
@@ -210,14 +222,11 @@ class UserController extends CommonController {
                $this->mtReturnUpload(300,"数据导入失败！原因：".$upload->getError(),$_REQUEST['navTabId'],true);  //写入日志
               
            }else{// 上传成功
-               $this->users_import($filename, $exts);
-               
+               $this->users_import($filename, $exts); 
            }
-        
        }
        $this->display("upload");
    }
-   
    
    //导入数据方法
    protected function users_import($filename, $exts='xls')
@@ -254,8 +263,6 @@ class UserController extends CommonController {
                $data[$currentRow][$currentColumn]=(string)($currentSheet->getCell($address)->getValue());
            }
        }
-       
-       
        //var_dump($data);
        $this->save_import($data);
    }
@@ -298,9 +305,7 @@ class UserController extends CommonController {
                     $model->table(C('DB_PREFIX')."user")->where(array('id' => $id))->delete();
                     $model->table(C('DB_PREFIX')."authgroupaccess")->where(array('uid' => $id))->delete();
                 }
-                
-                
-                
+
                //密码
                $user['password'] = md5(md5("123456"));
                //用户名
