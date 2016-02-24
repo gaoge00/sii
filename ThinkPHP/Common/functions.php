@@ -32,6 +32,7 @@ function C($name = null, $value = null, $default = null)
         return $_config;
     }
     
+    
     // var_dump($_config["SEARCHKEY"]);
     // 优先执行设置获取或赋值
     if (is_string($name)) {

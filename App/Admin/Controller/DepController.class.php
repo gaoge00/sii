@@ -11,4 +11,11 @@ class DepController extends CommonController {
 		$this->dbname = 'dep';
 	}
 	
+	public function index(){
+	
+	     $list=D($this->dbname)->select();
+	    $this->assign('list',$list);
+	    $this->display();
+	}
+	
 }

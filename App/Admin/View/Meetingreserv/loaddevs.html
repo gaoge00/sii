@@ -112,7 +112,6 @@
 					
 					<foreach name="Devlist" item="v">
 					<tr data-id='{$v.MeetingdeviceID}'>
-						
 						<Td>{$v.id}</td>
 						<Td>{$v.name}</td>
 						<Td>{$v.no}</td>
@@ -121,7 +120,6 @@
 				        <input type="checkbox" id="devs[]" name="devs[]" data-toggle="icheck"  {$v.checked}  {$v.disabled} value="{$v.id}" >
    						<!--  <input type="text" name="sel_devs" id="sel_devs" value="{$v.MeetingdeviceID}">-->
 				        </td>
-
 					</tr>
 					</foreach>
 				</tbody>

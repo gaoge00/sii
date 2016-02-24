@@ -235,53 +235,46 @@ $('#meetingid').on('change',
         	    type:'post',    
         	    cache:false,    
         	    dataType:'json',    
-        	    success:function(data) {    
-        	    	
+				success:function(data) {    
         	    	//var dataObj=eval("("+data+")");//转换为json对象
-					//alert(data);
         	    	$.each(data[0], function(key, val){
-        	          	var ctlObj = $("#MR_" + key);
-        	          	var divObj = $("#DIV_" + key);
+       				if(key=="devs"){
+       					//var arrdev=["9","10","11","12"];
+	        	        arrdev=val.split(",");
+	        	        $("input[name='devs[]']").each(function() {
+	        	       	 $(this).iCheck('enable');
+	        	       	 $(this).iCheck('uncheck');
+	        	       	
+	        	   		 if($.inArray($(this).val(),arrdev)==-1){
+	        	   			 $(this).iCheck('disable');
+	        	   		 }
+	        	   	    }); 
+					}
+       				else{
+       					
+       					var ctlObj = $("#MR_" + key);
         	          	//ctlObj.attr("checked",true);
         	          	//$('input').iCheck('check'); — 将输入框的状态设置为checked
 						//$('input').iCheck('uncheck'); — 移除 checked 状态
-        	          
-						//alert(val);
-						//if (val == '0'){
-        	          		//ctlObj.iCheck('uncheck');
-        	          	//	divObj.attr("hidden",true);
-        	          	//}
-
-        	          	//else 
-        	          	if (val == '1'){
-        	          		//ctlObj.iCheck('check');
-        	          		divObj.attr("hidden",false);
+        	          	if(val == '0'){
+        	          		ctlObj.iCheck('uncheck');
+        	          	}
+        	          	else if (val == '1'){
+        	          		ctlObj.iCheck('check');
         	          	}
         	          	else{
-        	          		//ctlObj.iCheck('uncheck');
-        	          		divObj.attr("hidden",true);
+        	          		ctlObj.iCheck('uncheck');
         	          	}
-						ctlObj.iCheck('uncheck');
-	
-        	    	}); 
-        	    	
-        	        var arrdev=[9,10,11,12];
-        	        $("input[name='devs[]']").each(function() {
-        	       	 //alert(parseInt($(this).val()));
-        	       	 $(this).iCheck('enable');
-        	       	 $(this).iCheck('uncheck');
-
-        	   		 if($.inArray(parseInt($(this).val()),arrdev)!=-1){
-        	   			 //$(this).iCheck('disable');
-        	   		 }
-        	    
-        	   	    }); 
+       				}
+       					
+       					
+				});
         	    	
 
         	     },    
         	     error : function() {    
         	          // view("异常！");    
-        	          alert("异常！");    
+        	          //alert("异常！");    
         	     }
         	});
         	
@@ -342,7 +335,7 @@ $('#meetingid').on('change',
 	    },
 	});
  
- /*
+
  $("#MeetingReservEdit").validator({ 
 	 	focusCleanup:true,
  		stopOnError:false,
@@ -356,7 +349,7 @@ $('#meetingid').on('change',
 		 	return CommitVerify(form); 
 		}
 }); 
-*/
+
  
  
 
@@ -413,24 +406,15 @@ $('#meetingid').on('change',
                 	<label for="j_title" class="control-label x85">会议室属性：</label>
                 </td>
                	<td>
-               	
+               	<!--  
 				   	<div style="padding-left:0px !important;"  id="DIV_hastv" class="col-md-3"  <if condition="$beforlist.hastv EQ 0"> hidden="false"</if> >
 				  	<input type="checkbox" data-toggle="icheck" name="MR_hastv"  id="MR_hastv"  data-label="内置电视"   {$builtindeviceslist.hastv}/>
-				</div>
-			
-					<div style="padding-left:0px !important;" id="DIV_hasprojection" class="col-md-3" <if condition="$beforlist.hasprojection EQ 0"> hidden="false"</if>>
-					<input type="checkbox" data-toggle="icheck" name="MR_hasprojection" id="MR_hasprojection"  data-label="投影"  {$builtindeviceslist.hasprojection}/>
-				</div>
-				
-					<div style="padding-left:0px !important;" id="DIV_hasvideo" class="col-md-3" <if condition="$beforlist.hasvideo EQ 0"> hidden="false"</if>>
-					<input type="checkbox" data-toggle="icheck" name="MR_hasvideo"   id="MR_hasvideo"    data-label="视频会议"  {$builtindeviceslist.hasvideo}/>
-				</div>
-				
-					<div style="padding-left:0px !important;" id="DIV_hastel" class="col-md-3" <if condition="$beforlist.hastel EQ 0"> hidden="false"</if>>
-					<input type="checkbox" data-toggle="icheck" name="MR_hastel" id="MR_hastel"  data-label="电话会议"   {$builtindeviceslist.hastel}/>	
-				</div>
-						
-															
+				    </div>
+				 -->
+					<input type="checkbox" data-toggle="icheck" name="MR_hastv"  id="MR_hastv"  data-label="内置电视"  disabled <if condition="$beforlist.hastv EQ 1 ">checked</if> />
+					<input type="checkbox" data-toggle="icheck" name="MR_hasprojection" id="MR_hasprojection"  data-label="内置投影" disabled <if condition="$beforlist.hasprojection EQ 1 ">checked</if> />
+					<input type="checkbox" data-toggle="icheck" name="MR_hasvideo"   id="MR_hasvideo"    data-label="视频会议" disabled <if condition="$beforlist.hasvideo EQ 1 ">checked</if> />
+					<input type="checkbox" data-toggle="icheck" name="MR_hastel" id="MR_hastel"  data-label="电话会议"  disabled <if condition="$beforlist.hastel EQ 1 ">checked</if> />						
                </td>
             </tr>
             

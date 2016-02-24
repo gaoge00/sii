@@ -18,6 +18,12 @@ class ImportantController extends CommonController {
 	    
 	    
 	}
+	
+	public function index(){
+	    $list=D($this->dbname)->select();
+	    $this->assign('list',$list);
+	    $this->display();
+	}
     
   
 }

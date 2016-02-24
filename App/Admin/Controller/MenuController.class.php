@@ -15,11 +15,11 @@ class MenuController extends CommonController {
 	//下面是树形结构现实在表格中用要的方法
 	//begin
 	
-	public function _befor_index(){
-	    	
-	    $list=cateTree(0,0,$this->dbname);
-	  
+public function index(){
+	
+	    $list=cateTree($id=0,$level=0,$this->dbname);
 	    $this->assign('list',$list);
+	    $this->display();
 	}
 	
 	public function _befor_insert($data){

@@ -311,7 +311,7 @@ class MeetingreservController extends CommonController {
      $demo=M("meetingreserv");
     $listdep=array();
     //新增时没有会议室ID，用社员ID进行筛选
-    if($id<>""&&isset($id)){
+    if($id!="0"&&isset($id)){
            $listdep=$demo->table(C('DB_PREFIX')."user a")
         ->join("left join ".C('DB_PREFIX')."meetroomauthgroup b ON (a.meetroomauthgroupid=b.id)")
         ->join("left join ".C('DB_PREFIX')."meetingreserv c ON (a.id=c.userid)")
@@ -328,8 +328,8 @@ class MeetingreservController extends CommonController {
     }
 
     
-//      var_dump($demo->getLastSql());
-//      die();
+//       var_dump($demo->getLastSql());
+//       die();
     
     if(isset($listdep)&&count($listdep)>0)
         $result=$listdep[0]["rules"];
@@ -402,11 +402,14 @@ class MeetingreservController extends CommonController {
    public function AjaxGetMeetingRoomProperty(){
     
     	$meetingid=$_REQUEST["meetingid"];
-    	$demo=M("meeting");
-    	$list=$demo->where("id = if(ifnull('".$meetingid."','')='',id,'".$meetingid."') and Status=1 ")
-    	->field("hastv,hasprojection,hasvideo,hastel,peoples")
+    	$demo=M("meeting a");
+    	$list=$demo
+    	->join("left join sii_meetinganddevice b on a.id=b.meetingid")
+    	->where("a.id = if(ifnull('".$meetingid."','')='',a.id,'".$meetingid."') and Status=1 ")
+    	->field("hastv,hasprojection,hasvideo,hastel,peoples,ifnull(GROUP_CONCAT(b.meetingdeviceid),'') devs")
     	->select();
-    	
+    	//var_dump($demo->getLastSql());
+    	//die();
     	//header('Content-type: text/json');
     	echo json_encode($list);
     
@@ -417,21 +420,36 @@ class MeetingreservController extends CommonController {
 
     	$id=$_REQUEST["id"];
     	$M_MeetDev=M("");
-    	
+    	$querySql="";
+    	if(isset($id)&&$id!=''){
     	$querySql="
 				select a.*,
-				CASE WHEN IFNULL(b.meetingdeviceid, '') != '' THEN 'checked'  ELSE '' END AS checked
+				CASE WHEN IFNULL(b.meetingdeviceid, '') != '' THEN 'checked'  ELSE '' END AS checked,
+    	        CASE WHEN IFNULL(d.meetingdeviceid, '') != '' THEN ''  ELSE 'disabled' END AS disabled
 				from __MEETINGDEVICE__ a
 				left join __MEETINGRESERVDEVICE__ b on(a.id=b.meetingdeviceid and b.meetingreservid='".$id."')
-				left join __MEETINGRESERV__ c on (b.meetingdeviceid=c.id and c.id='".$id."')
+				left join __MEETINGRESERV__ c on (c.id='".$id."')
+				left join __MEETINGANDDEVICE__ d ON (c.meetingid = d.meetingid and a.id=d.meetingdeviceid)   
 				where a.Status='1'
 				order by b.meetingdeviceid desc,a.sort asc;
     			";
-    	
+    	}
+    	else {
+    	    $querySql="
+				select a.*,
+				 ''  AS checked,
+    	         ''  AS disabled
+				from __MEETINGDEVICE__ a
+				where a.Status='1'
+				order by a.sort asc;
+    			";
+    	}
     	$devlist = $M_MeetDev->query($querySql);
     	
-    	//var_dump($devlist);
+    	//var_dump($querySql);
     	$this->assign('Devlist',$devlist);
+    	
+    	
     	$this->display("loaddevs");
     
     }
@@ -1134,6 +1152,19 @@ class MeetingreservController extends CommonController {
                         //var_dump($result) ;
                         if(count($result)>0)
                         {
+                            
+                            //判断设备与会议室之间关系 start
+                            $resultchkmeetroondevice = 
+                            $model
+                            ->table(C('DB_PREFIX')."meetinganddevice")
+                            ->where("meetingid='".$meetingreserv["meetingid"]."' and meetingdeviceid=".$result[0]["id"]."")
+                            ->select();
+                            if(count($resultchkmeetroondevice)==0)
+                            {
+                                $this->sendError($i,"与会设备","当前会议室不能预订此设备：".$devices[$j]."！");
+                                continue;
+                            }
+                            //判断设备与会议室之间关系 end
                             //$meetingreservdevice['meetingreservid'] = $meetingreserv["meetingid"];
                             $meetingreservdevice['meetingdeviceid'] = $result[0]["id"];
    

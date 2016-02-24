@@ -9,7 +9,8 @@ class PublicController extends Controller {
         $admin = I('post.');
         //var_dump(D('Admin', 'Service'));
         //die();
-        
+//         var_dump($admin);
+//         die();
         $rs = D('Admin', 'Service')->login($admin);
         setcookie("uid",$admin["userid"]);
 		if (!$rs['status']) {

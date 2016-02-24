@@ -195,7 +195,6 @@ Class CommonController extends Controller{
 		//var_dump($map);
 		if($order=='') {
 			$order = $model->getPk();
-
 		}
 			
 		//排序方式默认按照倒序排列
@@ -213,10 +212,9 @@ Class CommonController extends Controller{
 		if (isset($_REQUEST ['pageCurrent'])) {
 			$pageCurrent = $_REQUEST ['pageCurrent'];
 		}
-		if($pageCurrent=='') {
-			$pageCurrent =1;
-
-		}
+ 		if($pageCurrent=='') {
+ 			$pageCurrent =1;
+ 		}
 		
 	     //$count = count($model->where($map)->select());
 		//取得满足条件的记录数
@@ -224,20 +222,20 @@ Class CommonController extends Controller{
 
 		//$count=10;
 		if ($count > 0) {
-
-			//$pageSize=30;	//每页默认30
 		    $pageSize = C('PERPAGE');
+
+			if (isset($_REQUEST ['pageSize'])) { 
+			    $numPerPage=$_REQUEST ['pageSize'];	//每页显示几条数据
+				
+			}else{
+			    $numPerPage = $pageSize;
+			}
 		    
-			//if (isset($_REQUEST ['pageSize'])) {
-			//	$pageSize = $_REQUEST ['pageSize'];
-			//}
-		    $numPerPage=$pageSize;	//每页显示几条数据
-		   
 		   // $model->where($map)->select();
-		    //var_dump($model);
-		    //die();
 		    //var_dump($map);
 		    //var_dump("`" . $order . "` " . $sort);
+		   
+			
 		    if($count<$numPerPage*($pageCurrent-1))
 		    {
 		        $pageCurrent=1;
@@ -251,8 +249,7 @@ Class CommonController extends Controller{
 		    else{
 		        $voList = $model->where($map)->order("`" . $order . "` " . $sort)->limit($numPerPage)->page($pageCurrent.','.$numPerPage.'')->select();
 		    }
-		    //var_dump("22222");
-		    //var_dump($model->getLastSql());
+
 		    //echo $model->getLastSql();
            // var_dump($numPerPage);
             //echo M('')->getLastSql();
