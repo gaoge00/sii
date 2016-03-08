@@ -166,6 +166,20 @@ class ProvsionspublishController extends CommonController
         //M("Org")->where("status=1")->field("id,name,level")->order("sort asc")->select();
         //var_dump($list);
         $this->assign('orglist',$orglist);
+        
+        
+        
+        $strID =  $_REQUEST ['id'];
+        $fujian_flag = M($this->dbname)
+        ->table(C('DB_PREFIX')."provsionspublish a")
+        ->join ("left join ".C('DB_PREFIX')."files b on a.attid=b.attid")
+        ->field("a.id,sum(if(ifnull(b.id,'')='',0,1)) attcount")
+        ->where("a.id='".$strID."'")
+        ->select();
+        $attcount=0;
+        if(count($fujian_flag)>0)
+            $attcount=$fujian_flag[0]["attcount"];
+        $this->assign('attcount', $attcount);
 
     }
 

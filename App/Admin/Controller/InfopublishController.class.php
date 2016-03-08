@@ -281,8 +281,14 @@ class InfopublishController extends CommonController
             ->order("sort asc")
             ->select();
          //var_dump($infotypelist);
+         //die();
         // $this->assign('infotypelist',$infotypelist);
+        
+        
+        
         array_unshift($infotypelist,array("value"=>"","label"=>"--请选择--"));
+        
+        
         echo json_encode($infotypelist);
     }
     
@@ -328,7 +334,21 @@ class InfopublishController extends CommonController
             ->select();
         // var_dump($keyslist);
         $this->assign('keyslist', $keyslist);
-
+        
+        
+        
+        $fujian_flag = M("infopublish")
+        ->table(C('DB_PREFIX')."infopublish a")
+        ->join ("left join ".C('DB_PREFIX')."files b on a.attid=b.attid")
+        ->field("a.id,sum(if(ifnull(b.id,'')='',0,1)) attcount")
+        ->where("a.id='".$infopublishid."'")
+        ->select();
+        $attcount=0;
+        if(count($fujian_flag)>0)
+            $attcount=$fujian_flag[0]["attcount"];
+        $this->assign('attcount', $attcount);
+        //var_dump($attcount);
+        //die();
         // echo json_encode($list);
         // $this->ajaxReturn(json_encode($data),'JSON');
     }

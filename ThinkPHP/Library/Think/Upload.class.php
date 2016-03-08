@@ -151,9 +151,13 @@ class Upload
      */
     public function upload($files = '')
     {
+
         if ('' === $files) {
             $files = $_FILES;
         }
+        
+        //var_dump($files);
+        //die();
         if (empty($files)) {
             $this->error = '没有上传的文件！';
             return false;

@@ -109,17 +109,9 @@ class InfopublishlistController extends CommonController
     {
             $this->GetMasters();
     }
-        
-   
-    
-    
-
-    
-   
-    
 
     //二级联动中的第一个select 之后 加载第二个 select
-    public function GetInfoType()
+    public function AjaxGetInfoType()
     {
         $infotypeid = $_REQUEST["infotypeid"];
         $arrWhere = array();
@@ -190,7 +182,21 @@ class InfopublishlistController extends CommonController
             ->select();
         // var_dump($keyslist);
         $this->assign('keyslist', $keyslist);
-
+        
+        
+        $fujian_flag = M("infopublish")
+        ->table(C('DB_PREFIX')."infopublish a")
+        ->join ("left join ".C('DB_PREFIX')."files b on a.attid=b.attid")
+        ->field("a.id,sum(if(ifnull(b.id,'')='',0,1)) attcount")
+        ->where("a.id='".$infopublishid."'")
+        ->select();
+        $attcount=0;
+        if(count($fujian_flag)>0)
+            $attcount=$fujian_flag[0]["attcount"];
+        $this->assign('attcount', $attcount);
+        
+        //var_dump($attcount);
+        //die();
         // echo json_encode($list);
         // $this->ajaxReturn(json_encode($data),'JSON');
     }

@@ -817,7 +817,7 @@ class MeetingreservController extends CommonController {
             //$this->mtReturn(200,"数据导入成功！",$_REQUEST['navTabId'],true);  //写入日志
             header("Content-Type:text/html;charset=utf-8");
             $upload = new \Think\Upload();// 实例化上传类
-            $upload->maxSize   =     3145728 ;// 设置附件上传大小
+            $upload->maxSize   =     52428800 ;// 设置附件上传大小
             $upload->exts      =     array('xls', 'xlsx');// 设置附件上传类
             $upload->savePath  =      '/'; // 设置附件上传目录
             // 上传文件

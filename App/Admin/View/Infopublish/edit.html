@@ -1,195 +1,22 @@
-<extend name="Public:form_dialog_layout"/>
+<div class="bjui-pageContent">
+	<script type="text/javascript">
+		$("#btnSub").on('click', function(e) {
+			//alert("12312312312");
+			var strSelect=$("select[name='pid'] option:selected").val();
+			var exp="{$Rs['id']}";
 
-<block name="dialog_edit">
- 
-<script type="text/javascript">
-	//var zTree;
-	//var zTreeOrgs;
-/* 	  var settingKeys = {
-		async : {
-			enable : true,//启用异步加载
-			url : "__URL__/AjaxGetAllKeys", //异步请求地址
-			type : "get",
-			otherParam : {
-				"id" : '{$id}'
-					//<empty name='id' > "0" <else/> {$id} </empty>  //$('#idtest').val()
-			},
-			dataFilter : null
-		//autoParam:["id", "str1"], //需要传递的参数,为你在ztree中定义的参数名称
-		//
-		},
-		view : {
-			selectedMulti : false  //是否多选
-		//,addDiyDom: M_AddDiyDom
-		},
-		check : {
-			autoCheckTrigger : false, //自动验证
-			chkboxType: { "Y" : "", "N" : "" },  //不级联父节点选择  
-			chkStyle : "checkbox",
-			enable : true,
-			nocheckInherit : false
-		},
-		data : {
-			key : {
-				checked : "checked",
-				children : "children",
-				name : "name",
-				title : "name"
-			},
-			simpleData : {
-				enable : true,
-				idKey : "id",
-				pIdKey : "pid",
-				rootPId : 0
-			},
-			keep : {
-				parent : true,
-				leaf : true
-			},
-		},
-		callback : {
-			onAsyncSuccess : zTreeOnAsyncSuccessKeys,
-			onAsyncError : zTreeOnAsyncError,
-			onCheck : getSelectedNodesKeys
-		}
-	};  
+			if(strSelect==exp && strSelect!="")
+			{
+				$("#this").alertmsg("不能选择自身作为上级！","");
+			  return false;
+			}
+			else
+			{
+			  return true;
+			}
+	})
 	
-	
-	 
- 	var settingOrgs = {
-			async : {
-				enable : true,//启用异步加载
-				url : "__URL__/AjaxGetAllOrgs", //异步请求地址
-				type : "get",
-				otherParam : {
-					"id" : '{$id}'
-						//$('#idtest').val()//({$Rs['id']} == "") ? "0" : {$Rs['id']} //$('#idtest').val()
-				},
-				dataFilter : null
-			//autoParam:["id", "str1"], //需要传递的参数,为你在ztree中定义的参数名称
-			//
-			},
-			view : {
-				selectedMulti : false  //是否多选
-			//,addDiyDom: M_AddDiyDom
-			},
-			check : {
-				autoCheckTrigger : false, //自动验证
-				chkboxType: { "Y" : "", "N" : "" },  //不级联父节点选择  
-				chkStyle : "checkbox",
-				enable : true,
-				nocheckInherit : false
-			},
-			data : {
-				key : {
-					checked : "checked",
-					children : "children",
-					name : "name",
-					title : "name"
-				},
-				simpleData : {
-					enable : true,
-					idKey : "id",
-					pIdKey : "pid",
-					rootPId : 0
-				},
-				keep : {
-					parent : true,
-					leaf : true
-				},
-			},
-			callback : {
-				onAsyncSuccess : zTreeOnAsyncSuccessOrgs,
-				onAsyncError : zTreeOnAsyncError,
-				onCheck : getSelectedNodesOrgs
-			}
-		}; 
-	 
-
-	function zTreeOnAsyncError(event, treeId, treeNode) {
-		alert("异步加载失败!");
-	}
-
-	  function zTreeOnAsyncSuccessKeys(event, treeId, treeNode, msg) {
-
-		var treeObj = $.fn.zTree.getZTreeObj("j_select_tree_keys");
-		treeObj.expandAll(true);
-		getSelectedNodesKeys();
-		//getRules();
-	}  
-	
-	  function zTreeOnAsyncSuccessOrgs(event, treeId, treeNode, msg) {
-		var treeObj = $.fn.zTree.getZTreeObj("j_select_tree_orgs");
-		treeObj.expandAll(true);
-		//alert("123123123123");
-		getSelectedNodesOrgs();
-		//getRules();
-	}  
-
-	//所选节点
-	  function getSelectedNodesKeys() {
-			var selectedNode = $.fn.zTree.getZTreeObj("j_select_tree_keys")
-					.getCheckedNodes();
-			// $('#CheckedRule').val(JSON.stringify(selectedNode));
-			var checkedValueID = $('#keysid').val();
-			checkedValueID = "";
-			var checkedValueName = $('#keysname').val();
-			checkedValueName = "";
-			//alert("123123123123");
-			var tempCheckedValueID = "";
-			var tempCheckedValueName = "";
-			for (var i = 0; i < selectedNode.length; i++) {
-				//alert(selectedNode[i].MenuID);
-				tempCheckedValueID += "," + selectedNode[i].id;
-				tempCheckedValueName += "," + selectedNode[i].name;
-				//$('#CheckedRule').val(checkedValue + "," + selectedNode[i].MenuID);
-			}
-	
-			if (tempCheckedValueID != '') {
-				tempCheckedValueID = tempCheckedValueID.substr(1);
-			}
-			if (tempCheckedValueName != '') {
-				tempCheckedValueName = tempCheckedValueName.substr(1);
-			}
-			$('#keysid').val(tempCheckedValueID);
-			$('#keysname').val(tempCheckedValueName);
-	}  
-	 function getSelectedNodesOrgs() {
-			var selectedNode = $.fn.zTree.getZTreeObj("j_select_tree_orgs")
-					.getCheckedNodes();
-			// $('#CheckedRule').val(JSON.stringify(selectedNode));
-			var checkedValueID = $('#orgid').val();
-			checkedValueID = "";
-			var checkedValueName = $('#orgname').val();
-			checkedValueName = "";
-			
-			var tempCheckedValueID = "";
-			var tempCheckedValueName = "";
-			for (var i = 0; i < selectedNode.length; i++) {
-				//alert(selectedNode[i].MenuID);
-				tempCheckedValueID += "," + selectedNode[i].id;
-				tempCheckedValueName += "," + selectedNode[i].name;
-				//$('#CheckedRule').val(checkedValue + "," + selectedNode[i].MenuID);
-			}
-			
-			if (tempCheckedValueID != '') {
-				tempCheckedValueID = tempCheckedValueID.substr(1);
-				
-				//alert(tempCheckedValueID);
-			}
-			if (tempCheckedValueName != '') {
-				tempCheckedValueName = tempCheckedValueName.substr(1);
-				//alert(tempCheckedValueName);
-			}
-			$('#orgid').val(tempCheckedValueID);
-			$('#orgname').val(tempCheckedValueName);
-		}  
-	
-	$.fn.zTree.init($("#j_select_tree_keys"), settingKeys);
-	$.fn.zTree.init($("#j_select_tree_orgs"), settingOrgs);
-	 */
-	
-	  function doc_upload_success(file, data) {
+	 function doc_upload_success(file, data) {
         var json = $.parseJSON(data)
         $(this).bjuiajax('ajaxDone', json)
         if (json[BJUI.keys.statusCode] == BJUI.statusCode.ok) {
@@ -233,7 +60,7 @@
 				   "j_select_tree_keys",
 				   '#keysid',
 				   '#keysname',
-				   $('#j_select_tree_keys')
+				   $("#j_select_tree_keys")
 				   );
 		   
 		   makeTree("__URL__/AjaxGetAllOrgs",
@@ -241,10 +68,10 @@
 				   "j_select_tree_orgs",
 				   '#orgid',
 				   '#orgname',
-				   $('#j_select_tree_orgs')
+				   $("#j_select_tree_orgs")
 				   );
 		}); 
-     
+
 	 $('#enddt').on('afterchange.bjui.datepicker', function(e, data) {
 		 checkenddt(e, data);
 		}); 
@@ -317,19 +144,25 @@
 
 		    },
 		}); 
-	 
-	 
-</script> 
+	
+	
+	
+	</script>
+	
+
+    <form action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm" data-toggle="validate" method="post">
+		<input type="hidden" name="id" value="{$id}">
+        <div class="pageFormContent" data-layout-h="0">
+ 
 
 
 	<php> //类别初期加载 
-	//$listInfotype1=M('Infotype')->where( "status='1' and pid=(select pid from ".C('DB_PREFIX')."Infotype where id='".$Rs["infotypeid"]."')" )->select();
+	$listInfotype1=M('Infotype')->where( "status='1' and pid=(select pid from ".C('DB_PREFIX')."Infotype where id='".$Rs["infotypeid"]."')" )->select();
 	//var_dump($listInfotype1->getLastSql()) ; 
 	</php>
 	
 		<table class="table table-condensed table-hover" width="100%">
 			<tbody>
-
 				<tr>
 				
 					<td colspan="2">
@@ -349,7 +182,7 @@
 					<td><label for="j_title" class="control-label x85">发布日期：</label>
 						<input type="text" name="startdt" id="startdt"
 						data-toggle="datepicker" size="15"
-						
+						readonly="true"
 						data-min-date="%y-%M-%d"
 						
 						value="{$Rs['startdt']}"></td>
@@ -358,6 +191,7 @@
 						<input type="text" name="enddt" id="enddt"
 						data-toggle="datepicker" 
 						data-rule="截止日期：required;date" size="15"
+						readonly="true"
 						value="{$Rs['enddt']}">
 						<!-- data-min-date="%y-%M-{%d+30}" -->
 						</td>
@@ -367,7 +201,8 @@
 					<td colspan="2"><label for="j_title" class="control-label x85">类别：</label>
 						<select name="infotypeid1" id="InfoType1" data-toggle="selectpicker"
 						data-nextselect="#j_form_InfoType2"
-						data-refurl="__URL__/AjaxgetInfoType/infotypeid/{value}"
+						data-refurl="__URL__/AjaxGetInfoType/infotypeid/{value}"
+						
 						data-emptytxt="--请选择--">
 							<option value="">--请选择--</option>
 							<foreach name="infotypelist" item="v">
@@ -377,18 +212,16 @@
 								{$v.name}
 							</option>
 							</foreach>
-					</select> 
-					
-					    <select name="infotypeid" id="j_form_InfoType2"
+					</select> <select name="infotypeid" id="j_form_InfoType2"
 						data-toggle="selectpicker" data-emptytxt="--请选择--"
 						data-rule="类别: required;infotypeid"
 						>
 							<option value="">--请选择--</option>
-							<foreach name="listInfotype2" item="v">
+							<foreach name="listInfotype1" item="v">
 							<option <if
-							    condition="$v.id EQ $Rs['infotypeid'] "> selected
+									condition="$v.id EQ $Rs['infotypeid'] "> selected
 								value="{$Rs['infotypeid']}" <else />value="{$v.id}"</if> >
-								{$v.name}{$v.id}
+								{$v.name}
 							</option>
 							</foreach>
 					</select></td>
@@ -414,8 +247,7 @@
 						<input type="text" name="orgname" id="orgname"
 						data-toggle="selectztree" size="18"
 						
-						data-tree="#j_select_tree_orgs" readonly> 
-						<input
+						data-tree="#j_select_tree_orgs" readonly> <input
 						type="hidden" id="orgid" name="orgid" value="">
 						<ul id="j_select_tree_orgs" class="ztree hide">
 						</ul></td>
@@ -483,31 +315,27 @@
 					</td>
 				</tr>
 				</if>	
-
-				<!-- <if condition="$id EQ '' "> <else />
-				<tr>
-					<td colspan="2"><label for="j_status"
-						class="control-label x85">是否启用：</label> <select name="status"
-						data-container="body" id="j_status" data-toggle="selectpicker"
-						data-rule="required">
-							<if condition="$Rs['status'] EQ 1 OR  $Rs['status'] EQ ''">
-							<option value="1" selected>启用</option>
-							<option value="0">禁用</option>
-							<else />
-							<option value="1">启用</option>
-							<option value="0" selected>禁用</option>
-							</if>
-					</select></td>
-				</tr>
-				</if> 
-				<tr>
-					<td colspan="2"><label for="j_sort" class="control-label x85">排序：</label>
-						<input type="text" size="5" data-toggle="spinner" data-min="0"
-						data-max="100" data-step="1" data-rule="integer" name="sort"
-						id="j_sort" value="{$Rs['sort']}"></td>
-				</tr>-->
 			</tbody>
 		</table>
-</block>
+</div>
+        
+        <div class="bjui-footBar">
+            <ul>
+                <if condition="ACTION_NAME EQ 'view'and  $attcount NEQ '0' ">
+                <li><a <php>echo display(CONTROLLER_NAME.'/accessory');</php>
+					href="__URL__/accessory/id/{$Rs['id']}/navTabId/{:CONTROLLER_NAME}"
+					class="btn btn-blue btn-sm" data-toggle="dialog" data-width="700"
+					data-height="600" 
+					data-id="dialog-mask" data-mask="true">附件</a><li>
+				</if>
+                <li><button type="button" class="btn-close" data-icon="close">取消</button><li>
+            	<if condition="ACTION_NAME NEQ 'view' ">
+            		<li><button id="btnSub" type="submit" class="btn-default" data-icon="save">保存</button></li>
+            	</if>
+            </ul>
+        </div>
+    </form>
+    
+</div>
 
 

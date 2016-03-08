@@ -456,7 +456,9 @@ $('#meetingid').on('change',
                		data-max-date="{$maxDate}"
                		name="startdate" id="startdate" 
                		value="<php> if(empty($Rs['startdate']))  {   if(empty($_REQUEST['sel_start'])) {echo date('Y-m-d', time());} else {echo date('Y-m-d', strtotime($_REQUEST['sel_start']));}  } else { echo $Rs['startdate'];} </php>" 
-               		data-toggle="datepicker" data-rule="required;date" size="15">
+               		data-toggle="datepicker" data-rule="required;date" size="15"
+               		readonly="true"
+               		>
              	 </td>
             </tr>
             

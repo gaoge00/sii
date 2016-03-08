@@ -33,7 +33,7 @@ return array(
     'LOAD_EXT_CONFIG' => 'web,db',
     
     // 上传设置
-    'UPLOAD_MAXSIZE' => 31457280,
+    'UPLOAD_MAXSIZE' => 52428800,
     'UPLOAD_EXTS' => array(
         'jpg',
         'gif',

@@ -1,6 +1,4 @@
-<extend name="Public:form_dialog_layout"/>
 
-<block name="dialog_edit">
  
 <script type="text/javascript">
 	  function doc_upload_success(file, data) {
@@ -106,7 +104,9 @@
 
 
 
-	
+<form action="__URL__/{:ACTION_NAME}/navTabId/{:CONTROLLER_NAME}" class="pageForm" data-toggle="validate" method="post">
+		<input type="hidden" name="id" value="{$id}">
+        <div class="pageFormContent" data-layout-h="0">	
 		<table class="table table-condensed table-hover" width="100%">
 			<tbody>
 				<tr>
@@ -193,7 +193,10 @@
 					<td colspan="2"><label for="j_title" class="control-label x85">修订日期：</label>
 						<input type="text" name="modifydt" id="modifydt"
 						data-toggle="datepicker" size="15"	
-						value="{$Rs['modifydt']}"></td>
+						value="{$Rs['modifydt']}"
+						readonly="readonly"
+						
+						></td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -226,14 +229,33 @@
 					</td>
 				</tr>
 				</if>
+				
+				
 				<include file="Public/form_edit_status_layout" />
 				
 				<!--  <include file="Public/form_edit_sort_layout" />	
 				-->
-			    
-				
 			</tbody>
 		</table>
-</block>
+        </div>
+        
+        <div class="bjui-footBar">
+            <ul>
+             <if condition="ACTION_NAME EQ 'view' and  $attcount NEQ '0'">
+                <li><a <php>echo display(CONTROLLER_NAME.'/accessory');</php>
+					href="__URL__/accessory/id/{$Rs['id']}/navTabId/{:CONTROLLER_NAME}"
+					class="btn btn-blue btn-sm" data-toggle="dialog" data-width="800"
+					data-height="600" 
+					data-id="dialog-mask" data-mask="true">附件</a><li>
+				</if>
+                <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+            	<if condition="ACTION_NAME NEQ 'view' ">
+            		<li><button id="btnSub" type="submit" class="btn-default" data-icon="save">保存</button></li>
+            	</if>
+            </ul>
+        </div>
+    </form>
+    
+</div>
 
 

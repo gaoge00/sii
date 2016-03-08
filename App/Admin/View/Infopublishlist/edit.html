@@ -182,7 +182,7 @@
 					<td><label for="j_title" class="control-label x85">发布日期：</label>
 						<input type="text" name="startdt" id="startdt"
 						data-toggle="datepicker" size="15"
-						
+						readonly="true"
 						data-min-date="%y-%M-%d"
 						
 						value="{$Rs['startdt']}"></td>
@@ -191,6 +191,7 @@
 						<input type="text" name="enddt" id="enddt"
 						data-toggle="datepicker" 
 						data-rule="截止日期：required;date" size="15"
+						readonly="true"
 						value="{$Rs['enddt']}">
 						<!-- data-min-date="%y-%M-{%d+30}" -->
 						</td>
@@ -200,7 +201,7 @@
 					<td colspan="2"><label for="j_title" class="control-label x85">类别：</label>
 						<select name="infotypeid1" id="InfoType1" data-toggle="selectpicker"
 						data-nextselect="#j_form_InfoType2"
-						data-refurl="__URL__/getInfoType/infotypeid/{value}"
+						data-refurl="__URL__/AjaxGetInfoType/infotypeid/{value}"
 						
 						data-emptytxt="--请选择--">
 							<option value="">--请选择--</option>
@@ -320,7 +321,7 @@
         
         <div class="bjui-footBar">
             <ul>
-                <if condition="ACTION_NAME EQ 'view' and '1' EQ '1' ">
+                <if condition="ACTION_NAME EQ 'view'and  $attcount NEQ '0' ">
                 <li><a <php>echo display(CONTROLLER_NAME.'/accessory');</php>
 					href="__URL__/accessory/id/{$Rs['id']}/navTabId/{:CONTROLLER_NAME}"
 					class="btn btn-blue btn-sm" data-toggle="dialog" data-width="700"

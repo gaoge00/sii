@@ -78,12 +78,34 @@ $(function() {
 
 		 	//当前日期
 		 	var selDay = $.fullCalendar.formatDate(date,"yyyy-MM-dd");
+		 	var toDay = $.fullCalendar.formatDate(new Date(),"yyyy-MM-dd");
+		 	//判断当前日期是否为当年度1,2,3月，此时的下一年度应为当年的4月份
+			var d0331=new Date();
+			//d0331.setFullYear(d0331.getFullYear());
+			d0331.setMonth(2);
+			d0331.setDate(31);
+			var vYear0331 = $.fullCalendar.formatDate(d0331,"yyyy-MM-dd");
+			//判断当前日期是否为当年度1,2,3月，此时的下一年度应为当年的4月份
+			var d0101=new Date();
+			//d0101.setFullYear(d0101.getFullYear());
+			d0101.setMonth(0);
+			d0101.setDate(1);
+			var vYear0101 = $.fullCalendar.formatDate(d0101,"yyyy-MM-dd");
+		 	
 		 	var d=new Date();
-		 	d.setFullYear(d.getFullYear()+1);
+		 	//判断当前日期是否为当年度1,2,3月，此时的下一年度应为当年的4月份
+		 	
+		 	//alert(toDay.toLocaleString());
+		 	//alert(vYear0101.toLocaleString());
+		 	//alert(vYear0331.toLocaleString());
+		 	
+		 	if(toDay>=vYear0101&&toDay<=vYear0331)
+		 		d.setFullYear(d.getFullYear());
+		 	else
+		 		d.setFullYear(d.getFullYear()+1);
 		 	d.setMonth(2);
 		 	d.setDate(31);
-		 	//alert(d.toLocaleString());
-		 	var toDay = $.fullCalendar.formatDate(new Date(),"yyyy-MM-dd");
+
 		 	if(selDay<toDay)
 		 	{	 		
 		 		//$('#export').alertmsg(alerttype, info)

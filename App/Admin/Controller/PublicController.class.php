@@ -263,7 +263,8 @@ class PublicController extends Controller {
 	     $info=false;
 	     $errormsg="上传的文件名不能超过20个字符或汉字！";
 	 }
-	 
+	 //var_dump($errormsg);
+	 //die();
 	 if(!isset($errormsg)||$errormsg!="") {
 	     
 	     echo "<script language='javascript' type='text/javascript'>";
