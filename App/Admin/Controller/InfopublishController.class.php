@@ -334,9 +334,6 @@ class InfopublishController extends CommonController
             ->select();
         // var_dump($keyslist);
         $this->assign('keyslist', $keyslist);
-        
-        
-        
         $fujian_flag = M("infopublish")
         ->table(C('DB_PREFIX')."infopublish a")
         ->join ("left join ".C('DB_PREFIX')."files b on a.attid=b.attid")
@@ -352,6 +349,7 @@ class InfopublishController extends CommonController
         // echo json_encode($list);
         // $this->ajaxReturn(json_encode($data),'JSON');
     }
+    
     //得到所有的Keys关键字信息，ZTree中使用
     public function AjaxGetAllKeys()
     {
